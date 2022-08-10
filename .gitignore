@@ -1,5 +1,5 @@
 ### venv ###
-iranable_venv/
+iranable_virtual/
 
 ### Django ###
 src/config/.idea/
