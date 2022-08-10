@@ -2,7 +2,7 @@
 iranable_virtual/
 
 ### Django ###
-src/config/.idea/
+.idea/
 src/config/settings.py
 
 *.log
