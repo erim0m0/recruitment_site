@@ -3,6 +3,8 @@ import string
 from django.db import models
 from .managers import UserManager
 from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin)
+from django.core.validators import RegexValidator
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -10,14 +12,26 @@ class User(AbstractBaseUser, PermissionsMixin):
     Custom User Model for authentication management through email address instead of username
     """
 
-    email = models.EmailField(max_length=255, unique=True)
+    phone_regex = RegexValidator(
+        regex="^989\d{2}\s*?\d{3}\s*?\d{4}$",
+        message=_("Invalid phone number.")
+    )
+    phone = models.CharField(
+        max_length=12, validators=[phone_regex],
+        unique=True, verbose_name=_("phone")
+    )
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_active_email = models.BooleanField(default=False)
-    active_email_code = models.CharField(max_length=72, editable=False)
+    active_email_code = models.CharField(
+        max_length=72, editable=False,
+        null=True, blank=True
+    )
+    # todo: updated created field ( jjalali )
+    created = models.CharField()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
 
     objects = UserManager()
@@ -25,10 +39,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = 'Users'
-        # ordering = ('id',)
 
     def __str__(self):
-        return self.email
+        return self.phone
 
     @property
     def is_staff(self):
