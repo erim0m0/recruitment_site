@@ -5,7 +5,7 @@ from .managers import UserManager
 from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin)
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
-
+from extensions.utils import persian_date_convertor
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
@@ -13,7 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
 
     phone_regex = RegexValidator(
-        regex="^989\d{2}\s*?\d{3}\s*?\d{4}$",
+        regex="^989\d{2}\d{3}\d{4}$",
         message=_("Invalid phone number.")
     )
     phone = models.CharField(
@@ -28,8 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=72, editable=False,
         null=True, blank=True
     )
-    # todo: updated created field ( jjalali )
-    created = models.CharField()
+    date_joined = models.DateTimeField(auto_now_add=True, verbose_name=_("date_joined"))
 
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
@@ -37,6 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = 'User'
         verbose_name_plural = 'Users'
 
@@ -46,6 +46,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self):
         return self.is_admin
+
+    def persian_date_created(self):
+        return persian_date_convertor(self.date_joined)
+    persian_date_created.short_description = "Date Joined"
 
     def save(self, *args, **kwargs):
         random_active_code: str = ''.join(
