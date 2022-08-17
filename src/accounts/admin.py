@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from accounts.models import User
+from accounts.models import User, OTPDocument
 
 
 class CustomAdmin(BaseUserAdmin):
@@ -15,6 +15,10 @@ class CustomAdmin(BaseUserAdmin):
     search_fields = ('phone',)
     ordering = ('-id',)
 
+    add_fieldsets = (
+        (None, {'fields': ('phone', 'password1', 'password2')}),
+    )
+
     fieldsets = (
         ('Authentication',
          {'fields': ('phone', 'password'), 'classes': ('collapse',)}),
@@ -27,6 +31,12 @@ class CustomAdmin(BaseUserAdmin):
     )
 
     filter_horizontal = ('groups', 'user_permissions')
+
+
+@admin.register(OTPDocument)
+class OtpServicesAdmin(admin.ModelAdmin):
+    list_display = ('code', 'contact', 'create_at')
+    readonly_fields = ('create_at',)
 
 
 admin.site.register(User, CustomAdmin)

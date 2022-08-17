@@ -1,11 +1,20 @@
+import datetime
 import random
 import string
+from datetime import timedelta
+from django.utils import timezone
 from django.db import models
 from .managers import UserManager
-from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin)
-from django.core.validators import RegexValidator
+from django.contrib.auth.models import (
+    AbstractBaseUser, PermissionsMixin
+)
+from django.core.validators import (
+    RegexValidator, MaxValueValidator,
+    MinValueValidator
+)
 from django.utils.translation import gettext_lazy as _
 from extensions.utils import persian_date_convertor
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
@@ -13,7 +22,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
 
     phone_regex = RegexValidator(
-        regex="^989\d{2}\d{3}\d{4}$",
+        regex="^989\d{2}\s*?\d{3}\s*?\d{4}$",
         message=_("Invalid phone number.")
     )
     phone = models.CharField(
@@ -49,14 +58,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def persian_date_created(self):
         return persian_date_convertor(self.date_joined)
-    persian_date_created.short_description = "Date Joined"
 
-    def save(self, *args, **kwargs):
-        random_active_code: str = ''.join(
-            random.choice(string.ascii_letters + string.digits + '$^&*)(*-') for i in range(72)
-        )
-        self.active_email_code = random_active_code
-        return super(User, self).save(*args, **kwargs)
+    persian_date_created.short_description = "Date Joined"
 
 
 class Profile(models.Model):
@@ -64,3 +67,31 @@ class Profile(models.Model):
     Profile class for each user which is being created to hold the information
     """
     pass
+
+
+class OTPDocument(models.Model):
+    """
+        OTPDocument class for each user which is being created to hold the information
+    """
+
+    code = models.PositiveIntegerField(
+        validators=[MaxValueValidator(999999), MinValueValidator(111111)],
+        verbose_name=_("Otp Code")
+    )
+    contact = models.CharField(
+        max_length=12, verbose_name=_("Contact")
+    )
+    create_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name=_("Create_at")
+    )
+    retry = models.IntegerField(
+        default=0, verbose_name=_("Retry")
+    )
+
+    class Meta:
+        verbose_name = 'Otp Service'
+        verbose_name_plural = 'Otp Services'
+
+    def __str__(self):
+        return str(self.code)
