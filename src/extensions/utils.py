@@ -1,7 +1,5 @@
 import string
-from django.utils.timezone import localtime
 from jalali_date import datetime2jalali
-from datetime import datetime, timedelta
 import random
 
 

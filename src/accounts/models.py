@@ -71,7 +71,7 @@ class Profile(models.Model):
 
 class OTPDocument(models.Model):
     """
-        OTPDocument class for each user which is being created to hold the information
+    OTPDocument class for each user which wants to be create user
     """
 
     code = models.PositiveIntegerField(
