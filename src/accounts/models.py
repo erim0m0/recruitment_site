@@ -46,8 +46,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         ordering = ('-id',)
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
+        verbose_name = _('User')
+        verbose_name_plural = _('Users')
 
     def __str__(self):
         return self.phone
@@ -90,8 +90,8 @@ class OTPDocument(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Otp Service'
-        verbose_name_plural = 'Otp Services'
+        verbose_name = _('Otp Service')
+        verbose_name_plural = _('Otp Services')
 
     def __str__(self):
         return str(self.code)

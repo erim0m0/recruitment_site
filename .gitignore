@@ -3,7 +3,6 @@ iranable_virtual/
 
 ### Django ###
 .idea/
-src/config/settings.py
 
 *.log
 *.pot
