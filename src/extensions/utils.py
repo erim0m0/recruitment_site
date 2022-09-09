@@ -1,6 +1,6 @@
 import string
-from jalali_date import datetime2jalali
 import random
+from jalali_date import datetime2jalali
 
 
 def persian_date_convertor(time) -> str:
@@ -8,7 +8,7 @@ def persian_date_convertor(time) -> str:
     return persian_date
 
 
-def create_random_code() -> str:
+def create_random_active_email() -> str:
     random_active_code: str = ''.join(
         random.choice(string.ascii_letters + string.digits + '$^&*)(*-') for i in range(72)
     )

@@ -1,17 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from accounts.models import User, OTPDocument
+from accounts.models import users, OTP_codes, blocked_phones
 
 
 class CustomAdmin(BaseUserAdmin):
-    model = User
+    model = users.User
     list_display = (
         'phone', 'is_admin', 'is_superuser',
         'is_active_email', 'persian_date_created'
     )
-    list_filter = ('is_admin', 'is_superuser')
-    readonly_fields = ('last_login', 'password', 'persian_date_created')
+    list_filter = ('is_superuser',)
+    readonly_fields = ('last_login', 'password',
+                       'persian_date_created',
+                       'active_email_code')
     search_fields = ('phone',)
     ordering = ('-id',)
 
@@ -21,9 +23,11 @@ class CustomAdmin(BaseUserAdmin):
 
     fieldsets = (
         ('Authentication',
-         {'fields': ('phone', 'password'), 'classes': ('collapse',)}),
+         {'fields': ('phone', 'password', 'active_email_code'),
+          'classes': ('collapse',)}),
         ('Permissions',
-         {'fields': ('is_active', 'is_admin', 'is_superuser', 'is_active_email')}),
+         {'fields': ('is_active', 'is_admin', 'is_superuser',
+                     'is_active_email')}),
         ("Group Permissions",
          {'fields': ('groups', 'user_permissions')}),
         ('Important Date',
@@ -33,10 +37,15 @@ class CustomAdmin(BaseUserAdmin):
     filter_horizontal = ('groups', 'user_permissions')
 
 
-@admin.register(OTPDocument)
+@admin.register(OTP_codes.OTPDocument)
 class OtpServicesAdmin(admin.ModelAdmin):
     list_display = ('code', 'contact', 'create_at')
     readonly_fields = ('create_at',)
 
 
-admin.site.register(User, CustomAdmin)
+@admin.register(blocked_phones.BlockedPhone)
+class BlockPhonesAdmin(admin.ModelAdmin):
+    list_display = ('phone',)
+
+
+admin.site.register(users.User, CustomAdmin)
