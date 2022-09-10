@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from accounts.models import users, OTP_codes, blocked_phones
+from accounts.models import users, OTP_doc, blocked_phones
 
 
 class CustomAdmin(BaseUserAdmin):
@@ -37,7 +37,7 @@ class CustomAdmin(BaseUserAdmin):
     filter_horizontal = ('groups', 'user_permissions')
 
 
-@admin.register(OTP_codes.OTPDocument)
+@admin.register(OTP_doc.OTPDocument)
 class OtpServicesAdmin(admin.ModelAdmin):
     list_display = ('code', 'contact', 'create_at')
     readonly_fields = ('create_at',)

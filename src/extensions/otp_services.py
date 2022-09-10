@@ -4,9 +4,9 @@ from typing import Dict
 
 def send_otp_code(receptor: Dict):
     try:
-        api = KavenegarAPI('79545974732B4249757055495079716775413467797446565769435234317832414F5961573634494A36593D')
+        api = KavenegarAPI('347469516C65733378573744792F4F3779386D73696C76672F4A65686A3478676E35654C673459667949553D')
         params = {
-            'sender': '10004346',
+            'sender': '0018018949161',
             'receptor': receptor.get("receptor"),
             'message': f'کد یکبار مصرف شما : { receptor.get("code") }'
         }
