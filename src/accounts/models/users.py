@@ -19,7 +19,7 @@ class UserManager(BaseUserManager):
 
     def create_user(self, phone, password, **extra_fields):
         if not phone:
-            raise ValueError(_('user must have phone'))
+            raise ValueError(_("user must have phone"))
 
         user = self.model(phone=phone, **extra_fields)
         user.set_password(password)
@@ -85,7 +85,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         auto_now_add=True, verbose_name=_("date_joined")
     )
 
-    USERNAME_FIELD = 'phone'
+    USERNAME_FIELD = "phone"
     REQUIRED_FIELDS = []
 
     objects = UserManager()
@@ -96,9 +96,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     persian_date_created.short_description = "Date Joined"
 
     class Meta:
-        ordering = ('-id',)
-        verbose_name = _('User')
-        verbose_name_plural = _('Users')
+        ordering = ("-id",)
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
 
     def __str__(self):
         return self.phone
@@ -110,5 +110,5 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 @receiver(pre_save, sender=User)
 def save_active_email_code(sender, instance, **kwargs):
-    if kwargs.get('signal'):
+    if kwargs.get("signal"):
         instance.active_email_code = create_random_code()

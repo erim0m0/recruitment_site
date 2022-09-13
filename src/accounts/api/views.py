@@ -1,11 +1,13 @@
 from datetime import timedelta
 
+from django.db.models import F
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -25,8 +27,12 @@ class UsersList(ListAPIView):
     queryset = get_user_model().objects.all()
 
 
+
 class Register(APIView):
     permission_classes = (AllowAny,)
+
+    # throttle_classes = (ScopedRateThrottle,)
+    # throttle_scope = "authentication"
 
     def post(self, request):
         serializer = AuthenticationSerializer(data=request.data)
@@ -48,13 +54,16 @@ class Register(APIView):
 class VerifyOtp(APIView):
     permission_classes = (AllowAny,)
 
+    # throttle_classes = (ScopedRateThrottle,)
+    # throttle_scope = "verify_authentication"
+
     def post(self, request):
         serializer = OtpSerilizer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        received_code = serializer.data.get('code')
-        received_id_code = serializer.data.get('id_code')
+        received_code = serializer.data.get("code")
+        received_id_code = serializer.data.get("id_code")
 
-        is_exist_id_code: bool = OTPDocument.objects.filter(id_code=received_id_code).values('id_code').exists()
+        is_exist_id_code: bool = OTPDocument.objects.filter(id_code=received_id_code).values("id_code").exists()
         if is_exist_id_code:
             try:
                 otp = OTPDocument.objects.get(code=received_code)
@@ -117,7 +126,7 @@ class Login(APIView):
     def post(self, request):
         serializer = AuthenticationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        received_phone = serializer.data.get('phone')
+        received_phone = serializer.data.get("phone")
 
         is_exist_user: bool = get_user_model().objects.filter(phone=received_phone).values("phone").exists()
         if not is_exist_user:

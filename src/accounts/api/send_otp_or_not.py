@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.db import IntegrityError
 
-from accounts.models import OTP_doc
+from accounts.models.OTP_doc import OTPDocument
 from extensions.otp_services import send_otp_code
 from extensions.utils import create_otp_code, create_random_code
 
@@ -11,7 +11,7 @@ def send_otp_or_not(received_phone: str):
     try:
         otp_code: int = create_otp_code()
         id_code: str = create_random_code()
-        OTP_doc.OTPDocument.objects.create(
+        OTPDocument.objects.create(
             code=otp_code,
             contact=received_phone,
             id_code=id_code

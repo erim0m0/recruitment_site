@@ -32,8 +32,8 @@ class OTPDocument(models.Model):
     )
 
     class Meta:
-        verbose_name = _('Otp Service')
-        verbose_name_plural = _('Otp Services')
+        verbose_name = _("Otp Service")
+        verbose_name_plural = _("Otp Services")
 
     def __str__(self):
         return str(self.code)
