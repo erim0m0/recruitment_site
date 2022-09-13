@@ -1,9 +1,11 @@
 import django.db.utils
+from django.http import Http404
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import redirect
-from django.views.generic import FormView, CreateView
-from accounts.forms import SignUpForm, OTPCheckForm
+from django.views.generic import FormView, CreateView, View
+from django.contrib.auth.views import LoginView
+from accounts.forms import SignUpForm, OTPCheckForm, SignInForm
 from django.urls import reverse_lazy
 from .models import OTP_doc, blocked_phones
 from extensions.utils import create_otp_code
@@ -17,6 +19,46 @@ from django.db.models import F
 from extensions.otp_services import send_otp_code
 from django.contrib import messages
 
+
+class Register(View):
+
+    def get(self, request):
+        return render(request, 'accounts/loguser.html')
+
+    def post(self, request):
+        received_phone = request.POST.get('phone')
+        received_password = request.POST.get('password')
+        print(received_phone)
+        is_exist_user = get_user_model().objects.filter(phone=received_phone).exists()
+
+        if is_exist_user:
+            messages.error(self.request, _("این شماره موجود است."))
+            print('این شماره موجود است')
+            return redirect(reverse_lazy('signUp'))
+
+        # is_blocked_phone = blocked_phones.BlockedPhone.objects.filter(phone=received_phone).values('phone').exists()
+        # if is_exist_user:
+        #     messages.error(self.request, _("شماره همراه نامعتبر است."))
+        #     print('شماره همراه نامعتبر است')
+        #     return redirect(reverse_lazy('signUp'))
+
+        otp_code = create_otp_code()
+        try:
+            OTP_doc.OTPDocument.objects.create(
+                code=otp_code, contact=received_phone
+            )
+            # send_otp_code({
+            #     'receptor': f'0{phone_user}',
+            #     'code': otp_code
+            # })
+            cache.set('otp_code', otp_code, 120)
+            cache.set('pass_user', received_password, 120)
+            return redirect(reverse_lazy('OTP_check'))
+
+        except django.db.utils.IntegrityError:
+            messages.error(self.request, _("کد یکبار مصرف برای شما ارسال شده است."))
+            print('کد یکبار مصرف برای شما ارسال شده است')
+            return redirect(reverse_lazy('OTP_check'))
 
 class SignUpView(FormView):
     template_name = 'accounts/loguser.html'
@@ -81,7 +123,7 @@ class OTPCheckView(FormView):
                 user.set_password(password)
                 user.save()
                 main_code.delete()
-                return redirect(reverse_lazy('OTP_check'))
+                return redirect(reverse_lazy('signUp-In'))
             else:
                 main_code.delete()
                 cache.delete(password)
@@ -95,6 +137,8 @@ class OTPCheckView(FormView):
             main_code = OTP_doc.OTPDocument.objects.get(code=otp)
             if main_code.retry > 4:
                 main_code.delete()
+                cache.delete(password)
+                cache.delete(otp)
                 messages.error(self.request, _("تعداد دفعات واردشده بی از حد مجاز"))
                 print('ارسال مجدد')
             messages.error(self.request, _("کد وارد شده نادرست می باشد."))
@@ -106,6 +150,9 @@ class OTPCheckView(FormView):
 
 def send_otp_code_again(request, contact):
     otp_code = create_otp_code()
+    OTP_doc.OTPDocument.objects.create(
+        code=otp_code, contact=contact
+    )
     send_otp_code({
         'receptor': f'0{contact}',
         'code': otp_code
@@ -113,3 +160,26 @@ def send_otp_code_again(request, contact):
     cache.set('otp_code', otp_code, 120)
     cache.set('pass_user', received_password, 120)
     return render(request, 'accounts/otp_check.html')
+
+
+class SignInView(View):
+
+    def get(self, request, *args, **kwargs):
+        return  render(request, 'accounts/loguser.html')
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        recieved_password = request.POST.get('password')
+        recieved_phone = request.POST.get('phone')
+        is_user_exist = get_user_model().objects.filter(phone=recieved_phone).values('phone').exists()
+        if not is_user_exist:
+            messages.error(request, _('کاربری با این شماره وجود ندارد.'))
+
+        correct_password = get_user_model().objects.get()
+        return redirect(reverse_lazy('signUp-In'))
+
+
+
+
+
+

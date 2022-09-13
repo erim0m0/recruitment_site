@@ -18,3 +18,4 @@ def send_otp_code(receptor: Dict):
 
     except HTTPException as e:
         print(str(e))
+

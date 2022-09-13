@@ -1,6 +1,7 @@
 from django import forms
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
 
 
 class SignUpForm(forms.Form):
@@ -14,7 +15,7 @@ class SignUpForm(forms.Form):
     )
 
     phone = forms.CharField(
-        max_length=12,
+        max_length=10,
         validators=[phone_regex],
         widget=forms.TextInput(
             attrs={
@@ -46,7 +47,7 @@ class SignUpForm(forms.Form):
 
 class OTPCheckForm(forms.Form):
     code = forms.IntegerField(
-        widget= forms.NumberInput(
+        widget=forms.NumberInput(
             attrs={
                 "class": "form-style",
                 "name": "logpass",
@@ -57,3 +58,41 @@ class OTPCheckForm(forms.Form):
             }
         )
     )
+
+
+class SignInForm(forms.Form):
+    phone_regex = RegexValidator(
+        regex="^9\d{2}\s*?\d{3}\s*?\d{4}$",
+        message=_("شماره تلفن نامعتبر است.")
+    )
+
+    phone = forms.CharField(
+        max_length=10,
+        validators=[phone_regex],
+        widget=forms.TextInput(
+            attrs={
+                "type": "text",
+                "name": "logname",
+                "class": "form-style",
+                "placeholder": "شماره همراه",
+                "id": "logname",
+                "autocomplete": "off",
+            }
+        )
+    )
+
+    password = forms.CharField(
+        max_length=20,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-style",
+                "type": "password",
+                "name": "logpass",
+                "id": "logpass",
+                "placeholder": "Your Password",
+                "autocomplete": "off",
+                "dir": "ltr"
+            }
+        )
+    )
+

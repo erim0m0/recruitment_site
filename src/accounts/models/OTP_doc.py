@@ -9,19 +9,26 @@ class OTPDocument(models.Model):
     wants to be create user
     """
 
+    id_code = models.CharField(
+        max_length=32,
+        editable=False,
+        verbose_name=_("ID Code")
+    )
     code = models.PositiveIntegerField(
         verbose_name=_("Otp Code")
     )
     contact = models.CharField(
-        max_length=12, verbose_name=_("Contact"),
-        unique=True
+        max_length=11,
+        unique=True,
+        verbose_name=_("Contact")
     )
     create_at = models.DateTimeField(
         auto_now=True,
         verbose_name=_("Create_at")
     )
     retry = models.IntegerField(
-        default=0, verbose_name=_("Retry")
+        default=0,
+        verbose_name=_("Retry")
     )
 
     class Meta:

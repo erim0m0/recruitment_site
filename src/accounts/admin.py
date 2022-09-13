@@ -7,7 +7,7 @@ from accounts.models import users, OTP_doc, blocked_phones
 class CustomAdmin(BaseUserAdmin):
     model = users.User
     list_display = (
-        'phone', 'is_admin', 'is_superuser',
+        'phone', 'user_level',
         'is_active_email', 'persian_date_created'
     )
     list_filter = ('is_superuser',)
@@ -26,8 +26,7 @@ class CustomAdmin(BaseUserAdmin):
          {'fields': ('phone', 'password', 'active_email_code'),
           'classes': ('collapse',)}),
         ('Permissions',
-         {'fields': ('is_active', 'is_admin', 'is_superuser',
-                     'is_active_email')}),
+         {'fields': ('user_level','is_active_email')}),
         ("Group Permissions",
          {'fields': ('groups', 'user_permissions')}),
         ('Important Date',

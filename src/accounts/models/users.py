@@ -4,7 +4,7 @@ from django.contrib.auth.models import (
 )
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
-from extensions.utils import create_random_active_email
+from extensions.utils import create_random_code
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from extensions.utils import persian_date_convertor
@@ -27,14 +27,17 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, phone, password, **extra_fields):
-        extra_fields.setdefault("is_admin", True)
+        extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active_email", True)
+        extra_fields.setdefault("user_level", "super_user")
 
-        if extra_fields.get("is_admin") is not True:
+        if extra_fields.get("is_staff") is not True:
             raise ValueError(_("Superuser must have is_admin=True."))
+
         if extra_fields.get("is_superuser") is not True:
             raise ValueError(_("Superuser must have is_superuser=True."))
+
         return self.create_user(phone, password, **extra_fields)
 
 
@@ -48,25 +51,36 @@ class User(AbstractBaseUser, PermissionsMixin):
     through email address instead of username
     """
 
+    USER_LEVEL = (
+        ("normal", "normal"),
+        ("admin", "admin"),
+        ("super_user", "super_user")
+    )
+
     phone_regex = RegexValidator(
         regex="^9\d{2}\s*?\d{3}\s*?\d{4}$",
         message=_("شماره ی تلفن نامعتبر است.")
     )
     phone = models.CharField(
-        max_length=12, validators=[phone_regex],
+        max_length=10, validators=[phone_regex],
         unique=True, verbose_name=_("phone")
     )
 
-    is_active = models.BooleanField(default=True)
-    is_superuser = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)
-    is_active_email = models.BooleanField(default=False)
+    user_level = models.CharField(
+        choices=USER_LEVEL,
+        max_length=10,
+        default="normal",
+        verbose_name=_("user level")
+    )
+
+    is_staff = models.BooleanField(default=False)
     is_active_email = models.BooleanField(default=False)
 
     active_email_code = models.CharField(
-        max_length=72, editable=False,
+        max_length=32, editable=False,
         null=True, blank=True
     )
+
     date_joined = models.DateTimeField(
         auto_now_add=True, verbose_name=_("date_joined")
     )
@@ -76,6 +90,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+    def persian_date_created(self):
+        return persian_date_convertor(self.date_joined)
+
+    persian_date_created.short_description = "Date Joined"
+
     class Meta:
         ordering = ('-id',)
         verbose_name = _('User')
@@ -83,15 +102,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.phone
-
-    @property
-    def is_staff(self):
-        return self.is_admin
-
-    def persian_date_created(self):
-        return persian_date_convertor(self.date_joined)
-
-    persian_date_created.short_description = "Date Joined"
 
 
 # # #
@@ -101,4 +111,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 @receiver(pre_save, sender=User)
 def save_active_email_code(sender, instance, **kwargs):
     if kwargs.get('signal'):
-        instance.active_email_code = create_random_active_email()
+        instance.active_email_code = create_random_code()
