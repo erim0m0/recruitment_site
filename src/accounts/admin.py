@@ -37,8 +37,8 @@ class CustomAdmin(BaseUserAdmin):
 
 
 @admin.register(OTP_doc.OTPDocument)
-class OtpServicesAdmin(admin.ModelAdmin):
-    list_display = ('code', 'contact', 'create_at')
+class OtpDocumentAdmin(admin.ModelAdmin):
+    list_display = ('code', 'contact', 'retry', 'create_at')
     readonly_fields = ('create_at',)
 
 

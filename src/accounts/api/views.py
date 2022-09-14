@@ -80,7 +80,7 @@ class VerifyOtp(APIView):
                     }
                     return Response(
                         context,
-                        status=status.HTTP_200_OK
+                        status=status.HTTP_201_CREATED
                     )
                 else:
                     otp.delete()
@@ -92,7 +92,7 @@ class VerifyOtp(APIView):
                     )
 
             except ObjectDoesNotExist:
-                obj = OTPDocument.objects.get(id_code=received_id_code)
+                obj = OTPDocument.objects.filter(id_code=received_id_code).only("retry").first()
                 obj.retry += 1
                 obj.save(update_fields=["retry"])
 
@@ -109,14 +109,14 @@ class VerifyOtp(APIView):
                     {
                         "Incorrect code.": "The code entered is incorrect.",
                     },
-                    status=status.HTTP_406_NOT_ACCEPTABLE,
+                    status=status.HTTP_401_UNAUTHORIZED,
                 )
 
         return Response(
             {
                 "Incorrect code.": "The code entered is incorrect.",
             },
-            status=status.HTTP_406_NOT_ACCEPTABLE,
+            status=status.HTTP_401_UNAUTHORIZED,
         )
 
 

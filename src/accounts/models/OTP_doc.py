@@ -11,7 +11,6 @@ class OTPDocument(models.Model):
 
     id_code = models.CharField(
         max_length=32,
-        editable=False,
         verbose_name=_("ID Code")
     )
     code = models.PositiveIntegerField(
