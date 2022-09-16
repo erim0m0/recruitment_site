@@ -6,7 +6,8 @@ class UsersListSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = (
-            "id", "phone",
+            "id",
+            "phone",
             "date_joined"
         )
 
@@ -21,7 +22,11 @@ class AuthenticationSerializer(serializers.Serializer):
         from re import match
 
         if not match("^9\d{2}\s*?\d{3}\s*?\d{4}$", value):
-            raise serializers.ValidationError("The phone number is Invalid.")
+            raise serializers.ValidationError(
+                {
+                    "error": "The phone number is Invalid."
+                }
+            )
         return value
 
 
@@ -40,7 +45,9 @@ class OtpSerilizer(serializers.Serializer):
         try:
             int(value)
         except ValueError:
-            raise serializers.ValidationError({
-                "error": "code is Invalid."
-            })
+            raise serializers.ValidationError(
+                {
+                    "error": "code is Invalid."
+                }
+            )
         return value

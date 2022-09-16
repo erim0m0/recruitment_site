@@ -62,8 +62,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         message=_("شماره ی تلفن نامعتبر است.")
     )
     phone = models.CharField(
-        max_length=10, validators=[phone_regex],
-        unique=True, verbose_name=_("phone")
+        max_length=10,
+        validators=[phone_regex],
+        unique=True,
+        verbose_name=_("phone")
     )
 
     user_level = models.CharField(
@@ -77,12 +79,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active_email = models.BooleanField(default=False)
 
     active_email_code = models.CharField(
-        max_length=32, editable=False,
-        null=True, blank=True
+        max_length=32,
+        editable=False,
+        null=True,
+        blank=True
     )
 
     date_joined = models.DateTimeField(
-        auto_now_add=True, verbose_name=_("date_joined")
+        auto_now_add=True,
+        verbose_name=_("date_joined")
     )
 
     USERNAME_FIELD = "phone"

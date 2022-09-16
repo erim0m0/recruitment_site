@@ -9,13 +9,15 @@ class BlockedPhone(models.Model):
         message=_("شماره ی تلفن نامعتبر است.")
     )
     phone = models.CharField(
-        max_length=12, validators=[phone_regex],
-        unique=True, verbose_name=_("phone")
+        max_length=12,
+        validators=[phone_regex],
+        unique=True,
+        verbose_name=_("phone")
     )
 
     class Meta:
-        verbose_name= _("Blocked Phone")
-        verbose_name_plural= _("Blocked Phones")
+        verbose_name = _("Blocked Phone")
+        verbose_name_plural = _("Blocked Phones")
 
     def __str__(self):
         return self.phone

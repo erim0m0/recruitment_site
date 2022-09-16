@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-from django.db.models import F
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
@@ -25,7 +24,6 @@ class UsersList(ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UsersListSerializer
     queryset = get_user_model().objects.all()
-
 
 
 class Register(APIView):
