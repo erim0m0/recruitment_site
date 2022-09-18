@@ -1,23 +1,24 @@
 from datetime import timedelta
 
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils import timezone
 
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.throttling import ScopedRateThrottle
-from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import ListAPIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.throttling import ScopedRateThrottle
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from accounts.api.send_otp_or_not import send_otp_or_not
+from accounts.api.send_otp import OTPSend
+from accounts.models.OTP_doc import OTPDocument
 from accounts.api.serializers import (
     AuthenticationSerializer,
     OtpSerilizer, UsersListSerializer,
 )
-from accounts.models.OTP_doc import OTPDocument
+from extensions.utils import create_random_code
 
 
 class UsersList(ListAPIView):
@@ -45,8 +46,18 @@ class Register(APIView):
                 },
                 status=status.HTTP_401_UNAUTHORIZED
             )
+        id_code = create_random_code()
+        OTPSend(received_phone, id_code)
 
-        return send_otp_or_not(received_phone)
+        context = {
+            "status": f"send otp to {received_phone}",
+            "id_code": id_code
+        }
+
+        return Response(
+            context,
+            status=status.HTTP_200_OK
+        )
 
 
 class VerifyOtp(APIView):
@@ -71,11 +82,13 @@ class VerifyOtp(APIView):
                     user, created = get_user_model().objects.get_or_create(phone=otp.contact)
                     refresh = RefreshToken.for_user(user)
                     otp.delete()
+
                     context = {
                         "created": created,
                         "refresh": str(refresh),
                         "access": str(refresh.access_token),
                     }
+
                     return Response(
                         context,
                         status=status.HTTP_201_CREATED

@@ -1,6 +1,5 @@
 from string import digits, ascii_letters
 from secrets import choice
-import random
 from jalali_date import datetime2jalali
 
 

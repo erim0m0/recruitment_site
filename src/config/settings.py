@@ -136,8 +136,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # User Models
 AUTH_USER_MODEL = 'accounts.User'
 
-# Api
-
+# Rest Api Config
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
@@ -148,3 +147,7 @@ REST_FRAMEWORK = {
         # "verify_authentication": "9/hour",
     },
 }
+
+# Redis Config
+HOST_NAME = 'localhost'
+REDIS_PORT = 6379

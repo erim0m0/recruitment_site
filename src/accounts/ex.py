@@ -1,14 +1,26 @@
-a = {
-    "created": False,
-    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY2MzA5ODMzNiwiaWF0IjoxNjYzMDExOTM2LCJqdGkiOiIyNGNhMzE3NzgzODQ0NTZlOGRkYzc3M2UyM2EzMjBmYyIsInVzZXJfaWQiOjE2fQ.QbTg3h5ueo32C5nX4qX6kO_Z0UKRwze19Y_YYYsCcxQ",
-    "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYzMDEyMjM2LCJpYXQiOjE2NjMwMTE5MzYsImp0aSI6IjhiOTU2MTIzYjcyNTQxMzFhMjljYmRkNGE2MWUzNzFhIiwidXNlcl9pZCI6MTZ9.o3fbN53s6Eni3W-7lJBby0NLCG5wavC8hqzP5rbfSDk"
-}
+import redis
+import json
 
+rd = redis.Redis(host='localhost', port=6379)
 
-a.setdefault(
+data = [{
+    "id": 1,
+    "name": "Lynn",
+    "surname": "Burgess",
+    "fullname": "Claire Holland",
+    "email": "vicki@may.sg"
+}]
 
-)
-print(a)
+with rd.pipeline() as pipe:
+    for id, person in enumerate(data):
+        pipe.hset(f'person{id}', mapping=person)
+        pipe.hget('person0', 'name')
+    result = pipe.execute()
+# print(result[1].decode('ASCII'))
+# dict = rd.hget('persons',0).decode()
+# print(dict)
+
+a = rd.expire('person2', 3000)
 
 
 
