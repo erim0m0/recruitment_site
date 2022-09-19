@@ -1,8 +1,6 @@
-from datetime import timedelta
+import redis
 
-from django.utils import timezone
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -12,13 +10,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from accounts.api.send_otp import OTPSend
-from accounts.models.OTP_doc import OTPDocument
+from accounts.api.send_otp import send_otp
 from accounts.api.serializers import (
     AuthenticationSerializer,
     OtpSerilizer, UsersListSerializer,
 )
-from extensions.utils import create_random_code
+from config.settings import REDIS_PORT, REDIS_HOST_NAME
 
 
 class UsersList(ListAPIView):
@@ -46,18 +43,8 @@ class Register(APIView):
                 },
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        id_code = create_random_code()
-        OTPSend(received_phone, id_code)
 
-        context = {
-            "status": f"send otp to {received_phone}",
-            "id_code": id_code
-        }
-
-        return Response(
-            context,
-            status=status.HTTP_200_OK
-        )
+        return send_otp(received_phone)
 
 
 class VerifyOtp(APIView):
@@ -69,58 +56,38 @@ class VerifyOtp(APIView):
     def post(self, request):
         serializer = OtpSerilizer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        received_phone = serializer.data.get("phone")
         received_code = serializer.data.get("code")
         received_id_code = serializer.data.get("id_code")
 
-        is_exist_id_code: bool = OTPDocument.objects.filter(id_code=received_id_code).values("id_code").exists()
-        if is_exist_id_code:
-            try:
-                otp = OTPDocument.objects.get(code=received_code)
+        redis_conf = redis.Redis(host=REDIS_HOST_NAME, port=REDIS_PORT)
+        data = redis_conf.hvals(received_phone)
 
-                is_expired_time: bool = (timezone.now() - timedelta(minutes=2)) > otp.create_at
-                if not is_expired_time:
-                    user, created = get_user_model().objects.get_or_create(phone=otp.contact)
-                    refresh = RefreshToken.for_user(user)
-                    otp.delete()
+        if received_id_code.encode() in data and received_code.encode() in data:
+            user, created = get_user_model().objects.get_or_create(phone=received_phone)
+            refresh = RefreshToken.for_user(user)
+            redis_conf.delete(received_phone)
 
-                    context = {
-                        "created": created,
-                        "refresh": str(refresh),
-                        "access": str(refresh.access_token),
-                    }
+            context = {
+                "created": created,
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }
 
-                    return Response(
-                        context,
-                        status=status.HTTP_201_CREATED
-                    )
-                else:
-                    otp.delete()
-                    return Response(
-                        {
-                            "Code expired.": "The entered code has expired.",
-                        },
-                        status=status.HTTP_408_REQUEST_TIMEOUT
-                    )
+            return Response(
+                context,
+                status=status.HTTP_201_CREATED
+            )
 
-            except ObjectDoesNotExist:
-                obj = OTPDocument.objects.filter(id_code=received_id_code).only("retry").first()
-                obj.retry += 1
-                obj.save(update_fields=["retry"])
-
-                if obj.retry > 4:
-                    obj.delete()
-                    return Response(
-                        {
-                            "Code expired.": "The entered code has expired.",
-                        },
-                        status=status.HTTP_408_REQUEST_TIMEOUT
-                    )
-
+        else:
+            redis_conf.hincrby(received_phone, 'retry', 1)
+            if data[-1] == b'4':
+                redis_conf.delete(received_phone)
                 return Response(
                     {
-                        "Incorrect code.": "The code entered is incorrect.",
+                        "Send otp again": "Please send otp again",
                     },
-                    status=status.HTTP_401_UNAUTHORIZED,
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
         return Response(
@@ -147,4 +114,4 @@ class Login(APIView):
                 },
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        return send_otp_or_not(received_phone)
+        return send_otp(received_phone)

@@ -31,6 +31,11 @@ class AuthenticationSerializer(serializers.Serializer):
 
 
 class OtpSerilizer(serializers.Serializer):
+    phone = serializers.CharField(
+        max_length=10,
+        min_length=10
+    )
+
     code = serializers.CharField(
         max_length=6,
         min_length=6
