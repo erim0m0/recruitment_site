@@ -1,15 +1,12 @@
 import redis
-from typing import Dict
-
 from rest_framework import status
 from rest_framework.response import Response
 
-from extensions.otp_services import send_otp_code
 from config.settings import REDIS_PORT, REDIS_HOST_NAME
 from extensions.utils import create_otp_code, create_random_code
 
 
-class OTP:
+class OTPBuild:
 
     def __init__(self, received_phone: str, code: int, id_code: str):
         self.code = code
@@ -18,9 +15,9 @@ class OTP:
         self.redis_conf = redis.Redis(
             host=REDIS_HOST_NAME, port=REDIS_PORT
         )
-        self.create_otp(self.code, self.id_code)
+        self._save_otp(self.code, self.id_code)
 
-    def create_otp(self, code, id_code) -> None:
+    def _save_otp(self, code, id_code) -> None:
         data = {
             'contact': self.received_phone,
             'code': code,
@@ -34,17 +31,15 @@ class OTP:
             pipe.execute()
 
 
-def send_otp(received_phone):
-    code: int = create_otp_code()
-    id_code: str = create_random_code()
+def send_otp(received_phone: str) -> Response:
+    code, id_code = create_otp_code(), create_random_code()
+    OTPBuild(received_phone, code, id_code)
     # send_otp_code(
     #     {
     #         'receptor': f'0{received_phone}',
-    #         'code': CODE
+    #         'code': code
     #     }
     # )
-
-    OTP(received_phone, code, id_code)
 
     context = {
         "status": f"send otp to {received_phone}",

@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from accounts.api.send_otp import send_otp
+from accounts.api.otp_creator import send_otp
 from accounts.api.serializers import (
     AuthenticationSerializer,
     OtpSerilizer, UsersListSerializer,
@@ -19,7 +19,7 @@ from config.settings import REDIS_PORT, REDIS_HOST_NAME
 
 
 class UsersList(ListAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     serializer_class = UsersListSerializer
     queryset = get_user_model().objects.all()
 

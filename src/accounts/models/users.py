@@ -1,19 +1,19 @@
 from django.db import models
+from django.dispatch import receiver
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin
 )
 from django.db.models.signals import pre_save
-from django.dispatch import receiver
-from extensions.utils import create_random_code
 from django.core.validators import RegexValidator
-from django.utils.translation import gettext_lazy as _
-from extensions.utils import persian_date_convertor
 from django.contrib.auth.models import BaseUserManager
+from django.utils.translation import gettext_lazy as _
+
+from extensions.utils import create_random_code
+from extensions.utils import persian_date_convertor
 
 
-# # #
-# Manager
-# # #
+
+############# Manager #############
 
 class UserManager(BaseUserManager):
 
@@ -41,9 +41,8 @@ class UserManager(BaseUserManager):
         return self.create_user(phone, password, **extra_fields)
 
 
-# # #
-# User Model
-# # #
+
+############# User Model #############
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
@@ -59,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     phone_regex = RegexValidator(
         regex="^9\d{2}\s*?\d{3}\s*?\d{4}$",
-        message=_("شماره ی تلفن نامعتبر است.")
+        message=_("The phone number is Invalid.")
     )
     phone = models.CharField(
         max_length=10,
@@ -109,9 +108,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.phone
 
 
-# # #
-# Signals
-# # #
+
+############# Signals #############
 
 @receiver(pre_save, sender=User)
 def save_active_email_code(sender, instance, **kwargs):

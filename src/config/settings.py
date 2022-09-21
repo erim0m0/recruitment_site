@@ -116,6 +116,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+DATE_INPUT_FORMATS = ['%d/%m/%Y']
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -143,8 +145,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_THROTTLE_RATES': {
-        # "authentication": "6/hour",
-        # "verify_authentication": "9/hour",
+        "authentication": "6/hour",
+        "verify_authentication": "9/hour",
     },
 }
 

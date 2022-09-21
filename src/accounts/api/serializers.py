@@ -24,7 +24,7 @@ class AuthenticationSerializer(serializers.Serializer):
         if not match("^9\d{2}\s*?\d{3}\s*?\d{4}$", value):
             raise serializers.ValidationError(
                 {
-                    "error": "The phone number is Invalid."
+                    "Error": "The phone number is Invalid."
                 }
             )
         return value

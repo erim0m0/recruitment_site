@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from accounts.models import users, OTP_doc, blocked_phones
+from accounts.models import users, blocked_phones, profiles
 
 
 class CustomAdmin(BaseUserAdmin):
@@ -26,7 +26,7 @@ class CustomAdmin(BaseUserAdmin):
          {'fields': ('phone', 'password', 'active_email_code'),
           'classes': ('collapse',)}),
         ('Permissions',
-         {'fields': ('user_level','is_active_email')}),
+         {'fields': ('user_level', 'is_active_email')}),
         ("Group Permissions",
          {'fields': ('groups', 'user_permissions')}),
         ('Important Date',
@@ -36,15 +36,11 @@ class CustomAdmin(BaseUserAdmin):
     filter_horizontal = ('groups', 'user_permissions')
 
 
-@admin.register(OTP_doc.OTPDocument)
-class OtpDocumentAdmin(admin.ModelAdmin):
-    list_display = ('code', 'contact', 'retry', 'create_at')
-    readonly_fields = ('create_at',)
-
-
 @admin.register(blocked_phones.BlockedPhone)
 class BlockPhonesAdmin(admin.ModelAdmin):
     list_display = ('phone',)
 
 
 admin.site.register(users.User, CustomAdmin)
+admin.site.register(profiles.PersonalInformation)
+
