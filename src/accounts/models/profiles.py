@@ -1,6 +1,9 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 
 class Profile(models.Model):
@@ -9,17 +12,24 @@ class Profile(models.Model):
     being created to hold the information
     """
 
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        editable=False
+    )
     first_name = models.CharField(
         max_length=150,
         null=True,
         blank=True,
-        verbose_name=_('Last Name')
+        verbose_name=_('First Name')
     )
     last_name = models.CharField(
         max_length=150,
         null=True,
         blank=True,
-        verbose_name=_('First Name')
+        verbose_name=_('Last Name')
     )
 
     email_regex = RegexValidator(
@@ -37,23 +47,31 @@ class Profile(models.Model):
         blank=True
     )
 
-    # personal_information =
-    # about_me =
-    # educational_records =
-    # work_experience =
-    # languages =
-    # cv =
+    class Meta:
+        verbose_name = _("Profile")
+        verbose_name_plural = _("Profiles")
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return str(self.user)
 
 
 class PersonalInformation(models.Model):
+    """
+        PersonalInformation class for each user which is
+        being created to hold the information
+    """
     GENDER = (
         ("F", "Female"),
         ("M", "Male")
     )
 
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        editable=False
+    )
     MILITARY_SERVICE_STATUS = (
         ("end of service", "the end of service"),
         ("permanent exemption", "permanent exemption"),
@@ -68,7 +86,6 @@ class PersonalInformation(models.Model):
         null=True,
         verbose_name=_("Location")
     )
-
     address = models.TextField(
         max_length=500,
         blank=True,
@@ -79,7 +96,6 @@ class PersonalInformation(models.Model):
         default=False,
         verbose_name=_("Is Married ?")
     )
-
     gender = models.CharField(
         choices=GENDER,
         max_length=6,
@@ -99,3 +115,135 @@ class PersonalInformation(models.Model):
         blank=True,
         verbose_name=_("Military Service Status")
     )
+
+    def __str__(self):
+        return str(self.user)
+
+    class Meta:
+        verbose_name = _("Personal Information")
+        verbose_name_plural = _("Personal Informations")
+
+
+class AboutMe(models.Model):
+    """
+        AboutMe class for each user which is
+        being created to hold the information
+    """
+
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        editable=False
+    )
+    about_me = models.TextField(
+        max_length=500,
+        null=True,
+        blank=True,
+        verbose_name=_("About Me")
+    )
+
+    def __str__(self):
+        return str(self.user)
+
+    class Meta:
+        verbose_name = _("About Me")
+        verbose_name_plural = _("About Me")
+
+
+class WorkExperience(models.Model):
+    """
+        WorkExperience class for each user which is
+        being created to hold the information
+    """
+
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        editable=False
+    )
+    job = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name=_("Job")
+    )
+    company = models.CharField(
+        max_length=150,
+        null=True,
+        blank=True,
+        verbose_name=_("Company")
+    )
+
+    # employment_period = models.PositiveIntegerField()
+
+    def __str__(self):
+        return str(self.user)
+
+    class Meta:
+        verbose_name = _("Work Experience")
+        verbose_name_plural = _("Work Experiences")
+
+
+class EducationalRecord(models.Model):
+    """
+        EducationalRecord class for each user which is
+        being created to hold the information
+    """
+
+    GRADE_CHOICE = (
+        ("Diploma", "diploma"),
+        ("Associate", "associate"),
+        ("MA", "master"),
+        ("MS", "master of science"),
+        ("Dr", "doctorate")
+    )
+
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        editable=False
+    )
+    major = models.CharField(
+        max_length=30,
+        null=True,
+        blank=True,
+        verbose_name=_("Major")
+    )
+    university = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name=_("University")
+    )
+    grade = models.CharField(
+        max_length=30,
+        null=True,
+        blank=True,
+        choices=GRADE_CHOICE,
+        verbose_name=_("Grade")
+    )
+
+    def __str__(self):
+        return str(self.user)
+
+    class Meta:
+        verbose_name = _("Educational Record")
+        verbose_name_plural = _("Educational Records")
+
+
+############# Signals #############
+
+@receiver(post_save, sender=get_user_model())
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+        PersonalInformation.objects.create(user=instance)
+        AboutMe.objects.create(user=instance)
+        WorkExperience.objects.create(user=instance)
+        EducationalRecord.objects.create(user=instance)

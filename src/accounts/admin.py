@@ -42,5 +42,8 @@ class BlockPhonesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(users.User, CustomAdmin)
+admin.site.register(profiles.Profile)
+admin.site.register(profiles.AboutMe)
+admin.site.register(profiles.EducationalRecord)
+admin.site.register(profiles.WorkExperience)
 admin.site.register(profiles.PersonalInformation)
-

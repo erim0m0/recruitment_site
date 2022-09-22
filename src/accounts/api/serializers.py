@@ -1,5 +1,12 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from accounts.models.profiles import (
+    Profile,
+    AboutMe,
+    WorkExperience,
+    EducationalRecord,
+    PersonalInformation
+)
 
 
 class UsersListSerializer(serializers.ModelSerializer):
@@ -56,3 +63,15 @@ class OtpSerilizer(serializers.Serializer):
                 }
             )
         return value
+
+########## Profiles Serializers ##########
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        exclude = ("user", "id")
+
+class AboutMeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutMe
+        exclude = ("user", "id")

@@ -113,5 +113,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 @receiver(pre_save, sender=User)
 def save_active_email_code(sender, instance, **kwargs):
+    #  Signal for post creating a user which activates when a user being created ONLY
+
     if kwargs.get("signal"):
         instance.active_email_code = create_random_code()
