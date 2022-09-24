@@ -1,24 +1,51 @@
 from django.db import models
+from django.urls import reverse
+from django.dispatch import receiver
 from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 
 
-class Profile(models.Model):
+
+########## Models ##########
+
+class MainProfile(models.Model):
     """
-    Profile class for each user which is
-    being created to hold the information
+    Abstract model from other models
     """
 
     user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
+        editable=False,
+        null=True,
+        blank=True
+    )
+    slug = models.SlugField(
+        max_length=10,
+        editable=False,
         null=True,
         blank=True,
-        editable=False
+        verbose_name=_("Slug Field")
     )
+
+    def get_absolute_url(self):
+        return reverse("profile", kwargs={"slug": self.slug})
+
+    def __str__(self):
+        return str(self.user)
+
+    class Meta:
+        abstract = True
+
+
+class Profile(MainProfile):
+    """
+    Profile class for each user which is
+    being created to hold the information
+    """
+
     first_name = models.CharField(
         max_length=150,
         null=True,
@@ -51,26 +78,16 @@ class Profile(models.Model):
         verbose_name = _("Profile")
         verbose_name_plural = _("Profiles")
 
-    def __str__(self):
-        return str(self.user)
 
+class PersonalInformation(MainProfile):
+    """
+    PersonalInformation class for each user which is
+    being created to hold the information
+    """
 
-class PersonalInformation(models.Model):
-    """
-        PersonalInformation class for each user which is
-        being created to hold the information
-    """
     GENDER = (
-        ("F", "Female"),
-        ("M", "Male")
-    )
-
-    user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        editable=False
+        ("Female", "F"),
+        ("Male", "M")
     )
     MILITARY_SERVICE_STATUS = (
         ("end of service", "the end of service"),
@@ -116,27 +133,17 @@ class PersonalInformation(models.Model):
         verbose_name=_("Military Service Status")
     )
 
-    def __str__(self):
-        return str(self.user)
-
     class Meta:
         verbose_name = _("Personal Information")
         verbose_name_plural = _("Personal Informations")
 
 
-class AboutMe(models.Model):
+class AboutMe(MainProfile):
     """
-        AboutMe class for each user which is
-        being created to hold the information
+    AboutMe class for each user which is
+    being created to hold the information
     """
 
-    user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        editable=False
-    )
     about_me = models.TextField(
         max_length=500,
         null=True,
@@ -144,27 +151,17 @@ class AboutMe(models.Model):
         verbose_name=_("About Me")
     )
 
-    def __str__(self):
-        return str(self.user)
-
     class Meta:
         verbose_name = _("About Me")
         verbose_name_plural = _("About Me")
 
 
-class WorkExperience(models.Model):
+class WorkExperience(MainProfile):
     """
-        WorkExperience class for each user which is
-        being created to hold the information
+    WorkExperience class for each user which is
+    being created to hold the information
     """
 
-    user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        editable=False
-    )
     job = models.CharField(
         max_length=100,
         null=True,
@@ -180,35 +177,25 @@ class WorkExperience(models.Model):
 
     # employment_period = models.PositiveIntegerField()
 
-    def __str__(self):
-        return str(self.user)
-
     class Meta:
         verbose_name = _("Work Experience")
         verbose_name_plural = _("Work Experiences")
 
 
-class EducationalRecord(models.Model):
+class EducationalRecord(MainProfile):
     """
-        EducationalRecord class for each user which is
-        being created to hold the information
+    EducationalRecord class for each user which is
+    being created to hold the information
     """
 
     GRADE_CHOICE = (
-        ("Diploma", "diploma"),
-        ("Associate", "associate"),
-        ("MA", "master"),
-        ("MS", "master of science"),
-        ("Dr", "doctorate")
+        ("diploma", "Diploma"),
+        ("associate", "Associate"),
+        ("master", "MA"),
+        ("master of science", "MS"),
+        ("doctorate", "Dr")
     )
 
-    user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        editable=False
-    )
     major = models.CharField(
         max_length=30,
         null=True,
@@ -229,9 +216,6 @@ class EducationalRecord(models.Model):
         verbose_name=_("Grade")
     )
 
-    def __str__(self):
-        return str(self.user)
-
     class Meta:
         verbose_name = _("Educational Record")
         verbose_name_plural = _("Educational Records")
@@ -241,9 +225,17 @@ class EducationalRecord(models.Model):
 
 @receiver(post_save, sender=get_user_model())
 def create_profile(sender, instance, created, **kwargs):
+    """
+    Create another Models when a user being created ONLY
+    """
+
     if created:
-        Profile.objects.create(user=instance)
-        PersonalInformation.objects.create(user=instance)
-        AboutMe.objects.create(user=instance)
-        WorkExperience.objects.create(user=instance)
-        EducationalRecord.objects.create(user=instance)
+        _models = (
+            "Profile",
+            "PersonalInformation",
+            "AboutMe",
+            "WorkExperience",
+            "EducationalRecord"
+        )
+        for model in _models:
+            eval(f"{model}.objects.create(user=instance, slug=instance.phone)")

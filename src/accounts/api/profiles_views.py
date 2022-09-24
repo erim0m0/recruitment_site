@@ -1,8 +1,16 @@
 from rest_framework.generics import RetrieveUpdateAPIView
-from rest_framework.viewsets import ModelViewSet
 from rest_framework import exceptions
+from rest_framework.permissions import IsAuthenticated
 
-from .serializers import ProfileSerializer, AboutMeSerializer
+from django.shortcuts import get_object_or_404
+from .serializers import (
+    ProfileSerializer,
+    AboutMeSerializer,
+    PersonalInformationSerializer,
+    WorkExperienceSerializer,
+    EducationalRecordSerializer
+)
+from permissions import IsStaffOrUser, IsSuperUserOrReadOnly
 from accounts.models.profiles import (
     Profile,
     AboutMe,
@@ -12,29 +20,35 @@ from accounts.models.profiles import (
 )
 
 
+
+dict_conf = {
+    "p": ("ProfileSerializer", "Profile"),
+    "pi": ("PersonalInformationSerializer", "PersonalInformation"),
+    "am": ("AboutMeSerializer", "AboutMe"),
+    "we": ("WorkExperienceSerializer", "WorkExperience"),
+    "er": ("EducationalRecordSerializer", "EducationalRecord")
+}
+
+
 class ProfileDetailUpdate(RetrieveUpdateAPIView):
-    queryset = Profile.objects.all()
+    permission_classes = (IsStaffOrUser,)
+    lookup_field = "slug"
 
-    def get_serializer(self, *args, **kwargs):
-        serializers = (
-            "ProfileSerializer",
-            "PersonalInformationSerializer",
-            "AboutMeSerializer",
-            "WorkExperienceSerializer",
-            "EducationalRecordSerializer"
-        )
-        models = (
-            "Profile",
-            "AboutMe",
-            "WorkExperience",
-            "PersonalInformation",
-            "EducationalRecord"
-        )
-        lookups = ("p", "pi", "am", "we", "er")
-
-        if (get_lookup := self.kwargs["profile"]) not in lookups:
+    def dispatch(self, request, *args, **kwargs):
+        if self.kwargs["profile"] not in dict_conf.keys():
             raise exceptions.NotFound
+        return super(ProfileDetailUpdate, self).dispatch(request, *args, **kwargs)
 
-        self.queryset = eval()
-        self.serializer_class = eval(serializers[lookups.index(get_lookup)])
-        return super(ProfileDetailUpdate, self).get_serializer(*args, **kwargs)
+    def get_serializer_class(self):
+        return eval(
+            dict_conf[self.kwargs['profile']][0]
+        )
+
+    def get_object(self):
+        query = get_object_or_404(
+            eval(
+                f"{dict_conf[self.kwargs['profile']][1]}.objects.defer('user')"
+            ),
+            slug=self.kwargs["slug"]
+        )
+        return query
