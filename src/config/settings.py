@@ -39,12 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # internal apps
     'accounts',
-    'home',
     'extensions',
     # external apps
     'jalali_date',
     'rest_framework',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -116,6 +116,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Default datetime
 DATE_INPUT_FORMATS = ['%d/%m/%Y']
 
 # Static files (CSS, JavaScript, Images)
@@ -138,7 +139,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # User Models
 AUTH_USER_MODEL = 'accounts.User'
 
-# Rest Api Config
+# RestFramework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
@@ -148,6 +149,10 @@ REST_FRAMEWORK = {
         "authentication": "6/hour",
         "verify_authentication": "9/hour",
     },
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ]
+
 }
 
 # Redis Config
