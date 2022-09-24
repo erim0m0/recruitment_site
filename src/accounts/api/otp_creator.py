@@ -1,4 +1,5 @@
 import redis
+
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -19,10 +20,10 @@ class OTPBuild:
 
     def _save_otp(self, code, id_code) -> None:
         data = {
-            'contact': self.received_phone,
-            'code': code,
-            'id_code': id_code,
-            'retry': 0
+            "contact": self.received_phone,
+            "code": code,
+            "id_code": id_code,
+            "retry": 0
         }
 
         with self.redis_conf.pipeline() as pipe:

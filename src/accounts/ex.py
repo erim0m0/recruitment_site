@@ -1,12 +1,9 @@
-serializers = (
-    "Profile",
-    "PersonalInformation",
-    "AboutMe",
-    "WorkExperience",
-    "EducationalRecord"
-)
-lookup = ("p", "pi", "ab", "we", "er")
+dict_conf = {
+    "p": ("ProfileSerializer", "Profile"),
+    "pi": ("PersonalInformationSerializer", "AboutMe"),
+    "am": ("AboutMeSerializer", "WorkExperience"),
+    "we": ("WorkExperienceSerializer", "PersonalInformation"),
+    "er": ("EducationalRecordSerializer", "EducationalRecord")
+}
 
-print(eval("lookup.index('pi')"))
-
-
+eval("print(amir)")

@@ -9,15 +9,8 @@ from accounts.models.profiles import (
 )
 
 
-class UsersListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = get_user_model()
-        fields = (
-            "id",
-            "phone",
-            "date_joined"
-        )
 
+########## Authentication Serializers ##########
 
 class AuthenticationSerializer(serializers.Serializer):
     phone = serializers.CharField(
@@ -64,14 +57,31 @@ class OtpSerilizer(serializers.Serializer):
             )
         return value
 
+
+
 ########## Profiles Serializers ##########
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        exclude = ("user", "id")
+        exclude = ("user", "id", "slug")
 
 class AboutMeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AboutMe
-        exclude = ("user", "id")
+        exclude = ("user", "id", "slug")
+
+class WorkExperienceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkExperience
+        exclude = ("user", "id", "slug")
+
+class PersonalInformationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonalInformation
+        exclude = ("user", "id", "slug")
+
+class EducationalRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EducationalRecord
+        exclude = ("user", "id", "slug")

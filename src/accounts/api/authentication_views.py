@@ -1,11 +1,11 @@
 import redis
+from typing import List
 
 from django.contrib.auth import get_user_model
 
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -18,17 +18,12 @@ from accounts.api.serializers import (
 from config.settings import REDIS_PORT, REDIS_HOST_NAME
 
 
-class UsersList(ListAPIView):
-    permission_classes = (AllowAny,)
-    serializer_class = UsersListSerializer
-    queryset = get_user_model().objects.all()
-
 
 class Register(APIView):
     permission_classes = (AllowAny,)
 
-    # throttle_classes = (ScopedRateThrottle,)
-    # throttle_scope = "authentication"
+    throttle_classes = (ScopedRateThrottle,)
+    throttle_scope = "authentication"
 
     def post(self, request):
         serializer = AuthenticationSerializer(data=request.data)
@@ -50,8 +45,8 @@ class Register(APIView):
 class VerifyOtp(APIView):
     permission_classes = (AllowAny,)
 
-    # throttle_classes = (ScopedRateThrottle,)
-    # throttle_scope = "verify_authentication"
+    throttle_classes = (ScopedRateThrottle,)
+    throttle_scope = "verify_authentication"
 
     def post(self, request):
         serializer = OtpSerilizer(data=request.data)
@@ -61,7 +56,7 @@ class VerifyOtp(APIView):
         received_id_code = serializer.data.get("id_code")
 
         redis_conf = redis.Redis(host=REDIS_HOST_NAME, port=REDIS_PORT)
-        data = redis_conf.hvals(received_phone)
+        data: List = redis_conf.hvals(received_phone)
 
         if received_id_code.encode() in data and received_code.encode() in data:
             user, created = get_user_model().objects.get_or_create(phone=received_phone)
