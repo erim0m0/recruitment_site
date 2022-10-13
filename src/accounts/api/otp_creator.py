@@ -3,7 +3,7 @@ import redis
 from rest_framework import status
 from rest_framework.response import Response
 
-from config.settings import REDIS_PORT, REDIS_HOST_NAME
+from django.conf import settings
 from extensions.utils import create_otp_code, create_random_code
 
 
@@ -14,7 +14,7 @@ class OTPBuild:
         self.id_code = id_code
         self.received_phone = received_phone
         self.redis_conf = redis.Redis(
-            host=REDIS_HOST_NAME, port=REDIS_PORT
+            host=settings.REDIS_HOST_NAME, port=settings.REDIS_PORT
         )
         self._save_otp(self.code, self.id_code)
 
@@ -43,7 +43,7 @@ def send_otp(received_phone: str) -> Response:
     # )
 
     context = {
-        "status": f"send otp to {received_phone}",
+        "Message": f"send otp to {received_phone}",
         "id_code": id_code
     }
 

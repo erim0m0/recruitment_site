@@ -11,7 +11,6 @@ def send_otp_code(receptor: Dict):
             'message': f'کد یکبار مصرف شما : { receptor.get("code") }'
         }
         response = api.sms_send(params)
-        print(str(response))
 
     except APIException as e:
         print(str(e))

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from accounts.models import users, blocked_phones, profiles
+from accounts.models import users, blocked_phones, user_profile, company
 
 
 class CustomAdmin(BaseUserAdmin):
@@ -42,8 +42,11 @@ class BlockPhonesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(users.User, CustomAdmin)
-admin.site.register(profiles.Profile)
-admin.site.register(profiles.AboutMe)
-admin.site.register(profiles.EducationalRecord)
-admin.site.register(profiles.WorkExperience)
-admin.site.register(profiles.PersonalInformation)
+admin.site.register(user_profile.Profile)
+admin.site.register(user_profile.AboutMe)
+admin.site.register(user_profile.EducationalRecord)
+admin.site.register(user_profile.WorkExperience)
+admin.site.register(user_profile.PersonalInformation)
+admin.site.register(company.CompanyProfile)
+admin.site.register(company.Industry)
+admin.site.register(company.OrganizationalInterface)

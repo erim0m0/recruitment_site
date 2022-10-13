@@ -5,44 +5,12 @@ from django.contrib.auth.models import (
 )
 from django.db.models.signals import pre_save
 from django.core.validators import RegexValidator
-from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
+from accounts.managers import UserManager
 from extensions.utils import create_random_code
 from extensions.utils import persian_date_convertor
 
-
-
-############# Manager #############
-
-class UserManager(BaseUserManager):
-
-    def create_user(self, phone, password, **extra_fields):
-        if not phone:
-            raise ValueError(_("user must have phone"))
-
-        user = self.model(phone=phone, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, phone, password, **extra_fields):
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
-        extra_fields.setdefault("is_active_email", True)
-        extra_fields.setdefault("user_level", "super_user")
-
-        if extra_fields.get("is_staff") is not True:
-            raise ValueError(_("Superuser must have is_admin=True."))
-
-        if extra_fields.get("is_superuser") is not True:
-            raise ValueError(_("Superuser must have is_superuser=True."))
-
-        return self.create_user(phone, password, **extra_fields)
-
-
-
-############# User Model #############
 
 class User(AbstractBaseUser, PermissionsMixin):
     """

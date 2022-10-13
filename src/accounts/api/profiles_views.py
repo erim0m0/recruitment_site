@@ -1,8 +1,9 @@
 from rest_framework.generics import RetrieveUpdateAPIView
-from rest_framework import exceptions
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import exceptions
 
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 from .serializers import (
     ProfileSerializer,
     AboutMeSerializer,
@@ -10,8 +11,10 @@ from .serializers import (
     WorkExperienceSerializer,
     EducationalRecordSerializer
 )
+
+from bucket import bucket
 from permissions import IsStaffOrUser, IsSuperUserOrReadOnly
-from accounts.models.profiles import (
+from accounts.models.user_profile import (
     Profile,
     AboutMe,
     WorkExperience,
@@ -36,7 +39,7 @@ class ProfileDetailUpdate(RetrieveUpdateAPIView):
 
     def dispatch(self, request, *args, **kwargs):
         if self.kwargs["profile"] not in dict_conf.keys():
-            raise exceptions.NotFound
+            raise Http404
         return super(ProfileDetailUpdate, self).dispatch(request, *args, **kwargs)
 
     def get_serializer_class(self):
@@ -45,10 +48,10 @@ class ProfileDetailUpdate(RetrieveUpdateAPIView):
         )
 
     def get_object(self):
-        query = get_object_or_404(
+        obj = get_object_or_404(
             eval(
                 f"{dict_conf[self.kwargs['profile']][1]}.objects.defer('user')"
             ),
             slug=self.kwargs["slug"]
         )
-        return query
+        return obj

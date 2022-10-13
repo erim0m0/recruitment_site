@@ -1,6 +1,29 @@
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MaxLengthValidator, MinLengthValidator
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
+
+
+class Industry(models.Model):
+    """
+    This model is related to every organization
+    in what kind of industry it is engaged in
+    """
+    type = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name=_("type of company")
+    )
+
+    def __str__(self):
+        return self.type
+
+    class Meta:
+        verbose_name = _("Industry")
+        verbose_name_plural = _("Industries")
 
 
 class CompanyProfile(models.Model):
@@ -38,7 +61,9 @@ class CompanyProfile(models.Model):
         max_length=10
     )
     industry = models.ManyToManyField(
-        "Industry",
+        Industry,
+        null=True,
+        blank=True,
         verbose_name=_("industry")
     )
     city = models.CharField(
@@ -79,56 +104,49 @@ class CompanyProfile(models.Model):
         blank=True,
         verbose_name=_("type of ownership")
     )
+    organizational_interface = models.OneToOneField(
+        "OrganizationalInterface",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("organizational interface")
+    )
+    create_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("create at")
+    )
 
     def __str__(self):
         if self.english_name:
             return f"{self.name}/{self.english_name}"
         return self.name
 
+    def get_absolute_url(self):
+        return reverse("account:api:company-profile", kwargs={"pk": self.pk})
+
     class Meta:
         verbose_name = _("Company Profile")
         verbose_name_plural = _("Companies Profile")
 
 
-class Industry(models.Model):
-    """
-    This model is related to every organization
-    in what kind of industry it is engaged in
-    """
-    type = models.CharField(
-        max_length=200,
-        null=True,
-        blank=True,
-        verbose_name=_("type of company")
-    )
-
-    def __str__(self):
-        return self.type
-
-    class Meta:
-        verbose_name = _("Industry")
-        verbose_name_plural = _("Industries")
-
-
 class OrganizationalInterface(models.Model):
     first_name = models.CharField(
         max_length=75,
+        null=True,
+        blank=True,
         verbose_name=_("first name")
     )
     last_name = models.CharField(
         max_length=75,
+        null=True,
+        blank=True,
         verbose_name=_("last name")
     )
     organization_level = models.CharField(
         max_length=75,
-        verbose_name=_("organization level")
-    )
-    company = models.OneToOneField(
-        CompanyProfile,
-        on_delete=models.CASCADE,
         null=True,
         blank=True,
-        verbose_name=_("company")
+        verbose_name=_("organization level")
     )
 
     phone_regex = RegexValidator(
@@ -137,13 +155,43 @@ class OrganizationalInterface(models.Model):
     )
     phone = models.CharField(
         max_length=10,
+        unique=True,
         validators=[phone_regex],
         verbose_name=_("phone")
     )
+    password = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        verbose_name=_("password")
+    )
+    slug = models.SlugField(
+        max_length=50,
+        null=True,
+        blank=True,
+        verbose_name=_("slug")
+    )
 
     def __str__(self):
-        return f"{self.last_name} / {self.company}"
+        if self.first_name and self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        return f"{self.phone}: doesn't complete"
+
+    def get_absolute_url(self):
+        return reverse("account:api:operator-register", kwargs={"slug": self.slug})
 
     class Meta:
         verbose_name = _("Organizational Interface")
         verbose_name_plural = _("Organizational Interfaces")
+
+
+############# Signals #############
+
+@receiver(pre_save, sender=OrganizationalInterface)
+def save_slug_field(sender, instance, **kwargs):
+    """
+    Create slug field for post creating a operator's company
+    """
+
+    if kwargs.get("signal"):
+        instance.slug = instance.phone

@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
+app_name = "account"
 
 urlpatterns = [
     path('api/', include('accounts.api.urls')),

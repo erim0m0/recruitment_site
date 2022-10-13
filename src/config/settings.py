@@ -139,7 +139,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # User Models
 AUTH_USER_MODEL = 'accounts.User'
 
-# RestFramework
+
+# REST_FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
@@ -155,6 +156,33 @@ REST_FRAMEWORK = {
 
 }
 
+
+# PASSWORD HASHERS
+
+PASSWORD_HASHERS = [
+  'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+  'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+  'django.contrib.auth.hashers.Argon2PasswordHasher',
+  'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+  'django.contrib.auth.hashers.BCryptPasswordHasher',
+  'django.contrib.auth.hashers.SHA1PasswordHasher',
+  'django.contrib.auth.hashers.MD5PasswordHasher',
+  'django.contrib.auth.hashers.UnsaltedSHA1PasswordHasher',
+  'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
+  'django.contrib.auth.hashers.CryptPasswordHasher',
+]
+
 # Redis Config
-REDIS_HOST_NAME = 'localhost'
-REDIS_PORT = 6379
+REDIS_HOST_NAME = config("REDIS_HOST_NAME")
+REDIS_PORT = config("REDIS_PORT")
+
+
+# ARVAN CLOUD STORAGE
+DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE")
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+AWS_S3_ENDPOINT_URL = config("AWS_S3_ENDPOINT_URL")
+AWS_STORAGES_BUCKET_NAME = config("AWS_STORAGES_BUCKET_NAME")
+AWS_SERVICE_NAME = config("AWS_SERVICE_NAME")
+AWS_S3_FILE_OVERWRITE = config("AWS_S3_FILE_OVERWRITE")
+

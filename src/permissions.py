@@ -17,7 +17,8 @@ class IsSuperUserOrReadOnly(BasePermission):
 class IsStaffOrUser(BasePermission):
 
     def has_object_permission(self, request, view, obj):
+        print(obj)
         return bool(
             request.user.is_authenticated and request.user.is_superuser or
-            request.user.is_authenticated and obj.user__phone == request.user
+            request.user.is_authenticated and obj.phone == request.user
         )

@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from accounts.models.profiles import (
+from accounts.models.user_profile import (
     Profile,
     AboutMe,
     WorkExperience,
     EducationalRecord,
     PersonalInformation
 )
-
+from accounts.models.company import OrganizationalInterface, CompanyProfile
 
 
 ########## Authentication Serializers ##########
@@ -58,7 +58,6 @@ class OtpSerilizer(serializers.Serializer):
         return value
 
 
-
 ########## Profiles Serializers ##########
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -66,22 +65,41 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         exclude = ("user", "id", "slug")
 
+
 class AboutMeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AboutMe
         exclude = ("user", "id", "slug")
+
 
 class WorkExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkExperience
         exclude = ("user", "id", "slug")
 
+
 class PersonalInformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonalInformation
         exclude = ("user", "id", "slug")
 
+
 class EducationalRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = EducationalRecord
         exclude = ("user", "id", "slug")
+
+
+########## Company ##########
+
+class CompanyProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanyProfile
+        fields = "__all__"
+
+
+class OrganizationalInterfaceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = OrganizationalInterface
+        exclude = ("slug",)

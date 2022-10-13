@@ -1,3 +1,3 @@
 from .users import *
-from .profiles import *
+from .user_profile import *
 from .blocked_phones import *
