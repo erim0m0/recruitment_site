@@ -21,3 +21,13 @@ def create_otp_code(size: int = 6, char: str = digits) -> int:
         "".join(choice(char) for _ in range(size))
     ))
     return random_otp_code
+
+
+def phone_validation(value):
+    from re import match
+
+    if not match("^9\d{2}\s*?\d{3}\s*?\d{4}$", value):
+        raise ValidationError(
+            "The phone number is Invalid."
+        )
+    return value

@@ -8,8 +8,11 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
 from accounts.managers import UserManager
-from extensions.utils import create_random_code
-from extensions.utils import persian_date_convertor
+from extensions.utils import (
+    phone_validation,
+    create_random_code,
+    persian_date_convertor
+)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -23,18 +26,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         ("admin", "admin"),
         ("super_user", "super_user")
     )
-
-    phone_regex = RegexValidator(
-        regex="^9\d{2}\s*?\d{3}\s*?\d{4}$",
-        message=_("The phone number is Invalid.")
-    )
     phone = models.CharField(
         max_length=10,
-        validators=[phone_regex],
+        validators=[phone_validation],
         unique=True,
         verbose_name=_("phone")
     )
-
     user_level = models.CharField(
         choices=USER_LEVEL,
         max_length=10,
@@ -74,7 +71,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.phone
-
 
 
 ############# Signals #############

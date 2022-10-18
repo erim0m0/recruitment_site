@@ -1,9 +1,15 @@
 from django.db import models
-from django.core.validators import RegexValidator, MaxLengthValidator, MinLengthValidator
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
+from django.utils.translation import gettext_lazy as _
+from django.core.validators import (
+    RegexValidator,
+    MaxLengthValidator,
+    MinLengthValidator
+)
+
+from extensions.utils import phone_validation
 
 
 class Industry(models.Model):
@@ -62,8 +68,6 @@ class CompanyProfile(models.Model):
     )
     industry = models.ManyToManyField(
         Industry,
-        null=True,
-        blank=True,
         verbose_name=_("industry")
     )
     city = models.CharField(
@@ -148,15 +152,10 @@ class OrganizationalInterface(models.Model):
         blank=True,
         verbose_name=_("organization level")
     )
-
-    phone_regex = RegexValidator(
-        regex="^9\d{2}\s*?\d{3}\s*?\d{4}$",
-        message=_("The phone number is Invalid.")
-    )
     phone = models.CharField(
         max_length=10,
         unique=True,
-        validators=[phone_regex],
+        validators=[phone_validation],
         verbose_name=_("phone")
     )
     password = models.CharField(

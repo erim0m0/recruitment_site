@@ -13,7 +13,7 @@ from .serializers import (
 )
 
 from bucket import bucket
-from permissions import IsStaffOrUser, IsSuperUserOrReadOnly
+from permissions import IsStaffOrOwner, IsSuperUserOrReadOnly
 from accounts.models.user_profile import (
     Profile,
     AboutMe,
@@ -34,7 +34,7 @@ dict_conf = {
 
 
 class ProfileDetailUpdate(RetrieveUpdateAPIView):
-    permission_classes = (IsStaffOrUser,)
+    permission_classes = (IsStaffOrOwner,)
     lookup_field = "slug"
 
     def dispatch(self, request, *args, **kwargs):

@@ -100,6 +100,16 @@ class CompanyProfileSerializer(serializers.ModelSerializer):
 
 class OrganizationalInterfaceSerializer(serializers.ModelSerializer):
 
+    def validate_password(self, value):
+        from re import match
+        if not match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", value):
+            raise serializers.ValidationError(
+                {
+                    "Error": "The password number is Invalid."
+                }
+            )
+        return value
+
     class Meta:
         model = OrganizationalInterface
         exclude = ("slug",)
