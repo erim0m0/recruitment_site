@@ -44,6 +44,7 @@ class CompanyProfile(models.Model):
         blank=True,
         verbose_name=_("email"),
     )
+    # TODO: Remove a null and blank attrs
     name = models.CharField(
         max_length=120,
         null=True,
@@ -108,6 +109,7 @@ class CompanyProfile(models.Model):
         blank=True,
         verbose_name=_("type of ownership")
     )
+    # TODO : Remove null and blak fiels
     organizational_interface = models.OneToOneField(
         "OrganizationalInterface",
         on_delete=models.CASCADE,

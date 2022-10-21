@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # internal apps
     'accounts',
     'extensions',
+    'advertisement',
     # external apps
     'jalali_date',
     'rest_framework',
