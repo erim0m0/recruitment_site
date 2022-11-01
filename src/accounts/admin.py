@@ -7,7 +7,7 @@ from accounts.models import users, blocked_phones, user_profile, company
 class CustomAdmin(BaseUserAdmin):
     model = users.User
     list_display = (
-        'phone', 'user_level',
+        'phone', 'user_level','is_operator',
         'is_active_email', 'persian_date_created'
     )
     list_filter = ('is_superuser',)
@@ -49,4 +49,3 @@ admin.site.register(user_profile.WorkExperience)
 admin.site.register(user_profile.PersonalInformation)
 admin.site.register(company.CompanyProfile)
 admin.site.register(company.Industry)
-admin.site.register(company.OrganizationalInterface)

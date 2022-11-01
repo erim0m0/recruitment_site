@@ -140,7 +140,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # User Models
 AUTH_USER_MODEL = 'accounts.User'
 
-
 # REST_FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -153,29 +152,29 @@ REST_FRAMEWORK = {
     },
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
     ]
-
 }
-
 
 # PASSWORD HASHERS
 PASSWORD_HASHERS = [
-  'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-  'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-  'django.contrib.auth.hashers.Argon2PasswordHasher',
-  'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-  'django.contrib.auth.hashers.BCryptPasswordHasher',
-  'django.contrib.auth.hashers.SHA1PasswordHasher',
-  'django.contrib.auth.hashers.MD5PasswordHasher',
-  'django.contrib.auth.hashers.UnsaltedSHA1PasswordHasher',
-  'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
-  'django.contrib.auth.hashers.CryptPasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.UnsaltedSHA1PasswordHasher',
+    'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
+    'django.contrib.auth.hashers.CryptPasswordHasher',
 ]
 
-# Redis Config
+# REDIS CONFIG
 REDIS_HOST_NAME = config("REDIS_HOST_NAME")
 REDIS_PORT = config("REDIS_PORT")
-
 
 # ARVAN CLOUD STORAGE
 DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE")
@@ -185,4 +184,3 @@ AWS_S3_ENDPOINT_URL = config("AWS_S3_ENDPOINT_URL")
 AWS_STORAGES_BUCKET_NAME = config("AWS_STORAGES_BUCKET_NAME")
 AWS_SERVICE_NAME = config("AWS_SERVICE_NAME")
 AWS_S3_FILE_OVERWRITE = config("AWS_S3_FILE_OVERWRITE")
-

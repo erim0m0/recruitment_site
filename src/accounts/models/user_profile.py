@@ -7,7 +7,6 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
 
-
 ########## Models ##########
 
 class MainProfile(models.Model):
@@ -230,12 +229,13 @@ def create_profile(sender, instance, created, **kwargs):
     """
 
     if created:
-        _models = (
-            "Profile",
-            "PersonalInformation",
-            "AboutMe",
-            "WorkExperience",
-            "EducationalRecord"
-        )
-        for model in _models:
-            eval(f"{model}.objects.create(user=instance, slug=instance.phone)")
+        if not instance.is_superuser:
+            _models = (
+                "Profile",
+                "PersonalInformation",
+                "AboutMe",
+                "WorkExperience",
+                "EducationalRecord"
+            )
+            for model in _models:
+                eval(f"{model}.objects.create(user=instance, slug=instance.phone)")

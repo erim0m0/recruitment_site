@@ -16,7 +16,6 @@ from accounts.api.serializers import (
     OtpSerilizer,
 )
 from accounts.models.blocked_phones import BlockedPhone
-from accounts.models.company import OrganizationalInterface
 from config.settings import REDIS_PORT, REDIS_HOST_NAME
 
 
@@ -40,8 +39,13 @@ class Register(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
 
-        _model = OrganizationalInterface if "operator" in request.path else get_user_model()
-        is_exist_user: bool = _model.objects.filter(phone=received_phone).values("phone").exists()
+        data_filter = {
+            "phone": received_phone
+        }
+        if "operator" in request.path:
+            data_filter["is_operator"] = True
+
+        is_exist_user: bool = get_user_model().objects.filter(**data_filter).exists()
         if is_exist_user:
             return Response(
                 {
@@ -68,23 +72,24 @@ class VerifyOtp(APIView):
 
         _redis_conf = Redis(host=REDIS_HOST_NAME, port=REDIS_PORT)
         data: List = _redis_conf.hvals(received_phone)
-
         if received_id_code.encode() in data and received_code.encode() in data:
-            if "operator" not in request.path:
-                _model = get_user_model()
-                refresh = RefreshToken.for_user(user)
-                context = {
-                    "created": created,
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                }
 
-            else:
-                _model = OrganizationalInterface
-                user, created = _model.objects.get_or_create(phone=received_phone)
-                context = {
-                    "created": created
-                }
+            operator_data = {}
+
+            if "operator" in request.path:
+                operator_data["is_operator"] = True
+
+            user, created = get_user_model().objects.update_or_create(
+                phone=received_phone,
+                defaults=operator_data
+            )
+
+            refresh = RefreshToken.for_user(user)
+            context = {
+                "created": created,
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }
 
             _redis_conf.delete(received_phone)
 
@@ -120,7 +125,14 @@ class Login(APIView):
         serializer.is_valid(raise_exception=True)
         received_phone = serializer.data.get("phone")
 
-        is_exist_user: bool = get_user_model().objects.filter(phone=received_phone).values("phone").exists()
+        data_filter = {
+            "phone": received_phone,
+        }
+
+        if "operator" in request.path:
+            data_filter["is_operator"] = True
+
+        is_exist_user: bool = get_user_model().objects.filter(**data_filter).exists()
         if not is_exist_user:
             return Response(
                 {

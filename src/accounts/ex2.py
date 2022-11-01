@@ -1,8 +1,6 @@
 a = {
-    1:"amir",
-    2:"fatme",
-    "a":"aaa"
+    "amir": "javidi",
+    "fatemeh": "ebrahimi"
 }
-a.pop("a")
-print(a)
 
+a.setdefault("")

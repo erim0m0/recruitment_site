@@ -7,7 +7,7 @@ from accounts.models.user_profile import (
     EducationalRecord,
     PersonalInformation
 )
-from accounts.models.company import OrganizationalInterface, CompanyProfile
+from accounts.models.company import CompanyProfile
 
 
 ########## Authentication Serializers ##########
@@ -95,21 +95,15 @@ class EducationalRecordSerializer(serializers.ModelSerializer):
 class CompanyProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyProfile
-        fields = "__all__"
+        exclude = [
+            "create_at"
+        ]
 
-
-class OrganizationalInterfaceSerializer(serializers.ModelSerializer):
-
-    def validate_password(self, value):
-        from re import match
-        if not match("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", value):
-            raise serializers.ValidationError(
-                {
-                    "Error": "The password number is Invalid."
-                }
-            )
-        return value
-
+class CompanyProfileCreateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OrganizationalInterface
-        exclude = ("slug",)
+        model = CompanyProfile
+        exclude = [
+            "create_at",
+            "number_of_advertisements",
+            "organizational_interface"
+        ]

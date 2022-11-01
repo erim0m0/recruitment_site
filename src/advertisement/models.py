@@ -4,8 +4,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
 
-from .choises_models import GENDER, TYPE_OF_COOPERATION, ORGANIZATIONAL_CATEGORY_CHOICES
 from accounts.models.company import CompanyProfile
+from .choises_models import GENDER, TYPE_OF_COOPERATION, ORGANIZATIONAL_CATEGORY_CHOICES
 
 
 class Advertisement(models.Model):
@@ -69,6 +69,7 @@ class Advertisement(models.Model):
         verbose_name=_("exemption or complete military service")
     )
     amount_of_work_experience = models.PositiveIntegerField(
+        validators=[MinValueValidator(2)],
         verbose_name=_("amount of work experience")
     )
     # TODO: edit this field
@@ -79,6 +80,8 @@ class Advertisement(models.Model):
     )
     benefits = models.ManyToManyField(
         "FacilitiesAndBenefits",
+        null=True,
+        blank=True
     )
     salary = models.CharField(
         max_length=75,
@@ -97,6 +100,7 @@ class Advertisement(models.Model):
         null=True,
         blank=True,
         on_delete=models.CASCADE,
+        related_name="advertisements"
         # editable=False
     )
 
@@ -121,8 +125,7 @@ class FacilitiesAndBenefits(models.Model):
         verbose_name = _("Facilities And Benefits")
         verbose_name_plural = _("Facilities And Benefits")
 
-
-@receiver(pre_save, sender=Advertisement)
-def save_company_field(instance, created, **kwargs):
-    if created:
-        instance.company = CompanyProfile.objects.get(organizational_interface__exact=)
+# @receiver(pre_save, sender=Advertisement)
+# def save_company_field(instance, created, **kwargs):
+#     if created:
+#         instance.company = CompanyProfile.objects.filter()

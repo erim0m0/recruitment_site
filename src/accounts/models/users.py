@@ -41,6 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_staff = models.BooleanField(default=False)
     is_active_email = models.BooleanField(default=False)
+    is_operator = models.BooleanField(default=False)
 
     active_email_code = models.CharField(
         max_length=32,
