@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
                 ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('phone', models.CharField(max_length=10, unique=True, validators=[extensions.utils.phone_validation], verbose_name='phone')),
+                ('phone', models.CharField(max_length=10, unique=True, validators=[extensions.utils.phone_validator], verbose_name='phone')),
                 ('user_level', models.CharField(choices=[('normal', 'normal'), ('admin', 'admin'), ('super_user', 'super_user')], default='normal', max_length=10, verbose_name='user level')),
                 ('is_staff', models.BooleanField(default=False)),
                 ('is_active_email', models.BooleanField(default=False)),

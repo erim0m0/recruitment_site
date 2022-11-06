@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 from accounts.managers import UserManager
 from extensions.utils import (
-    phone_validation,
+    phone_validator,
     create_random_code,
     persian_date_convertor
 )
@@ -28,7 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     phone = models.CharField(
         max_length=10,
-        validators=[phone_validation],
+        validators=[phone_validator],
         unique=True,
         verbose_name=_("phone")
     )
@@ -45,9 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     active_email_code = models.CharField(
         max_length=32,
-        editable=False,
-        null=True,
-        blank=True
+        editable=False
     )
 
     date_joined = models.DateTimeField(

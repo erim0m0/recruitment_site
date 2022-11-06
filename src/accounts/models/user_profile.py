@@ -6,12 +6,14 @@ from django.db.models.signals import post_save
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
+from extensions.utils import email_validator
+
 
 ########## Models ##########
 
 class MainProfile(models.Model):
     """
-    Abstract model from other models
+    Abstract Model from Other Models
     """
 
     user = models.ForeignKey(
@@ -45,45 +47,6 @@ class Profile(MainProfile):
     being created to hold the information
     """
 
-    first_name = models.CharField(
-        max_length=150,
-        null=True,
-        blank=True,
-        verbose_name=_('First Name')
-    )
-    last_name = models.CharField(
-        max_length=150,
-        null=True,
-        blank=True,
-        verbose_name=_('Last Name')
-    )
-
-    email_regex = RegexValidator(
-        regex="([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+",
-        message=_("The email is Invalid.")
-    )
-    email = models.EmailField(
-        null=True,
-        blank=True,
-        validators=[email_regex],
-        verbose_name=_('Email')
-    )
-    avatar = models.ImageField(
-        null=True,
-        blank=True
-    )
-
-    class Meta:
-        verbose_name = _("Profile")
-        verbose_name_plural = _("Profiles")
-
-
-class PersonalInformation(MainProfile):
-    """
-    PersonalInformation class for each user which is
-    being created to hold the information
-    """
-
     GENDER = (
         ("Female", "F"),
         ("Male", "M")
@@ -96,11 +59,40 @@ class PersonalInformation(MainProfile):
         ("included", "included")
     )
 
-    location = models.CharField(
-        max_length=30,
-        blank=True,
+    first_name = models.CharField(
+        max_length=150,
         null=True,
-        verbose_name=_("Location")
+        blank=True,
+        verbose_name=_('First Name')
+    )
+    last_name = models.CharField(
+        max_length=150,
+        null=True,
+        blank=True,
+        verbose_name=_('Last Name')
+    )
+    email = models.EmailField(
+        null=True,
+        blank=True,
+        validators=[email_validator],
+        verbose_name=_('Email')
+    )
+    avatar = models.ImageField(
+        null=True,
+        blank=True,
+        verbose_name=_("avatar")
+    )
+    country = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name=_("country")
+    )
+    city = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name=_("city")
     )
     address = models.TextField(
         max_length=500,
@@ -131,18 +123,6 @@ class PersonalInformation(MainProfile):
         blank=True,
         verbose_name=_("Military Service Status")
     )
-
-    class Meta:
-        verbose_name = _("Personal Information")
-        verbose_name_plural = _("Personal Informations")
-
-
-class AboutMe(MainProfile):
-    """
-    AboutMe class for each user which is
-    being created to hold the information
-    """
-
     about_me = models.TextField(
         max_length=500,
         null=True,
@@ -151,8 +131,8 @@ class AboutMe(MainProfile):
     )
 
     class Meta:
-        verbose_name = _("About Me")
-        verbose_name_plural = _("About Me")
+        verbose_name = _("Profile")
+        verbose_name_plural = _("Profiles")
 
 
 class WorkExperience(MainProfile):
@@ -173,8 +153,10 @@ class WorkExperience(MainProfile):
         blank=True,
         verbose_name=_("Company")
     )
-
-    # employment_period = models.PositiveIntegerField()
+    employment_period = models.DateTimeField(
+        null=True,
+        blank=True
+    )
 
     class Meta:
         verbose_name = _("Work Experience")
@@ -188,11 +170,10 @@ class EducationalRecord(MainProfile):
     """
 
     GRADE_CHOICE = (
-        ("diploma", "Diploma"),
-        ("associate", "Associate"),
-        ("master", "MA"),
-        ("master of science", "MS"),
-        ("doctorate", "Dr")
+        ("Diploma", "Diploma"),
+        ("Associate DegreeAA", "AD"),
+        ("Bachelor of Science", "BS"),
+        ("Doctor of Philosophy", "Dr")
     )
 
     major = models.CharField(
@@ -207,17 +188,21 @@ class EducationalRecord(MainProfile):
         blank=True,
         verbose_name=_("University")
     )
-    grade = models.CharField(
-        max_length=30,
-        null=True,
-        blank=True,
-        choices=GRADE_CHOICE,
-        verbose_name=_("Grade")
-    )
 
     class Meta:
         verbose_name = _("Educational Record")
         verbose_name_plural = _("Educational Records")
+
+
+class CV(MainProfile):
+    file = models.FileField(
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        verbose_name = _("CV")
+        verbose_name_plural = _("Resumes")
 
 
 ############# Signals #############
@@ -232,10 +217,9 @@ def create_profile(sender, instance, created, **kwargs):
         if not instance.is_superuser:
             _models = (
                 "Profile",
-                "PersonalInformation",
-                "AboutMe",
                 "WorkExperience",
-                "EducationalRecord"
+                "EducationalRecord",
+                "CV"
             )
             for model in _models:
                 eval(f"{model}.objects.create(user=instance, slug=instance.phone)")

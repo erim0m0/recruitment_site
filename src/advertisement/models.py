@@ -1,11 +1,13 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.dispatch import receiver
-from django.db.models.signals import pre_save
 
 from accounts.models.company import CompanyProfile
-from .choises_models import GENDER, TYPE_OF_COOPERATION, ORGANIZATIONAL_CATEGORY_CHOICES
+from .choises_models import (
+    GENDER,
+    TYPE_OF_COOPERATION,
+    ORGANIZATIONAL_CATEGORY_CHOICES
+)
 
 
 class Advertisement(models.Model):
@@ -80,7 +82,6 @@ class Advertisement(models.Model):
     )
     benefits = models.ManyToManyField(
         "FacilitiesAndBenefits",
-        null=True,
         blank=True
     )
     salary = models.CharField(
@@ -97,11 +98,9 @@ class Advertisement(models.Model):
     )
     company = models.ForeignKey(
         CompanyProfile,
-        null=True,
-        blank=True,
         on_delete=models.CASCADE,
-        related_name="advertisements"
-        # editable=False
+        related_name="advertisements",
+        editable=False
     )
 
     def __str__(self):
@@ -124,8 +123,3 @@ class FacilitiesAndBenefits(models.Model):
     class Meta:
         verbose_name = _("Facilities And Benefits")
         verbose_name_plural = _("Facilities And Benefits")
-
-# @receiver(pre_save, sender=Advertisement)
-# def save_company_field(instance, created, **kwargs):
-#     if created:
-#         instance.company = CompanyProfile.objects.filter()

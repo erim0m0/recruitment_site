@@ -7,7 +7,7 @@ from accounts.models import users, blocked_phones, user_profile, company
 class CustomAdmin(BaseUserAdmin):
     model = users.User
     list_display = (
-        'phone', 'user_level','is_operator',
+        'phone', 'user_level', 'is_operator',
         'is_active_email', 'persian_date_created'
     )
     list_filter = ('is_superuser',)
@@ -26,7 +26,7 @@ class CustomAdmin(BaseUserAdmin):
          {'fields': ('phone', 'password', 'active_email_code'),
           'classes': ('collapse',)}),
         ('Permissions',
-         {'fields': ('user_level', 'is_active_email')}),
+         {'fields': ('user_level', 'is_active_email', 'is_operator')}),
         ("Group Permissions",
          {'fields': ('groups', 'user_permissions')}),
         ('Important Date',
@@ -41,11 +41,17 @@ class BlockPhonesAdmin(admin.ModelAdmin):
     list_display = ('phone',)
 
 
+@admin.register(company.CompanyProfile)
+class BlockPhonesAdmin(admin.ModelAdmin):
+    list_display = (
+        "name", "organizational_interface",
+        "number_of_advertisements"
+    )
+
+
 admin.site.register(users.User, CustomAdmin)
 admin.site.register(user_profile.Profile)
-admin.site.register(user_profile.AboutMe)
 admin.site.register(user_profile.EducationalRecord)
 admin.site.register(user_profile.WorkExperience)
-admin.site.register(user_profile.PersonalInformation)
-admin.site.register(company.CompanyProfile)
+admin.site.register(user_profile.CV)
 admin.site.register(company.Industry)

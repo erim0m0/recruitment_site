@@ -7,23 +7,26 @@ from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.throttling import ScopedRateThrottle
-from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView
 
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 
 from accounts.api.serializers import (
     CompanyProfileSerializer,
     CompanyProfileCreateSerializer
 )
-from permissions import IsOperatorOrStaff
 from accounts.models.company import CompanyProfile
+from permissions import IsOperatorOrStaff, IsOperatorOrNot
 
 
-class CompanyProfileAPIViews(RetrieveUpdateDestroyAPIView):
+class CompanyProfileView(RetrieveUpdateDestroyAPIView):
     serializer_class = CompanyProfileSerializer
-
-    permission_classes = [IsOperatorOrStaff]
+    permission_classes = [
+        IsOperatorOrStaff,
+        IsAuthenticated
+    ]
 
     def get_object(self):
         obj = get_object_or_404(
@@ -72,14 +75,17 @@ class CompanyProfileAPIViews(RetrieveUpdateDestroyAPIView):
             result,
             status=status.HTTP_200_OK
         )
-    # Todo: Add permisions from opeartor -> company_profile
-    def post(self, request, *args, **kwargs):
-        serializer = CompanyProfileCreateSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(
-            organizational_interface=request.user
-        )
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED
+
+
+class CompanyProfileCreateView(CreateAPIView):
+    serializer_class = CompanyProfileCreateSerializer
+    queryset = CompanyProfile.objects.all()
+    permission_classes = [
+        IsAuthenticated,
+        IsOperatorOrNot
+    ]
+
+    def perform_create(self, serializer):
+        return serializer.save(
+            organizational_interface=self.request.user
         )

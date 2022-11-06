@@ -7,54 +7,49 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 from .serializers import (
     ProfileSerializer,
-    AboutMeSerializer,
-    PersonalInformationSerializer,
     WorkExperienceSerializer,
-    EducationalRecordSerializer
+    EducationalRecordSerializer,
+    CVSerializer
 )
 
 from permissions import IsSuperUserOrReadOnly, IsOperatorOrStaff, IsUserOrStaff
 from accounts.models.user_profile import (
     Profile,
-    AboutMe,
     WorkExperience,
-    PersonalInformation,
-    EducationalRecord
+    EducationalRecord,
+    CV
 )
-
-dict_conf = {
-    "p": ("ProfileSerializer", "Profile"),
-    "pi": ("PersonalInformationSerializer", "PersonalInformation"),
-    "am": ("AboutMeSerializer", "AboutMe"),
-    "we": ("WorkExperienceSerializer", "WorkExperience"),
-    "er": ("EducationalRecordSerializer", "EducationalRecord")
-}
 
 
 class ProfileDetailUpdate(RetrieveUpdateAPIView):
-    permission_classes = (
+    permission_classes = [
         IsAuthenticated,
         IsUserOrStaff,
-    )
+    ]
     lookup_field = "slug"
 
-    def dispatch(self, request, *args, **kwargs):
-        if self.kwargs["profile"] not in dict_conf.keys():
-            raise Http404
-        return super(ProfileDetailUpdate, self).dispatch(request, *args, **kwargs)
-
     def get_serializer_class(self):
-        return eval(
-            dict_conf[self.kwargs["profile"]][0]
-        )
+        serializers = {
+            "work-experience": "WorkExperienceSerializer",
+            "educational-record": "EducationalRecordSerializer",
+            "cv": "CVSerializer"
+        }
+
+        try:
+            profile = self.kwargs["profile"]
+            serializer_class = eval(serializers[profile])
+        except KeyError:
+            serializer_class = ProfileSerializer
+
+        return serializer_class
 
     def get_object(self):
         obj = get_object_or_404(
-            eval(
-                f"{dict_conf[self.kwargs['profile']][1]}.objects.defer('user')"
+            Profile.objects.defer(
+                "user", "id", "slug"
             ),
             slug=self.kwargs["slug"]
         )
-        if not self.request.user.is_staff and obj.user != self.request.user:
-            raise Http404
+        # May raise a permission denied
+        self.check_object_permissions(self.request, obj)
         return obj

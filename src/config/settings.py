@@ -117,7 +117,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Default datetime
+# Default Datetime
 DATE_INPUT_FORMATS = ['%d/%m/%Y']
 
 # Static files (CSS, JavaScript, Images)
@@ -152,6 +152,7 @@ REST_FRAMEWORK = {
     },
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',

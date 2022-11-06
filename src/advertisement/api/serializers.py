@@ -24,3 +24,11 @@ class AdvertisementSerializer(ModelSerializer):
             "is_show_salary",
             "is_unknown"
         ]
+
+
+class AdvertisementCreateSerializer(ModelSerializer):
+    class Meta:
+        model = Advertisement
+        exclude = [
+            "company"
+        ]

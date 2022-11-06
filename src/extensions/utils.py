@@ -6,7 +6,7 @@ from jalali_date import datetime2jalali
 
 
 def persian_date_convertor(time) -> str:
-    persian_date = datetime2jalali(time).strftime('%y/%m/%d - ساعت %H:%M')
+    persian_date = datetime2jalali(time).strftime('%y/%m/%d - %H:%M')
     return persian_date
 
 
@@ -23,11 +23,21 @@ def create_otp_code(size: int = 6, char: str = digits) -> int:
     return random_otp_code
 
 
-def phone_validation(value):
+def phone_validator(value):
     from re import match
 
     if not match("^9\d{2}\s*?\d{3}\s*?\d{4}$", value):
         raise ValidationError(
             "The phone number is Invalid."
+        )
+    return value
+
+
+def email_validator(value):
+    from re import match
+
+    if not match("([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+", value):
+        raise ValidationError(
+            "The email is Invalid."
         )
     return value

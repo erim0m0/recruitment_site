@@ -1,16 +1,17 @@
 from rest_framework import serializers
+
 from django.contrib.auth import get_user_model
+
 from accounts.models.user_profile import (
     Profile,
-    AboutMe,
     WorkExperience,
     EducationalRecord,
-    PersonalInformation
+    CV
 )
 from accounts.models.company import CompanyProfile
 
 
-########## Authentication Serializers ##########
+########## Authentication's Serializers ##########
 
 class AuthenticationSerializer(serializers.Serializer):
     phone = serializers.CharField(
@@ -38,7 +39,6 @@ class OtpSerilizer(serializers.Serializer):
 
     code = serializers.CharField(
         max_length=6,
-        min_length=6
     )
 
     id_code = serializers.CharField(
@@ -66,21 +66,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         exclude = ("user", "id", "slug")
 
 
-class AboutMeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AboutMe
-        exclude = ("user", "id", "slug")
-
-
 class WorkExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkExperience
-        exclude = ("user", "id", "slug")
-
-
-class PersonalInformationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PersonalInformation
         exclude = ("user", "id", "slug")
 
 
@@ -90,7 +78,12 @@ class EducationalRecordSerializer(serializers.ModelSerializer):
         exclude = ("user", "id", "slug")
 
 
-########## Company ##########
+class CVSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CV
+        exclude = ("user", "id", "slug")
+
+########## Company's Serializers ##########
 
 class CompanyProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -98,6 +91,7 @@ class CompanyProfileSerializer(serializers.ModelSerializer):
         exclude = [
             "create_at"
         ]
+
 
 class CompanyProfileCreateSerializer(serializers.ModelSerializer):
     class Meta:

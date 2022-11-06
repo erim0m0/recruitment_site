@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.dispatch import receiver
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import (
     RegexValidator,
@@ -10,7 +10,7 @@ from django.core.validators import (
 )
 from django.contrib.auth import get_user_model
 
-from extensions.utils import phone_validation
+from extensions.utils import phone_validator, email_validator
 
 
 class Industry(models.Model):
@@ -43,13 +43,11 @@ class CompanyProfile(models.Model):
     email = models.EmailField(
         null=True,
         blank=True,
+        validators=[email_validator],
         verbose_name=_("email"),
     )
-    # TODO: Remove a null and blank attrs
     name = models.CharField(
         max_length=120,
-        null=True,
-        blank=True,
         unique=True,
         verbose_name=_("name"),
     )
@@ -103,7 +101,12 @@ class CompanyProfile(models.Model):
         blank=True,
         verbose_name=_("company view")
     )
+    YEAR_VALIDAITOR = RegexValidator(
+        regex="^13\d{2}",
+        message="The year is Invalid."
+    )
     established_year = models.PositiveIntegerField(
+        validators=[YEAR_VALIDAITOR],
         null=True,
         blank=True,
         verbose_name=_("established year")
@@ -115,12 +118,9 @@ class CompanyProfile(models.Model):
         blank=True,
         verbose_name=_("type of ownership")
     )
-    # TODO : Remove null and blak fiels
     organizational_interface = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
         verbose_name=_("organizational interface")
     )
     create_at = models.DateTimeField(
@@ -135,14 +135,6 @@ class CompanyProfile(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse("account:api:company-profile", kwargs={"pk": self.pk})
-
     class Meta:
         verbose_name = _("Company Profile")
         verbose_name_plural = _("Companies Profile")
-
-
-
-########## SIGNALS ##########
-

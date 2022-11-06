@@ -20,9 +20,13 @@ from config.settings import REDIS_PORT, REDIS_HOST_NAME
 
 
 class Register(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = [
+        AllowAny
+    ]
 
-    throttle_classes = (ScopedRateThrottle,)
+    throttle_classes = [
+        ScopedRateThrottle
+    ]
     throttle_scope = "authentication"
 
     def post(self, request):
@@ -58,9 +62,13 @@ class Register(APIView):
 
 
 class VerifyOtp(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = [
+        AllowAny
+    ]
 
-    throttle_classes = (ScopedRateThrottle,)
+    throttle_classes = [
+        ScopedRateThrottle
+    ]
     throttle_scope = "verify_authentication"
 
     def post(self, request):
@@ -74,10 +82,10 @@ class VerifyOtp(APIView):
         data: List = _redis_conf.hvals(received_phone)
         if received_id_code.encode() in data and received_code.encode() in data:
 
-            operator_data = {}
+            operator_data = dict()
 
             if "operator" in request.path:
-                operator_data["is_operator"] = True
+                operator_data.update({"is_operator": True})
 
             user, created = get_user_model().objects.update_or_create(
                 phone=received_phone,
@@ -118,7 +126,9 @@ class VerifyOtp(APIView):
 
 
 class Login(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = [
+        AllowAny
+    ]
 
     def post(self, request):
         serializer = AuthenticationSerializer(data=request.data)
@@ -130,7 +140,7 @@ class Login(APIView):
         }
 
         if "operator" in request.path:
-            data_filter["is_operator"] = True
+            data_filter.update({"is_operator": True})
 
         is_exist_user: bool = get_user_model().objects.filter(**data_filter).exists()
         if not is_exist_user:
@@ -144,7 +154,9 @@ class Login(APIView):
 
 
 class DeleteAccount(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [
+        IsAuthenticated
+    ]
 
     def delete(self, request):
         user = get_user_model().objects.get(pk=request.user.pk)
