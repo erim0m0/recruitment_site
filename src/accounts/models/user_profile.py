@@ -3,10 +3,11 @@ from django.urls import reverse
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from extensions.utils import email_validator
+from extensions.utils import email_validator, national_code_validator
+from advertisement.choises_models import PROVINCE
 
 
 ########## Models ##########
@@ -52,11 +53,12 @@ class Profile(MainProfile):
         ("Male", "M")
     )
     MILITARY_SERVICE_STATUS = (
-        ("end of service", "the end of service"),
-        ("permanent exemption", "permanent exemption"),
-        ("education pardon", "education pardon"),
-        ("doing", "doing"),
-        ("included", "included")
+        ("دارای کارت پایان خدمت", "دارای کارت پایان خدمت"),
+        ("در حال خدمت", "در حال خدمت"),
+        ("معاف از رزم", "معاف از رزم"),
+        ("معافیت تحصیلی", "معافیت تحصیلی"),
+        ("معافیت پزشکی", "معافیت پزشکی"),
+        ("سایر معافیت ها", "سایر معافیت ها")
     )
 
     first_name = models.CharField(
@@ -82,11 +84,30 @@ class Profile(MainProfile):
         blank=True,
         verbose_name=_("avatar")
     )
-    country = models.CharField(
-        max_length=200,
+    national_code = models.CharField(
+        max_length=10,
         null=True,
         blank=True,
+        validators=[national_code_validator],
+        verbose_name=_("national_code")
+    )
+    passport_number = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True,
+        verbose_name=_("passport_number")
+    )
+    country = models.CharField(
+        max_length=200,
+        default="Iran",
         verbose_name=_("country")
+    )
+    province = models.CharField(
+        max_length=200,
+        choices=PROVINCE,
+        null=True,
+        blank=True,
+        verbose_name=_("province")
     )
     city = models.CharField(
         max_length=200,
@@ -123,6 +144,12 @@ class Profile(MainProfile):
         blank=True,
         verbose_name=_("Military Service Status")
     )
+    other_exemptions = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name=_("other_exemptions")
+    )
     about_me = models.TextField(
         max_length=500,
         null=True,
@@ -152,10 +179,6 @@ class WorkExperience(MainProfile):
         null=True,
         blank=True,
         verbose_name=_("Company")
-    )
-    employment_period = models.DateTimeField(
-        null=True,
-        blank=True
     )
 
     class Meta:
@@ -188,10 +211,30 @@ class EducationalRecord(MainProfile):
         blank=True,
         verbose_name=_("University")
     )
+    grade = models.FloatField(
+        null=True,
+        blank=True
+    )
 
     class Meta:
         verbose_name = _("Educational Record")
         verbose_name_plural = _("Educational Records")
+
+
+class Language(MainProfile):
+    name = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name=_("Language")
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("Language")
+        verbose_name_plural = _("Languages")
 
 
 class CV(MainProfile):

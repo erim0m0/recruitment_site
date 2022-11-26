@@ -61,6 +61,25 @@ class OtpSerilizer(serializers.Serializer):
 ########## Profiles Serializers ##########
 
 class ProfileSerializer(serializers.ModelSerializer):
+
+    def validate(self, data):
+        try:
+            is_other_exemptions: bool = all(
+                [
+                    data["military_service_status"] != "سایر معافیت ها",
+                    data["other_exemptions"]
+                ]
+            )
+            if is_other_exemptions:
+                raise serializers.ValidationError(
+                    {
+                        "Error": "Please choose another military_service_status's field"
+                    }
+                )
+            return data
+        except KeyError:
+            return data
+
     class Meta:
         model = Profile
         exclude = ("user", "id", "slug")
@@ -82,6 +101,7 @@ class CVSerializer(serializers.ModelSerializer):
     class Meta:
         model = CV
         exclude = ("user", "id", "slug")
+
 
 ########## Company's Serializers ##########
 

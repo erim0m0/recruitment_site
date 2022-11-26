@@ -148,7 +148,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_THROTTLE_RATES': {
         "authentication": "6/hour",
-        "verify_authentication": "9/hour",
+        "verify_authentication": "8/hour",
     },
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',

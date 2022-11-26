@@ -41,3 +41,16 @@ def email_validator(value):
             "The email is Invalid."
         )
     return value
+
+
+def national_code_validator(value: str) -> bool:
+    _sum = 0
+    for i in range(2, 11):
+        _sum += i * int(value[-i])
+    last_value = int(value[-1])
+    remainder = _sum % 11
+    if 2 > remainder == last_value:
+        return True
+    elif 11 - remainder == last_value:
+        return True
+    return False

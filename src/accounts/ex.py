@@ -20,10 +20,13 @@
 # print(timeit.timeit(a, number=10000))
 #
 #
-serializers = {
-    "work-experience": "",
-    "educational-record": "",
-    "cv": ""
-}
+d = {"ja":'ye'}
+b = 'fa'
+
+try:
+    c = all((b=="fa",d['ja']))
+    print(c)
+except KeyError:
+    print(False)
 
 

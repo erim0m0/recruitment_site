@@ -22,10 +22,10 @@ from accounts.models.user_profile import (
 
 
 class ProfileDetailUpdate(RetrieveUpdateAPIView):
-    permission_classes = [
-        IsAuthenticated,
-        IsUserOrStaff,
-    ]
+    # permission_classes = [
+    #     IsAuthenticated,
+    #     IsUserOrStaff,
+    # ]
     lookup_field = "slug"
 
     def get_serializer_class(self):

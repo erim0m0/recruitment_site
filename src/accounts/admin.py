@@ -49,9 +49,17 @@ class BlockPhonesAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(user_profile.EducationalRecord)
+class EducationalRecordAdmin(admin.ModelAdmin):
+    list_display = (
+        "major",
+        "university",
+        "grade",
+    )
+
+
 admin.site.register(users.User, CustomAdmin)
 admin.site.register(user_profile.Profile)
-admin.site.register(user_profile.EducationalRecord)
 admin.site.register(user_profile.WorkExperience)
 admin.site.register(user_profile.CV)
 admin.site.register(company.Industry)

@@ -6,22 +6,23 @@ from accounts.models.company import CompanyProfile
 from .choises_models import (
     GENDER,
     TYPE_OF_COOPERATION,
-    ORGANIZATIONAL_CATEGORY_CHOICES
 )
+from accounts.models.user_profile import Language
+from advertisement.choises_models import PROVINCE
 
 
 class Advertisement(models.Model):
+    SALARY_CHOICES = (
+        ("پیشنهادی", "پیشنهادی"),
+        ("توافقی", "توافقی")
+    )
+
     title = models.CharField(
         max_length=150,
         verbose_name=_("title")
     )
-    is_unknown = models.BooleanField(
-        default=False,
-        verbose_name=_("is unknown")
-    )
     organizational_category = models.CharField(
         max_length=75,
-        choices=ORGANIZATIONAL_CATEGORY_CHOICES,
         verbose_name=_("organizational category")
     )
     type_of_cooperation = models.CharField(
@@ -31,7 +32,15 @@ class Advertisement(models.Model):
     )
     country = models.CharField(
         max_length=100,
+        default="Iran",
         verbose_name=_("country")
+    )
+    province = models.CharField(
+        max_length=200,
+        choices=PROVINCE,
+        blank=True,
+        null=True,
+        verbose_name=_("province")
     )
     city = models.CharField(
         max_length=100,
@@ -41,20 +50,21 @@ class Advertisement(models.Model):
         default=False,
         verbose_name=_("living same city preference")
     )
-    remote = models.BooleanField(
-        default=False,
-        verbose_name=_("remote")
-    )
-    work_time = models.CharField(
+    # Todo: Edit it
+    work_time = models.TimeField(
         max_length=250,
+        null=True,
+        blank=True,
         verbose_name=_("work time")
     )
     minimum_age = models.PositiveIntegerField(
         validators=[MinValueValidator(18)],
+        default="there is no limit",
         verbose_name=_("minimum age")
     )
     maximum_age = models.PositiveIntegerField(
         validators=[MaxValueValidator(50)],
+        default="there is no limit",
         verbose_name=_("maximum age")
     )
     gender = models.CharField(
@@ -62,38 +72,41 @@ class Advertisement(models.Model):
         choices=GENDER,
         verbose_name=_("gender")
     )
-    get_intern = models.BooleanField(
-        default=False,
-        verbose_name=_("get intern")
-    )
-    exemption_or_complete_military_service = models.BooleanField(
-        default=False,
-        verbose_name=_("exemption or complete military service")
+    military_service_status = models.ManyToManyField(
+        "MilitaryServiceStatus",
+        default=(MilitaryServiceStatus.objects.get("اهمیتی ندارد")),
+        verbose_name=_("Military Service Status")
     )
     amount_of_work_experience = models.PositiveIntegerField(
         validators=[MinValueValidator(2)],
         verbose_name=_("amount of work experience")
     )
     # TODO: edit this field
-    languages = models.CharField(
-        # choices=
-        max_length=75,
+    languages = models.ManyToManyField(
+        Language,
         verbose_name=_("languages")
     )
     benefits = models.ManyToManyField(
         "FacilitiesAndBenefits",
         blank=True
     )
-    salary = models.CharField(
+    type_of_salary = models.CharField(
+        choices=SALARY_CHOICES,
         max_length=75,
+        null=True,
+        blank=True,
         verbose_name=_("salary")
     )
-    is_show_salary = models.BooleanField(
-        default=False,
-        verbose_name=_("show salary")
+    salary = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name=_("salary")
     )
     job_description = models.TextField(
         max_length=500,
+        null=True,
+        blank=True,
         verbose_name=_("job description")
     )
     company = models.ForeignKey(
@@ -123,3 +136,17 @@ class FacilitiesAndBenefits(models.Model):
     class Meta:
         verbose_name = _("Facilities And Benefits")
         verbose_name_plural = _("Facilities And Benefits")
+
+
+class MilitaryServiceStatus(models.Model):
+    title = models.CharField(
+        max_length=100,
+        verbose_name=_("title")
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _("MilitaryServiceStatus")
+        verbose_name_plural = _("MilitaryServiceStatus")
