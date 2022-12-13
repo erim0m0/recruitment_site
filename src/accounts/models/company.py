@@ -11,51 +11,29 @@ from django.core.validators import (
 from django.contrib.auth import get_user_model
 
 from extensions.utils import phone_validator, email_validator
-
-
-class Industry(models.Model):
-    """
-    This model is related to every organization
-    in what kind of industry it is engaged in
-    """
-    type = models.CharField(
-        max_length=200,
-        null=True,
-        blank=True,
-        verbose_name=_("type of company")
-    )
-
-    def __str__(self):
-        return self.type
-
-    class Meta:
-        verbose_name = _("Industry")
-        verbose_name_plural = _("Industries")
+from extensions.choises_models import (
+    Type_OF_OWNERSHIP, INDUSTRY,
+    COUNTRIES,PROVINCE, CITIES
+)
 
 
 class CompanyProfile(models.Model):
-    Type_OF_OWNERSHIP = (
-        ("Private", "Private"),
-        ("Government", "Government"),
-        ("Other", "Non-profit/Charity")
-    )
-
-    email = models.EmailField(
-        null=True,
-        blank=True,
-        validators=[email_validator],
-        verbose_name=_("email"),
-    )
     name = models.CharField(
         max_length=120,
         unique=True,
+        db_index=True,
         verbose_name=_("name"),
     )
     english_name = models.CharField(
         max_length=120,
+        unique=True,
         null=True,
         blank=True,
         verbose_name=_("english name")
+    )
+    email = models.EmailField(
+        validators=[email_validator],
+        verbose_name=_("email"),
     )
     website_addr = models.CharField(
         max_length=120,
@@ -68,17 +46,24 @@ class CompanyProfile(models.Model):
         max_length=10,
         unique=True
     )
-    industry = models.ForeignKey(
-        Industry,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
+    industry = models.CharField(
+        max_length=100,
+        choices=INDUSTRY,
         verbose_name=_("industry")
+    )
+    country = models.CharField(
+        max_length=100,
+        choices=COUNTRIES,
+        verbose_name=_("country")
+    )
+    province = models.CharField(
+        max_length=100,
+        choices=PROVINCE,
+        verbose_name=_("city")
     )
     city = models.CharField(
         max_length=100,
-        null=True,
-        blank=True,
+        choices=CITIES,
         verbose_name=_("city")
     )
     # TODO: set address of upload
@@ -107,13 +92,11 @@ class CompanyProfile(models.Model):
     )
     established_year = models.PositiveIntegerField(
         validators=[YEAR_VALIDAITOR],
-        null=True,
-        blank=True,
         verbose_name=_("established year")
     )
     type_of_ownership = models.CharField(
         choices=Type_OF_OWNERSHIP,
-        max_length=10,
+        max_length=12,
         null=True,
         blank=True,
         verbose_name=_("type of ownership")
@@ -123,9 +106,9 @@ class CompanyProfile(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("organizational interface")
     )
-    create_at = models.DateTimeField(
+    created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name=_("create at")
+        verbose_name=_("created at")
     )
     number_of_advertisements = models.PositiveIntegerField(
         default=0,

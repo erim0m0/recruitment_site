@@ -52,11 +52,44 @@ class OtpSerilizer(serializers.Serializer):
         except ValueError:
             raise serializers.ValidationError(
                 {
-                    "error": "code is Invalid."
+                    "Error": "code is Invalid."
                 }
             )
         return value
 
+
+class GetTwoStepPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(
+        max_length=20
+    )
+    confirm_password = serializers.CharField(
+        max_length=20
+    )
+
+    def validate_password(self, value):
+        from re import match
+
+        if not match("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8, 20}$", value):
+            raise serializers.ValidationError(
+                {"Error": "The phone number is Invalid."}
+            )
+        return value
+
+    def validate(self, data):
+        password = data.get("password")
+        confirm_password = data.get("confirm_password")
+
+        if password != confirm_password:
+            raise serializers.ValidationError(
+                {"Error": "Your passwords didn't match."}
+            )
+        return data
+
+
+class ChangeTwoStepPasswordSerializer(GetTwoStepPasswordSerializer):
+    old_password = serializers.CharField(
+        max_length=20
+    )
 
 ########## Profiles Serializers ##########
 

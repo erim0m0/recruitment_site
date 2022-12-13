@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase
 from django.urls import resolve, reverse
 
-from accounts.api import authentication_views, profiles_views
+from accounts.api import authentication, profiles_views
 
 
 class UrlsTest(SimpleTestCase):

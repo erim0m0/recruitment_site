@@ -50,7 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     date_joined = models.DateTimeField(
         auto_now_add=True,
-        verbose_name=_("date_joined")
+        verbose_name=_("date joined")
     )
 
     USERNAME_FIELD = "phone"

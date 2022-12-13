@@ -1,10 +1,7 @@
 from django.contrib import admin
-from .models import Advertisement, FacilitiesAndBenefits, MilitaryServiceStatus
+from .models import Advertisement
 
 # Register your models here.
-
-admin.site.register(FacilitiesAndBenefits)
-admin.site.register(MilitaryServiceStatus)
 
 
 @admin.register(Advertisement)

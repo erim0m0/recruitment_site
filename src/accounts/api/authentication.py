@@ -2,6 +2,7 @@ from redis import Redis
 from typing import List
 
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -14,6 +15,7 @@ from accounts.api.otp_creator import send_otp
 from accounts.api.serializers import (
     AuthenticationSerializer,
     OtpSerilizer,
+    GetTwoStepPasswordSerializer
 )
 from accounts.models.blocked_phones import BlockedPhone
 from config.settings import REDIS_PORT, REDIS_HOST_NAME
@@ -167,3 +169,112 @@ class DeleteAccount(APIView):
             },
             status=status.HTTP_204_NO_CONTENT
         )
+
+
+class CreateTwoStepPassword(APIView):
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def post(self, request):
+        serializer = GetTwoStepPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        recieved_password = serializer.get("password")
+
+        user = get_object_or_404(
+            get_user_model(),
+            pk=request.user.pk
+        )
+        user.set_password(recieved_password)
+        user.save(update_fields=["password"])
+
+        return Response(
+            {
+                "Successful.": "Your password was changed successfully.",
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class VerifyTwoStepPassword(APIView):
+    permission_classes = [
+        AllowAny
+    ]
+
+    throttle_classes = [
+        ScopedRateThrottle
+    ]
+    throttle_scope = "verify_authentication"
+
+    def post(self, request):
+        serializer = GetTwoStepPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        recieved_password = serializer.get("password")
+
+        user = get_object_or_404(
+            get_user_model(),
+            pk=request.user.pk
+        )
+        check_password: bool = user.check_password(recieved_password)
+        if check_password:
+            refresh = RefreshToken.for_user(user)
+            context = {
+                "created": created,
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }
+
+            return Response(
+                context,
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {
+                    "Error!": "The password entered is incorrect",
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE
+            )
+
+
+class ChangeTwoStepPassword(APIView):
+    """
+    post:
+        Send a password to change a two-step-password.
+
+        parameters: [old_password, new_password, confirm_new_password,]
+    """
+
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def post(self, request):
+        serializer = ChangeTwoStepPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        old_password = serializer.data.get("old_password")
+        user = get_object_or_404(
+            get_user_model(),
+            pk=request.user.pk,
+        )
+        check_password: bool = user.check_password(old_password)
+
+        if check_password:
+            new_password = serializer.data.get("password")
+            user.set_password(new_password)
+            user.save(update_fields=["password"])
+
+            return Response(
+                {
+                    "Successful.": "Your password was changed successfully.",
+                },
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {
+                    "Error!": "The password entered is incorrect.",
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )

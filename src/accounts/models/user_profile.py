@@ -3,11 +3,14 @@ from django.urls import reverse
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
-from django.core.validators import RegexValidator, ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from extensions.utils import email_validator, national_code_validator
-from advertisement.choises_models import PROVINCE
+from extensions.choises_models import (
+    PROVINCE,COUNTRIES,CITIES,
+USER_GENDER, LANGUAGES
+
+)
 
 
 ########## Models ##########
@@ -47,11 +50,6 @@ class Profile(MainProfile):
     Profile class for each user which is
     being created to hold the information
     """
-
-    GENDER = (
-        ("Female", "F"),
-        ("Male", "M")
-    )
     MILITARY_SERVICE_STATUS = (
         ("دارای کارت پایان خدمت", "دارای کارت پایان خدمت"),
         ("در حال خدمت", "در حال خدمت"),
@@ -63,14 +61,10 @@ class Profile(MainProfile):
 
     first_name = models.CharField(
         max_length=150,
-        null=True,
-        blank=True,
         verbose_name=_('First Name')
     )
     last_name = models.CharField(
         max_length=150,
-        null=True,
-        blank=True,
         verbose_name=_('Last Name')
     )
     email = models.EmailField(
@@ -79,6 +73,7 @@ class Profile(MainProfile):
         validators=[email_validator],
         verbose_name=_('Email')
     )
+    # TODO: edit this field
     avatar = models.ImageField(
         null=True,
         blank=True,
@@ -86,8 +81,6 @@ class Profile(MainProfile):
     )
     national_code = models.CharField(
         max_length=10,
-        null=True,
-        blank=True,
         validators=[national_code_validator],
         verbose_name=_("national_code")
     )
@@ -99,20 +92,18 @@ class Profile(MainProfile):
     )
     country = models.CharField(
         max_length=200,
-        default="Iran",
+        choices=COUNTRIES,
+        default="IR",
         verbose_name=_("country")
     )
     province = models.CharField(
         max_length=200,
         choices=PROVINCE,
-        null=True,
-        blank=True,
         verbose_name=_("province")
     )
     city = models.CharField(
         max_length=200,
-        null=True,
-        blank=True,
+        choices=CITIES,
         verbose_name=_("city")
     )
     address = models.TextField(
@@ -126,10 +117,8 @@ class Profile(MainProfile):
         verbose_name=_("Is Married ?")
     )
     gender = models.CharField(
-        choices=GENDER,
+        choices=USER_GENDER,
         max_length=6,
-        null=True,
-        blank=True,
         verbose_name=_("Gender")
     )
     date_of_birth = models.DateField(
@@ -193,10 +182,10 @@ class EducationalRecord(MainProfile):
     """
 
     GRADE_CHOICE = (
-        ("Diploma", "Diploma"),
-        ("Associate DegreeAA", "AD"),
-        ("Bachelor of Science", "BS"),
-        ("Doctor of Philosophy", "Dr")
+        ("Diploma", "دیپلم"),
+        ("Associate DegreeAA", "لیسانس"),
+        ("Bachelor of Science", "فوق لیسانس"),
+        ("Doctor of Philosophy", "دکتری")
     )
 
     major = models.CharField(
@@ -213,8 +202,12 @@ class EducationalRecord(MainProfile):
     )
     grade = models.FloatField(
         null=True,
-        blank=True
+        blank=True,
+        verbose_name=_("Grade")
     )
+
+    def __str__(self):
+        return self.user
 
     class Meta:
         verbose_name = _("Educational Record")
@@ -226,11 +219,12 @@ class Language(MainProfile):
         max_length=200,
         null=True,
         blank=True,
+        choices=LANGUAGES,
         verbose_name=_("Language")
     )
 
     def __str__(self):
-        return self.name
+        return self.user
 
     class Meta:
         verbose_name = _("Language")
@@ -242,6 +236,9 @@ class CV(MainProfile):
         null=True,
         blank=True
     )
+
+    def __str__(self):
+        return self.user
 
     class Meta:
         verbose_name = _("CV")

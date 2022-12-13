@@ -3,22 +3,22 @@ from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 from accounts.models.company import CompanyProfile
-from .choises_models import (
+from extensions.choises_models import (
     GENDER,
     TYPE_OF_COOPERATION,
 )
 from accounts.models.user_profile import Language
-from advertisement.choises_models import PROVINCE
+from extensions.choises_models import (
+    PROVINCE, COUNTRIES, MILITARY_SERVICES_STATUS,
+    LANGUAGES, LANGUAGES_LEVEL, BENEFITS,
+    SALARY
+)
 
 
 class Advertisement(models.Model):
-    SALARY_CHOICES = (
-        ("پیشنهادی", "پیشنهادی"),
-        ("توافقی", "توافقی")
-    )
-
     title = models.CharField(
         max_length=150,
+        db_index=True,
         verbose_name=_("title")
     )
     organizational_category = models.CharField(
@@ -30,26 +30,6 @@ class Advertisement(models.Model):
         choices=TYPE_OF_COOPERATION,
         verbose_name=_("type of cooperation")
     )
-    country = models.CharField(
-        max_length=100,
-        default="Iran",
-        verbose_name=_("country")
-    )
-    province = models.CharField(
-        max_length=200,
-        choices=PROVINCE,
-        blank=True,
-        null=True,
-        verbose_name=_("province")
-    )
-    city = models.CharField(
-        max_length=100,
-        verbose_name=_("city")
-    )
-    living_same_city_preference = models.BooleanField(
-        default=False,
-        verbose_name=_("living same city preference")
-    )
     # Todo: Edit it
     work_time = models.TimeField(
         max_length=250,
@@ -57,14 +37,35 @@ class Advertisement(models.Model):
         blank=True,
         verbose_name=_("work time")
     )
+    country = models.CharField(
+        max_length=100,
+        default="IR",
+        choices=COUNTRIES,
+        verbose_name=_("country")
+    )
+    province = models.CharField(
+        max_length=200,
+        choices=PROVINCE,
+        verbose_name=_("province")
+    )
+    city = models.CharField(
+        max_length=150,
+        verbose_name=_("city")
+    )
+    is_company_have_living_place = models.BooleanField(
+        default=False,
+        verbose_name=_("is company have living place")
+    )
     minimum_age = models.PositiveIntegerField(
         validators=[MinValueValidator(18)],
-        default="there is no limit",
+        null=True,
+        blank=True,
         verbose_name=_("minimum age")
     )
     maximum_age = models.PositiveIntegerField(
         validators=[MaxValueValidator(50)],
-        default="there is no limit",
+        null=True,
+        blank=True,
         verbose_name=_("maximum age")
     )
     gender = models.CharField(
@@ -72,35 +73,39 @@ class Advertisement(models.Model):
         choices=GENDER,
         verbose_name=_("gender")
     )
-    military_service_status = models.ManyToManyField(
-        "MilitaryServiceStatus",
-        default=(MilitaryServiceStatus.objects.get("اهمیتی ندارد")),
+    military_service_status = models.CharField(
+        max_length=100,
+        choices=MILITARY_SERVICES_STATUS,
         verbose_name=_("Military Service Status")
     )
-    amount_of_work_experience = models.PositiveIntegerField(
+    work_experience = models.PositiveIntegerField(
         validators=[MinValueValidator(2)],
         verbose_name=_("amount of work experience")
     )
     # TODO: edit this field
-    languages = models.ManyToManyField(
-        Language,
+    language = models.CharField(
+        max_length=100,
+        choices=LANGUAGES,
         verbose_name=_("languages")
     )
-    benefits = models.ManyToManyField(
-        "FacilitiesAndBenefits",
-        blank=True
+    language_level = models.CharField(
+        max_length=20,
+        choices=LANGUAGES_LEVEL,
+        verbose_name=_("language level")
     )
-    type_of_salary = models.CharField(
-        choices=SALARY_CHOICES,
-        max_length=75,
+    # TODO: edit this field
+    benefits = models.CharField(
+        max_length=200,
+        choices=BENEFITS,
         null=True,
         blank=True,
-        verbose_name=_("salary")
+        verbose_name=_("benefits")
     )
+    # TODO: edit this field
     salary = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True,
+        max_length=75,
+        choices=SALARY,
+        db_index=True,
         verbose_name=_("salary")
     )
     job_description = models.TextField(
@@ -122,31 +127,3 @@ class Advertisement(models.Model):
     class Meta:
         verbose_name = _("Advertisement")
         verbose_name_plural = _("Advertisements")
-
-
-class FacilitiesAndBenefits(models.Model):
-    title = models.CharField(
-        max_length=100,
-        verbose_name=_("title")
-    )
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = _("Facilities And Benefits")
-        verbose_name_plural = _("Facilities And Benefits")
-
-
-class MilitaryServiceStatus(models.Model):
-    title = models.CharField(
-        max_length=100,
-        verbose_name=_("title")
-    )
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = _("MilitaryServiceStatus")
-        verbose_name_plural = _("MilitaryServiceStatus")
