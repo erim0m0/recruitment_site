@@ -8,8 +8,7 @@ from django.http import Http404
 from .serializers import (
     ProfileSerializer,
     WorkExperienceSerializer,
-    EducationalRecordSerializer,
-    CVSerializer
+    EducationalRecordSerializer
 )
 
 from permissions import IsSuperUserOrReadOnly, IsOperatorOrStaff, IsUserOrStaff
@@ -17,7 +16,6 @@ from accounts.models.user_profile import (
     Profile,
     WorkExperience,
     EducationalRecord,
-    CV
 )
 
 
@@ -32,7 +30,6 @@ class ProfileDetailUpdate(RetrieveUpdateAPIView):
         serializers = {
             "work-experience": "WorkExperienceSerializer",
             "educational-record": "EducationalRecordSerializer",
-            "cv": "CVSerializer"
         }
 
         try:
