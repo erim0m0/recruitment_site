@@ -16,18 +16,25 @@ class IsSuperUserOrReadOnly(BasePermission):
 class IsOperatorOrStaff(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        return bool(
-            obj.organizational_interface == request.user or
+        if any([
+            obj.organizational_interface == request.user and \
+            request.user.is_authenticated,
             request.user.is_staff
-        )
+        ]):
+            return True
+        return False
 
 
 class IsOperatorOrNot(BasePermission):
-    message = "This user not a Operator"
+    message = "This user isn't an Operator"
 
     def has_permission(self, request, view):
-        if request.user.is_operator or request.user.is_staff:
+        if any([
+            request.user.is_operator and request.user.is_authenticated,
+            request.user.is_staff
+        ]):
             return True
+        return False
 
 
 class IsCompanyExistOrNot(BasePermission):
@@ -56,9 +63,12 @@ class IsFounderOrStaff(BasePermission):
 
 
 class IsUserOrStaff(BasePermission):
-    message = "This User isn't Access That Information"
+    message = "This user can't access the information"
 
     def has_object_permission(self, request, view, obj):
-        if obj.user == request.user or request.user.is_staff:
+        if any([
+            obj.user == request.user and request.user.is_authenticated,
+            request.user.is_staff
+        ]):
             return True
         return False

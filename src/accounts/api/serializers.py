@@ -2,16 +2,13 @@ from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
 
-from accounts.models.user_profile import (
-    Profile,
-    WorkExperience,
-    EducationalRecord,
-    CV
-)
 from accounts.models.company import CompanyProfile
+from accounts.models.user_profile import (
+    Profile
+)
 
 
-########## Authentication's Serializers ##########
+########## AUTHENTICATION'S SERIALIZERS ##########
 
 class AuthenticationSerializer(serializers.Serializer):
     phone = serializers.CharField(
@@ -69,7 +66,9 @@ class GetTwoStepPasswordSerializer(serializers.Serializer):
     def validate_password(self, value):
         from re import match
 
-        if not match("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8, 20}$", value):
+        if not match(
+                "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8, 20}$",
+                value):
             raise serializers.ValidationError(
                 {"Error": "The phone number is Invalid."}
             )
@@ -91,58 +90,43 @@ class ChangeTwoStepPasswordSerializer(GetTwoStepPasswordSerializer):
         max_length=20
     )
 
-########## Profiles Serializers ##########
+
+########## PROFILE SERIALIZERS ##########
 
 class ProfileSerializer(serializers.ModelSerializer):
-
-    def validate(self, data):
-        try:
-            is_other_exemptions: bool = all(
-                [
-                    data["military_service_status"] != "سایر معافیت ها",
-                    data["other_exemptions"]
-                ]
-            )
-            if is_other_exemptions:
-                raise serializers.ValidationError(
-                    {
-                        "Error": "Please choose another military_service_status's field"
-                    }
-                )
-            return data
-        except KeyError:
-            return data
-
     class Meta:
         model = Profile
-        exclude = ("user", "id", "slug")
+        exclude = [
+            "id", "user", "slug"
+        ]
 
 
-class WorkExperienceSerializer(serializers.ModelSerializer):
+class ProfileCreateSerializer(serializers.ModelSerializer):
+    class meta:
+        model = Profile
+        fields = "__all__"
+
+
+########## COMPANY'S SERIALIZERS ##########
+
+class CompaniesListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = WorkExperience
-        exclude = ("user", "id", "slug")
+        model = CompanyProfile
+        fields = [
+            "id", "name", "logo"
+        ]
 
-
-class EducationalRecordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EducationalRecord
-        exclude = ("user", "id", "slug")
-
-
-class CVSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CV
-        exclude = ("user", "id", "slug")
-
-
-########## Company's Serializers ##########
 
 class CompanyProfileSerializer(serializers.ModelSerializer):
+    organizational_interface_phone = serializers.CharField(
+        source="organizational_interface.phone"
+    )
+
     class Meta:
         model = CompanyProfile
         exclude = [
-            "create_at"
+            "created_at",
+            "organizational_interface"
         ]
 
 
@@ -150,7 +134,7 @@ class CompanyProfileCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyProfile
         exclude = [
-            "create_at",
+            "created_at",
             "number_of_advertisements",
             "organizational_interface"
         ]

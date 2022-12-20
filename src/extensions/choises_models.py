@@ -9,9 +9,9 @@ INDUSTRY = (
 )
 
 TYPE_OF_COOPERATION = (
-    ("full-time", "full-time"),
-    ("per time", "per time"),
-    ("remote", "remote"),
+    ("full-time", "تمام وقت"),
+    ("per time", "پاره وقت"),
+    ("remote", "دورکاری"),
 )
 
 SALARY = (
@@ -24,18 +24,34 @@ USER_GENDER = (
 )
 
 GENDER = (
-    ("male", "male"),
-    ("female", "female"),
-    ("preferably_male", "preferably_male"),
-    ("preferably_female", "preferably_female")
+    ("male", "مرد"),
+    ("female", "زن"),
+    ("preferably_male", "ترجیحا مرد"),
+    ("preferably_female", "ترجیحا زن")
 )
 
-MILITARY_SERVICES_STATUS = (
+P_MILITARY_SERVICE_STATUS = (
+    ("دارای کارت پایان خدمت", "دارای کارت پایان خدمت"),
+    ("در حال خدمت", "در حال خدمت"),
+    ("معاف از رزم", "معاف از رزم"),
+    ("معافیت تحصیلی", "معافیت تحصیلی"),
+    ("معافیت پزشکی", "معافیت پزشکی"),
+    ("سایر معافیت ها", "سایر معافیت ها")
+)
+
+AD_MILITARY_SERVICES_STATUS = (
     ("دارای کارت پایان خدمت", "دارای کارت پایان خدمت"),
     ("در حال خدمت", "در حال خدمت"),
     ("معافیت پزشکی", "معافیت پزشکی"),
     ("سایر معافیت ها( معافیت غیر پزشکی )", "سایر معافیت ها( معافیت غیر پزشکی )"),
     ("اهمیتی ندارد", "اهمیتی ندارد"),
+)
+
+GRADE_CHOICE = (
+    ("Diploma", "دیپلم"),
+    ("Associate DegreeAA", "لیسانس"),
+    ("Bachelor of Science", "فوق لیسانس"),
+    ("Doctor of Philosophy", "دکتری")
 )
 
 LANGUAGES = (
@@ -88,7 +104,7 @@ PROVINCE = (
 )
 
 CITIES = (
-
+    ("mashhad", "mashhad"),
 )
 
 COUNTRIES = (

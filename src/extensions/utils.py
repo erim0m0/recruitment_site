@@ -1,8 +1,7 @@
-from string import digits, ascii_letters
 from secrets import choice
-
-from django.core.exceptions import ValidationError
 from jalali_date import datetime2jalali
+from string import digits, ascii_letters
+from django.core.exceptions import ValidationError
 
 
 def persian_date_convertor(time) -> str:
@@ -12,7 +11,7 @@ def persian_date_convertor(time) -> str:
 
 def create_random_code() -> str:
     alphabet = ascii_letters + digits
-    random_code: str = ''.join(choice(alphabet) for i in range(32))
+    random_code: str = ''.join(choice(alphabet) for _ in range(32))
     return random_code
 
 
@@ -23,7 +22,7 @@ def create_otp_code(size: int = 6, char: str = digits) -> int:
     return random_otp_code
 
 
-def phone_validator(value):
+def phone_validator(value: str) -> str:
     from re import match
 
     if not match("^9\d{2}\s*?\d{3}\s*?\d{4}$", value):
@@ -33,7 +32,7 @@ def phone_validator(value):
     return value
 
 
-def email_validator(value):
+def email_validator(value: str) -> str:
     from re import match
 
     if not match("([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+", value):

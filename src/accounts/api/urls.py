@@ -1,21 +1,22 @@
 from django.urls import path
 
-from .profiles_views import ProfileDetailUpdate
-from .authentication import (
-    Register, Login,
-    VerifyOtp, DeleteAccount,
-    CreateTwoStepPassword, VerifyTwoStepPassword,
-    ChangeTwoStepPassword
+from .user_profile import (
+    ProfileDetailUpdateDestroy, ProfileCreate
 )
-from .company_interface import (
-    CompanyProfileView,
-    CompanyProfileCreateView,
+from .authentication import (
+    ChangeTwoStepPassword, VerifyOtp, Register,
+    CreateTwoStepPassword, DeleteAccount, Login,
+    VerifyTwoStepPassword,
+)
+from .company import (
+    CompanyProfileDetailDedtroy, CompaniesList,
+    CompanyProfileCreate, CompanyProfileUpdate
 )
 
 app_name = "api"
 
 urlpatterns = [
-    # Authentication
+    # AUTHENTICATION
     path("sign-up/", Register.as_view(), name="register"),
     path("operator/sign-up/", Register.as_view(), name="operator-register"),
     path("sign-in/", Login.as_view(), name="login"),
@@ -26,12 +27,12 @@ urlpatterns = [
     path("verify-two-step-password/", VerifyTwoStepPassword.as_view(), name="verify-two-step-password"),
     path("change-two-step-password/", ChangeTwoStepPassword.as_view(), name="change-two-step-password"),
     path("create-two-step-password/", CreateTwoStepPassword.as_view(), name="create-two-step-password"),
-    # User's Profile
-    path("profile/<slug:slug>/", ProfileDetailUpdate.as_view(), name="profile"),
-    path("profile/<str:profile>/<slug:slug>/", ProfileDetailUpdate.as_view(), name="work-experience"),
-    path("profile/<str:profile>/<slug:slug>/", ProfileDetailUpdate.as_view(), name="educational-record"),
-    path("profile/<str:profile>/<slug:slug>/", ProfileDetailUpdate.as_view(), name="cv"),
-    # Company's Profile
-    path("company/profile/", CompanyProfileCreateView.as_view(), name="company-profile-create"),
-    path("company/profile/<int:pk>/", CompanyProfileView.as_view(), name="company-profile"),
+    # USER'S PROFILE
+    path("profile/", ProfileCreate.as_view(), name="profile-create"),
+    path("profile/<slug:slug>/", ProfileDetailUpdateDestroy.as_view(), name="profile"),
+    # COMPANY'S PROFILE
+    path("companies/", CompaniesList.as_view(), name="companies-list"),
+    path("company/profile/", CompanyProfileCreate.as_view(), name="company-profile-create"),
+    path("company/profile/<int:pk>/", CompanyProfileDetailDedtroy.as_view(), name="company-profile-detail"),
+    path("company/profile/update/<int:pk>/", CompanyProfileUpdate.as_view(), name="company-profile-update"),
 ]

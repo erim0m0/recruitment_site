@@ -4,16 +4,13 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import (
-    RegexValidator,
-    MaxLengthValidator,
-    MinLengthValidator
+    RegexValidator, MaxLengthValidator, MinLengthValidator
 )
 from django.contrib.auth import get_user_model
 
 from extensions.utils import phone_validator, email_validator
 from extensions.choises_models import (
-    Type_OF_OWNERSHIP, INDUSTRY,
-    COUNTRIES,PROVINCE, CITIES
+    Type_OF_OWNERSHIP, COUNTRIES, PROVINCE, CITIES
 )
 
 
@@ -46,20 +43,21 @@ class CompanyProfile(models.Model):
         max_length=10,
         unique=True
     )
-    industry = models.CharField(
-        max_length=100,
-        choices=INDUSTRY,
+    industry = models.JSONField(
+        default=dict,
+        blank=True,
         verbose_name=_("industry")
     )
     country = models.CharField(
         max_length=100,
+        default="IR",
         choices=COUNTRIES,
         verbose_name=_("country")
     )
     province = models.CharField(
         max_length=100,
         choices=PROVINCE,
-        verbose_name=_("city")
+        verbose_name=_("province")
     )
     city = models.CharField(
         max_length=100,
@@ -69,8 +67,7 @@ class CompanyProfile(models.Model):
     # TODO: set address of upload
     logo = models.ImageField(
         upload_to="",
-        null=True,
-        blank=True,
+        null=True, blank=True,
         verbose_name=_("logo")
     )
     company_description = models.TextField(
@@ -87,7 +84,7 @@ class CompanyProfile(models.Model):
         verbose_name=_("company view")
     )
     YEAR_VALIDAITOR = RegexValidator(
-        regex="^13\d{2}",
+        regex="^1[34]\d{2}$",
         message="The year is Invalid."
     )
     established_year = models.PositiveIntegerField(
@@ -97,8 +94,6 @@ class CompanyProfile(models.Model):
     type_of_ownership = models.CharField(
         choices=Type_OF_OWNERSHIP,
         max_length=12,
-        null=True,
-        blank=True,
         verbose_name=_("type of ownership")
     )
     organizational_interface = models.ForeignKey(

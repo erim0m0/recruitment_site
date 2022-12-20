@@ -1,6 +1,6 @@
-from rest_framework.serializers import Serializer, ModelSerializer
-from advertisement.models import Advertisement
 from rest_framework import serializers
+from advertisement.models import Advertisement
+from rest_framework.serializers import ModelSerializer
 
 
 class AdvertisementsListSerializer(ModelSerializer):
@@ -11,6 +11,7 @@ class AdvertisementsListSerializer(ModelSerializer):
     class Meta:
         model = Advertisement
         fields = [
+            "id",
             "title",
             "city",
             "company__name"
@@ -18,11 +19,14 @@ class AdvertisementsListSerializer(ModelSerializer):
 
 
 class AdvertisementSerializer(ModelSerializer):
+    company_name = serializers.CharField(
+        source="company.name", read_only=True
+    )
+
     class Meta:
         model = Advertisement
         exclude = [
-            "is_show_salary",
-            "is_unknown"
+            "company"
         ]
 
 
