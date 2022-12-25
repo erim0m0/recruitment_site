@@ -7,25 +7,19 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.throttling import ScopedRateThrottle
-from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from accounts.api.otp_creator import send_otp
-from accounts.api.serializers import (
-    AuthenticationSerializer,
-    OtpSerilizer,
-    GetTwoStepPasswordSerializer
-)
 from accounts.models.blocked_phones import BlockedPhone
 from config.settings import REDIS_PORT, REDIS_HOST_NAME
+from accounts.api.serializers import (
+    AuthenticationSerializer, OtpSerilizer, GetTwoStepPasswordSerializer
+)
 
 
 class Register(APIView):
-    permission_classes = [
-        AllowAny
-    ]
-
     throttle_classes = [
         ScopedRateThrottle
     ]
@@ -64,10 +58,6 @@ class Register(APIView):
 
 
 class VerifyOtp(APIView):
-    permission_classes = [
-        AllowAny
-    ]
-
     throttle_classes = [
         ScopedRateThrottle
     ]
@@ -82,8 +72,7 @@ class VerifyOtp(APIView):
 
         _redis_conf = Redis(host=REDIS_HOST_NAME, port=REDIS_PORT)
         data: List = _redis_conf.hvals(received_phone)
-        if received_id_code.encode() in data and received_code.encode() in data:
-
+        if all((received_id_code.encode() in data, received_code.encode() in data)):
             operator_data = dict()
 
             if "operator" in request.path:
@@ -128,9 +117,6 @@ class VerifyOtp(APIView):
 
 
 class Login(APIView):
-    permission_classes = [
-        AllowAny
-    ]
 
     def post(self, request):
         serializer = AuthenticationSerializer(data=request.data)
@@ -197,10 +183,6 @@ class CreateTwoStepPassword(APIView):
 
 
 class VerifyTwoStepPassword(APIView):
-    permission_classes = [
-        AllowAny
-    ]
-
     throttle_classes = [
         ScopedRateThrottle
     ]
