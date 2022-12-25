@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MaxValueValidator, RegexValidator
 
-from extensions.utils import email_validator, national_code_validator
+from extensions.utils import email_validator, national_code_validator, url_validator
 from extensions.choises_models import (
     PROVINCE, COUNTRIES, CITIES, USER_GENDER, P_MILITARY_SERVICE_STATUS
 )
@@ -39,10 +39,9 @@ class Profile(models.Model):
         validators=[email_validator],
         verbose_name=_('Email')
     )
-    # TODO: edit this field
     avatar = models.ImageField(
-        null=True,
-        blank=True,
+        upload_to="avatars/",
+        null=True, blank=True,
         verbose_name=_("Avatar")
     )
     national_code = models.CharField(
@@ -54,23 +53,23 @@ class Profile(models.Model):
         max_length=20,
         null=True,
         blank=True,
-        verbose_name=_("passport_number")
+        verbose_name=_("Passport_number")
     )
     country = models.CharField(
         max_length=200,
         choices=COUNTRIES,
         default="IR",
-        verbose_name=_("country")
+        verbose_name=_("Country")
     )
     province = models.CharField(
         max_length=200,
         choices=PROVINCE,
-        verbose_name=_("province")
+        verbose_name=_("Province")
     )
     city = models.CharField(
         max_length=200,
         choices=CITIES,
-        verbose_name=_("city")
+        verbose_name=_("City")
     )
     address = models.TextField(
         max_length=500,
@@ -127,9 +126,9 @@ class Profile(models.Model):
         blank=True,
         verbose_name=_("About Me")
     )
-    # TODO: edit this field
-    cv_file = models.FileField(
-        null=True,
+    cv_file = models.URLField(
+        max_length=200,
+        validators=[url_validator],
         blank=True,
         verbose_name=_("CV File")
     )
