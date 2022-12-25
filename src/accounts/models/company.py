@@ -8,7 +8,7 @@ from django.core.validators import (
 )
 from django.contrib.auth import get_user_model
 
-from extensions.utils import phone_validator, email_validator
+from extensions.utils import phone_validator, email_validator, url_validator
 from extensions.choises_models import (
     Type_OF_OWNERSHIP, COUNTRIES, PROVINCE, CITIES
 )
@@ -64,10 +64,10 @@ class CompanyProfile(models.Model):
         choices=CITIES,
         verbose_name=_("city")
     )
-    # TODO: set address of upload
-    logo = models.ImageField(
-        upload_to="",
-        null=True, blank=True,
+    logo = models.URLField(
+        max_length=200,
+        blank=True,
+        validators=[url_validator],
         verbose_name=_("logo")
     )
     company_description = models.TextField(
@@ -76,10 +76,9 @@ class CompanyProfile(models.Model):
         blank=True,
         verbose_name=_("company description")
     )
-    # TODO: set address of upload
-    company_view = models.ImageField(
-        upload_to="",
-        null=True,
+    company_view = models.URLField(
+        max_length=200,
+        validators=[url_validator],
         blank=True,
         verbose_name=_("company view")
     )
