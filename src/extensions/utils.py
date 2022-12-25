@@ -9,9 +9,9 @@ def persian_date_convertor(time) -> str:
     return persian_date
 
 
-def create_random_code() -> str:
+def create_random_code(amount=32) -> str:
     alphabet = ascii_letters + digits
-    random_code: str = ''.join(choice(alphabet) for _ in range(32))
+    random_code: str = ''.join(choice(alphabet) for _ in range(amount))
     return random_code
 
 
@@ -55,3 +55,16 @@ def national_code_validator(value: str) -> str:
     raise ValidationError(
         "The national_code is Invalid."
     )
+
+
+def url_validator(url: str) -> str:
+    from re import match
+
+    if not match(
+            "^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$",
+            url
+    ):
+        raise ValidationError(
+            "The email is Invalid."
+        )
+    return url
