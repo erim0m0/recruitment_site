@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -122,15 +123,15 @@ DATE_INPUT_FORMATS = ['%d/%m/%Y']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
+STATIC_ROOT = BASE_DIR / "static"
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'static'
+# ]
 
-# Media files
-MEDIA_ROOT = BASE_DIR / 'uploads'
-MEDIA_URL = '/medias/'
+# MEDIA FILES
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -140,7 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # USER MODEL
 AUTH_USER_MODEL = 'accounts.User'
 
-# REST_FRAMEWORK
+# REST FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
@@ -159,29 +160,19 @@ REST_FRAMEWORK = {
     ]
 }
 
-# PASSWORD HASHERS
-PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.Argon2PasswordHasher',
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
-    'django.contrib.auth.hashers.SHA1PasswordHasher',
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-    'django.contrib.auth.hashers.UnsaltedSHA1PasswordHasher',
-    'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
-    'django.contrib.auth.hashers.CryptPasswordHasher',
-]
-
-# REDIS CONFIG
+# REDIS
 REDIS_HOST_NAME = config("REDIS_HOST_NAME")
 REDIS_PORT = config("REDIS_PORT")
 
-# ARVAN CLOUD STORAGE
-DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE")
-AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
-AWS_S3_ENDPOINT_URL = config("AWS_S3_ENDPOINT_URL")
-AWS_STORAGES_BUCKET_NAME = config("AWS_STORAGES_BUCKET_NAME")
-AWS_SERVICE_NAME = config("AWS_SERVICE_NAME")
-AWS_S3_FILE_OVERWRITE = config("AWS_S3_FILE_OVERWRITE")
+# LIARA STORAGE
+AWS_SERVICE_NAME = "s3"
+AWS_S3_ENDPOINT_URL = "https://" + config("LIARA_ENDPOINT")
+AWS_STORAGE_BUCKET_NAME = config("LIARA_BUCKET_NAME")
+AWS_ACCESS_KEY_ID = config("LIARA_ACCESS_KEY")
+AWS_SECRET_ACCESS_KEY = config("LIARA_SECRET_KEY")
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'media'
+AWS_S3_FILE_OVERWRITE = False
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
