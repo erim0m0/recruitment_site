@@ -44,10 +44,12 @@ class BlockPhonesAdmin(admin.ModelAdmin):
 @admin.register(company.CompanyProfile)
 class BlockPhonesAdmin(admin.ModelAdmin):
     list_display = (
-        "name", "organizational_interface",
-        "number_of_advertisements"
+        "name", "operator",
+        "number_of_ad"
     )
 
 
 admin.site.register(users.User, CustomAdmin)
 admin.site.register(user_profile.Profile)
+admin.site.register(user_profile.WorkExperience)
+admin.site.register(user_profile.EducationalRecord)
