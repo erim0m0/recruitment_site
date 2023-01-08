@@ -31,6 +31,10 @@ class AdvertisementSerializer(ModelSerializer):
 
 
 class AdvertisementCreateSerializer(ModelSerializer):
+    company_name = serializers.CharField(
+        source="company.name", read_only=True
+    )
+
     class Meta:
         model = Advertisement
         exclude = [

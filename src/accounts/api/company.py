@@ -1,15 +1,13 @@
 from typing import List, Dict
 
 from rest_framework.generics import (
-    UpdateAPIView, CreateAPIView, RetrieveDestroyAPIView,
-    ListAPIView,
+    UpdateAPIView, CreateAPIView, RetrieveDestroyAPIView, ListAPIView,
 )
 
 from django.shortcuts import get_object_or_404
 
 from accounts.api.serializers import (
-    CompanyProfileSerializer,
-    CompanyProfileCreateSerializer,
+    CompanyProfileSerializer, CompanyProfileCreateSerializer,
     CompaniesListSerializer
 )
 from accounts.models.company import CompanyProfile
@@ -20,14 +18,13 @@ class CompaniesList(ListAPIView):
     serializer_class = CompaniesListSerializer
 
     def get_queryset(self):
-        return CompanyProfile.objects.values(
+        return CompanyProfile.objects.only(
             "id", "name", "logo"
         )
 
 
-class CompanyProfileDetailDedtroy(RetrieveDestroyAPIView):
+class CompanyProfileDetailDestroy(RetrieveDestroyAPIView):
     serializer_class = CompanyProfileSerializer
-
     permission_classes = [
         IsOperatorOrStaff
     ]
@@ -36,8 +33,9 @@ class CompanyProfileDetailDedtroy(RetrieveDestroyAPIView):
         obj = get_object_or_404(
             CompanyProfile.objects.defer(
                 "created_at",
+                "number_of_ad"
             ).select_related(
-                "organizational_interface"
+                "operator"
             ), pk=self.kwargs.get("pk")
         )
         # May raise a permission denied
@@ -47,17 +45,16 @@ class CompanyProfileDetailDedtroy(RetrieveDestroyAPIView):
 
 class CompanyProfileUpdate(UpdateAPIView):
     serializer_class = CompanyProfileCreateSerializer
-
     permission_classes = [
-        IsOperatorOrStaff,
+        IsOperatorOrStaff
     ]
 
     def get_object(self):
         obj = get_object_or_404(
             CompanyProfile.objects.defer(
                 "created_at",
-                "organizational_interface",
-                "number_of_advertisements"
+                "operator",
+                "number_of_ad"
             ), pk=self.kwargs.get("pk")
         )
         # May raise a permission denied
@@ -73,6 +70,6 @@ class CompanyProfileCreate(CreateAPIView):
     ]
 
     def perform_create(self, serializer):
-        return serializer.save(
+        serializer.save(
             organizational_interface=self.request.user
         )

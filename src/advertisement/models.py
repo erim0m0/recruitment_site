@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+from multiselectfield import MultiSelectField
+
 from accounts.models.company import CompanyProfile
 from extensions.choises_models import (
     PROVINCE, COUNTRIES, AD_MILITARY_SERVICES_STATUS,
@@ -12,7 +14,7 @@ from extensions.choises_models import (
 
 class Advertisement(models.Model):
     title = models.CharField(
-        max_length=100,
+        max_length=50,
         db_index=True,
         verbose_name=_("title")
     )
@@ -43,6 +45,7 @@ class Advertisement(models.Model):
         choices=PROVINCE,
         verbose_name=_("Province")
     )
+    # Todo: Edit it ( max_length )
     city = models.CharField(
         max_length=50,
         choices=CITIES,
@@ -50,15 +53,17 @@ class Advertisement(models.Model):
     )
     is_company_have_living_place = models.BooleanField(
         default=False,
-        verbose_name=_("Is company have living place")
+        verbose_name=_("Is company have living place?")
     )
     minimum_age = models.PositiveIntegerField(
         validators=[MinValueValidator(18)],
+        default=18,
         blank=True,
         verbose_name=_("Minimum age")
     )
     maximum_age = models.PositiveIntegerField(
         validators=[MaxValueValidator(50)],
+        default=50,
         blank=True,
         verbose_name=_("Maximum age")
     )
@@ -78,9 +83,10 @@ class Advertisement(models.Model):
         verbose_name=_("amount of work experience")
     )
     # TODO: edit this field
-    language = models.CharField(
+    language = MultiSelectField(
         max_length=100,
-        # choices=LANGUAGES,
+        max_choices=3,
+        choices=LANGUAGES,
         verbose_name=_("Languages")
     )
     language_level = models.CharField(
@@ -89,8 +95,9 @@ class Advertisement(models.Model):
         verbose_name=_("language level")
     )
     # TODO: edit this field
-    benefits = models.CharField(
+    benefits = MultiSelectField(
         max_length=200,
+        max_choices=3,
         choices=BENEFITS,
         blank=True,
         verbose_name=_("Benefits")
@@ -103,7 +110,7 @@ class Advertisement(models.Model):
         verbose_name=_("Salary")
     )
     job_description = models.TextField(
-        max_length=400,
+        max_length=500,
         blank=True,
         verbose_name=_("Job Description")
     )

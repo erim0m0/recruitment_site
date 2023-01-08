@@ -18,7 +18,7 @@ from extensions.utils import (
 class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom User Model for authentication management
-    through email address instead of username
+    through phone instead of username
     """
 
     USER_LEVEL = (

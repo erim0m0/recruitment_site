@@ -49,13 +49,13 @@ class AdvertisementDetail(RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         try:
             wanted_company = CompanyProfile.objects.only(
-                "number_of_advertisements"
+                "number_of_ad"
             ).get(
-                organizational_interface=self.request.user.pk
+                operator=self.request.user.pk
             )
-            wanted_company.number_of_advertisements -= 1
+            wanted_company.number_of_ad -= 1
             wanted_company.save(
-                update_fields=["number_of_advertisements"]
+                update_fields=["number_of_ad"]
             )
         except Exception:
             pass
@@ -64,22 +64,20 @@ class AdvertisementDetail(RetrieveUpdateDestroyAPIView):
 
 class AdvertisementCreateView(CreateAPIView):
     serializer_class = AdvertisementCreateSerializer
-    queryset = Advertisement.objects.all()
     permission_classes = [
         IsOperatorOrNot,
         IsCompanyExistOrNot
     ]
 
     def perform_create(self, serializer):
-        print(self.kwargs)
         wanted_company = CompanyProfile.objects.only(
-            "number_of_advertisements"
+            "number_of_ad"
         ).get(
-            organizational_interface=self.request.user.pk
+            operator=self.request.user.pk
         )
-        wanted_company.number_of_advertisements += 1
+        wanted_company.number_of_ad += 1
         wanted_company.save(
-            update_fields=["number_of_advertisements"]
+            update_fields=["number_of_ad"]
         )
         return serializer.save(
             company=wanted_company

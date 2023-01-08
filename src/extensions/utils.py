@@ -46,11 +46,8 @@ def national_code_validator(value: str) -> str:
     _sum = 0
     for i in range(2, 11):
         _sum += i * int(value[-i])
-    last_value = int(value[-1])
-    remainder = _sum % 11
-    if 2 > remainder == last_value:
-        return value
-    elif 11 - remainder == last_value:
+    last_value, remainder = int(value[-1]), _sum % 11
+    if any([2 > remainder == last_value, 11 - remainder == last_value]):
         return value
     raise ValidationError(
         "The national_code is Invalid."

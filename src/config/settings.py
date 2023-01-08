@@ -37,16 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # internal apps
+    # Internal Apps
     'accounts',
     'extensions',
     'advertisement',
-    # external apps
+    # External Apps
     'jalali_date',
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
-    'storages'
+    'storages',
+    'multiselectfield'
 ]
 
 MIDDLEWARE = [

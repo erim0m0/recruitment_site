@@ -35,6 +35,7 @@ class OTPBuild:
 def send_otp(received_phone: str) -> Response:
     code, id_code = create_otp_code(), create_random_code()
     OTPBuild(received_phone, code, id_code)
+    # todo : async this code 👇
     # send_otp_code(
     #     {
     #         'receptor': f'0{received_phone}',

@@ -1,16 +1,12 @@
 from django.urls import path
 
-from .user_profile import (
-    ProfileDetailUpdateDestroy, ProfileCreate
-)
+from .user_profile import ProfileView, WorkExperienceView, EducationalRecordView
 from .authentication import (
-    ChangeTwoStepPassword, VerifyOtp, Register,
-    CreateTwoStepPassword, DeleteAccount, Login,
-    VerifyTwoStepPassword,
+    ChangeTwoStepPassword, VerifyOtp, Register, DeleteAccount,CreateTwoStepPassword,
+    Login, VerifyTwoStepPassword,
 )
 from .company import (
-    CompanyProfileDetailDedtroy, CompaniesList,
-    CompanyProfileCreate, CompanyProfileUpdate
+    CompanyProfileDetailDestroy, CompaniesList, CompanyProfileCreate, CompanyProfileUpdate
 )
 
 app_name = "api"
@@ -28,11 +24,12 @@ urlpatterns = [
     path("change-two-step-password/", ChangeTwoStepPassword.as_view(), name="change-two-step-password"),
     path("create-two-step-password/", CreateTwoStepPassword.as_view(), name="create-two-step-password"),
     # USER'S PROFILE
-    path("profile/", ProfileCreate.as_view(), name="profile-create"),
-    path("profile/<slug:slug>/", ProfileDetailUpdateDestroy.as_view(), name="profile"),
+    path("profile/<slug:slug>/", ProfileView.as_view(), name="profile"),
+    path("profile/work-exp/<slug:slug>/", WorkExperienceView.as_view(), name="work-experience"),
+    path("profile/ed-record/<slug:slug>/", EducationalRecordView.as_view(), name="educational-record"),
     # COMPANY'S PROFILE
     path("companies/", CompaniesList.as_view(), name="companies-list"),
     path("company/profile/", CompanyProfileCreate.as_view(), name="company-profile-create"),
-    path("company/profile/<int:pk>/", CompanyProfileDetailDedtroy.as_view(), name="company-profile-detail"),
+    path("company/profile/<int:pk>/", CompanyProfileDetailDestroy.as_view(), name="company-profile-detail"),
     path("company/profile/update/<int:pk>/", CompanyProfileUpdate.as_view(), name="company-profile-update"),
 ]

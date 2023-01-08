@@ -17,7 +17,7 @@ class IsOperatorOrStaff(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if any([
-            obj.organizational_interface == request.user and \
+            obj.operator == request.user and \
             request.user.is_authenticated,
             request.user.is_staff
         ]):
@@ -31,7 +31,7 @@ class IsOperatorOrNot(BasePermission):
     def has_permission(self, request, view):
         if any([
             request.user.is_operator and request.user.is_authenticated,
-            request.user.is_staff
+            request.user.is_superuser
         ]):
             return True
         return False
@@ -42,7 +42,7 @@ class IsCompanyExistOrNot(BasePermission):
 
     def has_permission(self, request, view):
         is_exist_company: bool = CompanyProfile.objects.filter(
-            organizational_interface=request.user
+            operator=request.user
         ).exists()
 
         if not is_exist_company:
@@ -57,7 +57,7 @@ class IsFounderOrStaff(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return bool(
-            obj.company.organizational_interface == request.user or
+            obj.company.operator == request.user or
             request.user.is_staff
         )
 

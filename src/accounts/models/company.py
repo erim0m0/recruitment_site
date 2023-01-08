@@ -2,15 +2,16 @@ from django.db import models
 from django.urls import reverse
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import (
     RegexValidator, MaxLengthValidator, MinLengthValidator
 )
-from django.contrib.auth import get_user_model
+from multiselectfield import MultiSelectField
 
-from extensions.utils import phone_validator, email_validator, url_validator
+from extensions.utils import phone_validator, email_validator
 from extensions.choises_models import (
-    Type_OF_OWNERSHIP, COUNTRIES, PROVINCE, CITIES
+    Type_OF_OWNERSHIP, COUNTRIES, PROVINCE, CITIES, INDUSTRY
 )
 
 
@@ -24,7 +25,6 @@ class CompanyProfile(models.Model):
     english_name = models.CharField(
         max_length=120,
         unique=True,
-        null=True,
         blank=True,
         verbose_name=_("english name")
     )
@@ -34,7 +34,6 @@ class CompanyProfile(models.Model):
     )
     website_addr = models.CharField(
         max_length=120,
-        null=True,
         blank=True,
         verbose_name=_("website address")
     )
@@ -43,8 +42,10 @@ class CompanyProfile(models.Model):
         max_length=10,
         unique=True
     )
-    industry = models.JSONField(
-        default=dict,
+    industry = MultiSelectField(
+        choices=INDUSTRY,
+        max_choices=3,
+        max_length=3,
         blank=True,
         verbose_name=_("industry")
     )
@@ -64,10 +65,9 @@ class CompanyProfile(models.Model):
         choices=CITIES,
         verbose_name=_("city")
     )
-    logo = models.URLField(
-        max_length=200,
+    logo = models.ImageField(
+        upload_to="companies/logos/",
         blank=True,
-        validators=[url_validator],
         verbose_name=_("logo")
     )
     company_description = models.TextField(
@@ -76,9 +76,8 @@ class CompanyProfile(models.Model):
         blank=True,
         verbose_name=_("company description")
     )
-    company_view = models.URLField(
-        max_length=200,
-        validators=[url_validator],
+    company_view = models.ImageField(
+        upload_to="companies/views/",
         blank=True,
         verbose_name=_("company view")
     )
@@ -95,16 +94,16 @@ class CompanyProfile(models.Model):
         max_length=12,
         verbose_name=_("type of ownership")
     )
-    organizational_interface = models.ForeignKey(
+    operator = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
-        verbose_name=_("organizational interface")
+        verbose_name=_("operator")
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name=_("created at")
     )
-    number_of_advertisements = models.PositiveIntegerField(
+    number_of_ad = models.PositiveIntegerField(
         default=0,
         verbose_name=_("number of advertisements")
     )

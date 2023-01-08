@@ -1,11 +1,10 @@
 from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
+from django.core.validators import FileExtensionValidator
 
 from accounts.models.company import CompanyProfile
-from accounts.models.user_profile import (
-    Profile
-)
+from accounts.models.user_profile import Profile, WorkExperience, EducationalRecord
 
 
 ########## AUTHENTICATION'S SERIALIZERS ##########
@@ -33,11 +32,9 @@ class OtpSerilizer(serializers.Serializer):
         max_length=10,
         min_length=10
     )
-
     code = serializers.CharField(
         max_length=6,
     )
-
     id_code = serializers.CharField(
         max_length=32,
         min_length=32
@@ -101,10 +98,16 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProfileCreateSerializer(serializers.ModelSerializer):
-    class meta:
-        model = Profile
-        fields = "__all__"
+class WorkExperienceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkExperience
+        exclude = ["user"]
+
+
+class EducationalRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EducationalRecord
+        exclude = ["user"]
 
 
 ########## COMPANY'S SERIALIZERS ##########
@@ -118,15 +121,15 @@ class CompaniesListSerializer(serializers.ModelSerializer):
 
 
 class CompanyProfileSerializer(serializers.ModelSerializer):
-    organizational_interface_phone = serializers.CharField(
-        source="organizational_interface.phone"
+    operator_phone = serializers.CharField(
+        source="operator.phone"
     )
 
     class Meta:
         model = CompanyProfile
         exclude = [
             "created_at",
-            "organizational_interface"
+            "operator"
         ]
 
 
@@ -134,7 +137,7 @@ class CompanyProfileCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyProfile
         exclude = [
+            "operator",
             "created_at",
-            "number_of_advertisements",
-            "organizational_interface"
+            "number_of_ad"
         ]
