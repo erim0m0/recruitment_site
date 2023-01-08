@@ -15,7 +15,8 @@ from accounts.api.otp_creator import send_otp
 from accounts.models.blocked_phones import BlockedPhone
 from config.settings import REDIS_PORT, REDIS_HOST_NAME
 from accounts.api.serializers import (
-    AuthenticationSerializer, OtpSerilizer, GetTwoStepPasswordSerializer
+    AuthenticationSerializer, OtpSerilizer, GetTwoStepPasswordSerializer,
+    ChangeTwoStepPasswordSerializer
 )
 
 
