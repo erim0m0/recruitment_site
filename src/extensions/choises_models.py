@@ -47,15 +47,9 @@ AD_MILITARY_SERVICES_STATUS = (
     ("اهمیتی ندارد", "اهمیتی ندارد"),
 )
 
-GRADE_CHOICE = (
-    ("Diploma", "دیپلم"),
-    ("Associate DegreeAA", "لیسانس"),
-    ("Bachelor of Science", "فوق لیسانس"),
-    ("Doctor of Philosophy", "دکتری")
-)
-
 LANGUAGES = (
-
+    ("Persian", "Persian"),
+    ("English", "English"),
 )
 
 LANGUAGES_LEVEL = (
@@ -356,4 +350,12 @@ COUNTRIES = (
     ('ZA', 'آفریقای جنوبی',),
     ('ZM', 'زامبیا',),
     ('ZW', 'زیمبابوه',)
+)
+
+EDUCATION = (
+    ("DIPLOMA", "Diploma"),
+    ("ASSOCIATE", "Associate"),
+    ("BACHELOR", "Bachelor"),
+    ("MASTER", "Master"),
+    ("PHD", "Phd"),
 )
