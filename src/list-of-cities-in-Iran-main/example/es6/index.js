@@ -1,7 +1,7 @@
 import { readFile } from "fs/promises";
 
 const cities = JSON.parse(
-  await readFile(new URL("../../json/cities.json", import.meta.url))
+  await readFile(new URL("../../json/cities.txt", import.meta.url))
 );
 
 const provinces = JSON.parse(

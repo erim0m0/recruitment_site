@@ -67,7 +67,7 @@ class GetTwoStepPasswordSerializer(serializers.Serializer):
                 "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8, 20}$",
                 value):
             raise serializers.ValidationError(
-                {"Error": "The phone number is Invalid."}
+                {"Error": "Try Again!"}
             )
         return value
 
@@ -93,9 +93,7 @@ class ChangeTwoStepPasswordSerializer(GetTwoStepPasswordSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        exclude = [
-            "id", "user", "slug"
-        ]
+        exclude = ["user"]
 
 
 class WorkExperienceSerializer(serializers.ModelSerializer):
@@ -115,9 +113,7 @@ class EducationalRecordSerializer(serializers.ModelSerializer):
 class CompaniesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyProfile
-        fields = [
-            "id", "name", "logo"
-        ]
+        fields = ["name", "logo"]
 
 
 class CompanyProfileSerializer(serializers.ModelSerializer):
@@ -127,17 +123,10 @@ class CompanyProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CompanyProfile
-        exclude = [
-            "created_at",
-            "operator"
-        ]
+        exclude = ["created_at", "operator"]
 
 
 class CompanyProfileCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyProfile
-        exclude = [
-            "operator",
-            "created_at",
-            "number_of_ad"
-        ]
+        exclude = ["operator", "created_at", "number_of_ad"]

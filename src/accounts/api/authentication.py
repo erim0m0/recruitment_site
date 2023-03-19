@@ -1,5 +1,5 @@
-from redis import Redis
 from typing import List
+from redis import Redis
 
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
@@ -21,10 +21,8 @@ from accounts.api.serializers import (
 
 
 class Register(APIView):
-    throttle_classes = [
-        ScopedRateThrottle
-    ]
-    throttle_scope = "authentication"
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth"
 
     def post(self, request):
         serializer = AuthenticationSerializer(data=request.data)
@@ -59,10 +57,8 @@ class Register(APIView):
 
 
 class VerifyOtp(APIView):
-    throttle_classes = [
-        ScopedRateThrottle
-    ]
-    throttle_scope = "verify_authentication"
+    #throttle_classes = [ScopedRateThrottle]
+    #throttle_scope = "verify_authentication"
 
     def post(self, request):
         serializer = OtpSerilizer(data=request.data)
@@ -100,21 +96,28 @@ class VerifyOtp(APIView):
 
         else:
             _redis_conf.hincrby(received_phone, "retry", 1)
-            if data[-1] == b'4':
-                _redis_conf.delete(received_phone)
+            try:
+                if data[-1] == b'4':
+                    _redis_conf.delete(received_phone)
+                    return Response(
+                        {
+                            "Send otp again": "Please send otp again",
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                return Response(
+                    {
+                        "Incorrect code.": "The code entered is incorrect.",
+                    },
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+            except IndexError:
                 return Response(
                     {
                         "Send otp again": "Please send otp again",
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
-            return Response(
-                {
-                    "Incorrect code.": "The code entered is incorrect.",
-                },
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
 
 
 class Login(APIView):
@@ -148,7 +151,7 @@ class DeleteAccount(APIView):
     ]
 
     def delete(self, request):
-        user = get_user_model().objects.get(pk=request.user.pk)
+        user = get_user_model().objects.get(pk=request.user.username)
         user.delete()
         return Response(
             {
@@ -159,9 +162,7 @@ class DeleteAccount(APIView):
 
 
 class CreateTwoStepPassword(APIView):
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = GetTwoStepPasswordSerializer(data=request.data)
@@ -184,9 +185,7 @@ class CreateTwoStepPassword(APIView):
 
 
 class VerifyTwoStepPassword(APIView):
-    throttle_classes = [
-        ScopedRateThrottle
-    ]
+    throttle_classes = [ScopedRateThrottle]
     throttle_scope = "verify_authentication"
 
     def post(self, request):
@@ -196,7 +195,7 @@ class VerifyTwoStepPassword(APIView):
 
         user = get_object_or_404(
             get_user_model(),
-            pk=request.user.pk
+            pk=request.user.username
         )
         check_password: bool = user.check_password(recieved_password)
         if check_password:
@@ -228,9 +227,7 @@ class ChangeTwoStepPassword(APIView):
         parameters: [old_password, new_password, confirm_new_password,]
     """
 
-    permission_classes = [
-        IsAuthenticated,
-    ]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = ChangeTwoStepPasswordSerializer(data=request.data)

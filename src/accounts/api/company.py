@@ -6,28 +6,21 @@ from rest_framework.generics import (
 
 from django.shortcuts import get_object_or_404
 
-from accounts.api.serializers import (
-    CompanyProfileSerializer, CompanyProfileCreateSerializer,
-    CompaniesListSerializer
-)
+from accounts.api import serializers
 from accounts.models.company import CompanyProfile
 from permissions import IsOperatorOrStaff, IsOperatorOrNot
 
 
 class CompaniesList(ListAPIView):
-    serializer_class = CompaniesListSerializer
+    serializer_class = serializers.CompaniesListSerializer
 
     def get_queryset(self):
-        return CompanyProfile.objects.only(
-            "id", "name", "logo"
-        )
+        return CompanyProfile.objects.only("name", "logo")
 
 
 class CompanyProfileDetailDestroy(RetrieveDestroyAPIView):
-    serializer_class = CompanyProfileSerializer
-    permission_classes = [
-        IsOperatorOrStaff
-    ]
+    serializer_class = serializers.CompanyProfileSerializer
+    permission_classes = [IsOperatorOrStaff]
 
     def get_object(self):
         obj = get_object_or_404(
@@ -44,10 +37,8 @@ class CompanyProfileDetailDestroy(RetrieveDestroyAPIView):
 
 
 class CompanyProfileUpdate(UpdateAPIView):
-    serializer_class = CompanyProfileCreateSerializer
-    permission_classes = [
-        IsOperatorOrStaff
-    ]
+    serializer_class = serializers.CompanyProfileCreateSerializer
+    permission_classes = [IsOperatorOrStaff]
 
     def get_object(self):
         obj = get_object_or_404(
@@ -63,13 +54,10 @@ class CompanyProfileUpdate(UpdateAPIView):
 
 
 class CompanyProfileCreate(CreateAPIView):
-    serializer_class = CompanyProfileCreateSerializer
-    queryset = CompanyProfile.objects.all()
-    permission_classes = [
-        IsOperatorOrNot
-    ]
+    serializer_class = serializers.CompanyProfileCreateSerializer
+    permission_classes = [IsOperatorOrNot]
 
     def perform_create(self, serializer):
         serializer.save(
-            organizational_interface=self.request.user
+            operator=self.request.user
         )

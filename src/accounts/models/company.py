@@ -1,18 +1,10 @@
 from django.db import models
-from django.urls import reverse
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import (
-    RegexValidator, MaxLengthValidator, MinLengthValidator
-)
-from multiselectfield import MultiSelectField
+from django.core.validators import RegexValidator, MaxLengthValidator, MinLengthValidator
 
+from extensions import choices
 from extensions.utils import phone_validator, email_validator
-from extensions.choises_models import (
-    Type_OF_OWNERSHIP, COUNTRIES, PROVINCE, CITIES, INDUSTRY
-)
 
 
 class CompanyProfile(models.Model):
@@ -24,8 +16,7 @@ class CompanyProfile(models.Model):
     )
     english_name = models.CharField(
         max_length=120,
-        unique=True,
-        blank=True,
+        primary_key=True,
         verbose_name=_("english name")
     )
     email = models.EmailField(
@@ -33,7 +24,8 @@ class CompanyProfile(models.Model):
         verbose_name=_("email"),
     )
     website_addr = models.CharField(
-        max_length=120,
+        max_length=100,
+        unique=True,
         blank=True,
         verbose_name=_("website address")
     )
@@ -42,27 +34,22 @@ class CompanyProfile(models.Model):
         max_length=10,
         unique=True
     )
-    industry = MultiSelectField(
-        choices=INDUSTRY,
-        max_choices=3,
-        max_length=3,
+    industry = models.ManyToManyField(
+        to="Industry",
         blank=True,
         verbose_name=_("industry")
     )
     country = models.CharField(
-        max_length=100,
+        max_length=2,
         default="IR",
-        choices=COUNTRIES,
         verbose_name=_("country")
     )
     province = models.CharField(
-        max_length=100,
-        choices=PROVINCE,
+        max_length=105,
         verbose_name=_("province")
     )
     city = models.CharField(
-        max_length=100,
-        choices=CITIES,
+        max_length=105,
         verbose_name=_("city")
     )
     logo = models.ImageField(
@@ -72,7 +59,6 @@ class CompanyProfile(models.Model):
     )
     company_description = models.TextField(
         max_length=400,
-        null=True,
         blank=True,
         verbose_name=_("company description")
     )
@@ -90,7 +76,7 @@ class CompanyProfile(models.Model):
         verbose_name=_("established year")
     )
     type_of_ownership = models.CharField(
-        choices=Type_OF_OWNERSHIP,
+        choices=choices.Type_OF_OWNERSHIP,
         max_length=12,
         verbose_name=_("type of ownership")
     )
@@ -114,3 +100,17 @@ class CompanyProfile(models.Model):
     class Meta:
         verbose_name = _("Company Profile")
         verbose_name_plural = _("Companies Profile")
+
+
+class Industry(models.Model):
+    title = models.CharField(
+        max_length=120,
+        verbose_name=_("title")
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _("Industry")
+        verbose_name_plural = _("Industries")

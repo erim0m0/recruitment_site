@@ -1,15 +1,12 @@
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-from multiselectfield import MultiSelectField
-
+from extensions import choices
+from accounts.models.user_profile import Language
 from accounts.models.company import CompanyProfile
-from extensions.choises_models import (
-    PROVINCE, COUNTRIES, AD_MILITARY_SERVICES_STATUS,
-    LANGUAGES, LANGUAGES_LEVEL, BENEFITS, GENDER,
-    SALARY, TYPE_OF_COOPERATION, CITIES
-)
 
 
 class Advertisement(models.Model):
@@ -19,12 +16,12 @@ class Advertisement(models.Model):
         verbose_name=_("title")
     )
     organizational_category = models.CharField(
-        max_length=75,
+        max_length=40,
         verbose_name=_("organizational category")
     )
     type_of_cooperation = models.CharField(
         max_length=9,
-        choices=TYPE_OF_COOPERATION,
+        choices=choices.TYPE_OF_COOPERATION,
         verbose_name=_("type of cooperation")
     )
     # Todo: Edit it
@@ -35,20 +32,16 @@ class Advertisement(models.Model):
         verbose_name=_("work time")
     )
     country = models.CharField(
-        max_length=2,
+        max_length=20,
         default="IR",
-        choices=COUNTRIES,
         verbose_name=_("Country")
     )
     province = models.CharField(
-        max_length=19,
-        choices=PROVINCE,
+        max_length=30,
         verbose_name=_("Province")
     )
-    # Todo: Edit it ( max_length )
     city = models.CharField(
         max_length=50,
-        choices=CITIES,
         verbose_name=_("City")
     )
     is_company_have_living_place = models.BooleanField(
@@ -69,12 +62,12 @@ class Advertisement(models.Model):
     )
     gender = models.CharField(
         max_length=17,
-        choices=GENDER,
+        choices=choices.GENDER,
         verbose_name=_("gender")
     )
     military_service_status = models.CharField(
         max_length=34,
-        choices=AD_MILITARY_SERVICES_STATUS,
+        choices=choices.AD_MILITARY_SERVICES_STATUS,
         verbose_name=_("Military Service Status")
     )
     work_experience = models.PositiveIntegerField(
@@ -82,23 +75,21 @@ class Advertisement(models.Model):
         default=2,
         verbose_name=_("amount of work experience")
     )
-    # TODO: edit this field
-    language = MultiSelectField(
-        max_length=100,
-        max_choices=3,
-        choices=LANGUAGES,
+    # todo : edit this
+    language = models.ManyToManyField(
+        to=Language,
+        blank=True,
         verbose_name=_("Languages")
     )
+    # todo : edit this ( make a another model )
     language_level = models.CharField(
         max_length=5,
-        choices=LANGUAGES_LEVEL,
+        blank=True,
+        choices=choices.LANGUAGES_LEVEL,
         verbose_name=_("language level")
     )
-    # TODO: edit this field
-    benefits = MultiSelectField(
-        max_length=200,
-        max_choices=3,
-        choices=BENEFITS,
+    benefits = models.ManyToManyField(
+        to="Benefit",
         blank=True,
         verbose_name=_("Benefits")
     )
@@ -117,6 +108,7 @@ class Advertisement(models.Model):
     company = models.ForeignKey(
         CompanyProfile,
         on_delete=models.CASCADE,
+        null=True,
         related_name="advertisements",
     )
 
@@ -126,3 +118,17 @@ class Advertisement(models.Model):
     class Meta:
         verbose_name = _("Advertisement")
         verbose_name_plural = _("Advertisements")
+
+
+class Benefit(models.Model):
+    title = models.CharField(
+        max_length=100,
+        verbose_name=_("title")
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _("Benefit")
+        verbose_name_plural = _("Benefits")

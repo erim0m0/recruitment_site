@@ -15,7 +15,7 @@ class CustomAdmin(BaseUserAdmin):
                        'persian_date_created',
                        'active_email_code')
     search_fields = ('phone',)
-    ordering = ('-id',)
+    ordering = ('phone',)
 
     add_fieldsets = (
         (None, {'fields': ('phone', 'password1', 'password2')}),
@@ -53,3 +53,4 @@ admin.site.register(users.User, CustomAdmin)
 admin.site.register(user_profile.Profile)
 admin.site.register(user_profile.WorkExperience)
 admin.site.register(user_profile.EducationalRecord)
+admin.site.register(user_profile.Language)

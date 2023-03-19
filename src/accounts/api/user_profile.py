@@ -1,46 +1,70 @@
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework import status
+from django.db.utils import IntegrityError
+from rest_framework.generics import (
+    CreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView,
+    ListCreateAPIView
+)
 
+from accounts.api import serializers
 from permissions import IsUserOrStaff
-from accounts.models.user_profile import Profile, WorkExperience, EducationalRecord
-from .serializers import ProfileSerializer, WorkExperienceSerializer, EducationalRecordSerializer
+from accounts.models import user_profile
 
 
-class ProfileView(RetrieveUpdateAPIView, CreateAPIView):
-    serializer_class = ProfileSerializer
+# PROFILE'S VIEW
+
+class CreateProfile(CreateAPIView):
+    serializer_class = serializers.ProfileSerializer
     permission_classes = [IsUserOrStaff]
-    lookup_field = "slug"
+
+    def perform_create(self, serializer):
+        serializer.save(
+            user=self.request.user
+        )
+
+
+class ProfileView(RetrieveUpdateAPIView):
+    serializer_class = serializers.ProfileSerializer
+    permission_classes = [IsUserOrStaff]
+    lookup_field = "phone"
 
     def get_object(self):
         obj = get_object_or_404(
-            Profile.objects.defer(
-                "id", "slug", "user"
+            user_profile.Profile.objects.defer(
+                "user"
             ),
-            slug=self.kwargs.get("slug")
+            user__phone=self.kwargs.get("phone")
         )
         # May raise a permission denied
         self.check_object_permissions(self.request, obj)
         return obj
 
-    def perform_create(self, serializer):
-        serializer.save(
-            user=self.request.user,
-            slug=self.request.user.phone
-        )
 
+# WORK EXPERIENCE'S VIEW
 
-class WorkExperienceView(RetrieveUpdateDestroyAPIView, CreateAPIView):
-    serializer_class = WorkExperienceSerializer
+class CreateWorkExperience(ListCreateAPIView):
+    serializer_class = serializers.WorkExperienceSerializer
     permission_classes = [IsUserOrStaff]
+    search_fields = [
+        "user__phone",
+    ]
 
-    def get_object(self):
-        obj = get_object_or_404(
-            WorkExperience.objects.defer("user"),
-            user__phone=self.kwargs.get("slug")
-        )
-        # May raise a permission denied
-        self.check_object_permissions(self.request, obj)
-        return obj
+    def get_queryset(self):
+        return user_profile.WorkExperience.objects.defer("user")
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        try:
+            self.perform_create(serializer)
+        except IntegrityError:
+            return Response(
+                {"Not Created!": "Try again!"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         serializer.save(
@@ -48,20 +72,61 @@ class WorkExperienceView(RetrieveUpdateDestroyAPIView, CreateAPIView):
         )
 
 
-class EducationalRecordView(RetrieveUpdateDestroyAPIView, CreateAPIView):
-    serializer_class = EducationalRecordSerializer
+class WorkExperienceView(RetrieveUpdateDestroyAPIView):
+    serializer_class = serializers.WorkExperienceSerializer
     permission_classes = [IsUserOrStaff]
 
     def get_object(self):
         obj = get_object_or_404(
-            EducationalRecord.objects.defer("user"),
-            user__phone=self.kwargs.get("slug")
+            user_profile.WorkExperience.objects.defer("user"),
+            pk=self.kwargs.get("pk")
         )
         # May raise a permission denied
         self.check_object_permissions(self.request, obj)
         return obj
 
+
+# Educational Record'S VIEW
+
+
+class CreateEducationalRecord(ListCreateAPIView):
+    serializer_class = serializers.EducationalRecordSerializer
+    permission_classes = [IsUserOrStaff]
+    search_fields = [
+        "user__phone",
+    ]
+
+    def get_queryset(self):
+        return user_profile.EducationalRecord.objects.defer("user")
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        try:
+            self.perform_create(serializer)
+        except IntegrityError:
+            return Response(
+                {"Not Created!": "Try again!"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     def perform_create(self, serializer):
         serializer.save(
             user=self.request.user
         )
+
+
+class EducationalRecordView(RetrieveUpdateDestroyAPIView):
+    serializer_class = serializers.EducationalRecordSerializer
+    permission_classes = [IsUserOrStaff]
+
+    def get_object(self):
+        obj = get_object_or_404(
+            user_profile.EducationalRecord.objects.defer("user"),
+            pk=self.kwargs.get("pk")
+        )
+        # May raise a permission denied
+        self.check_object_permissions(self.request, obj)
+        return obj

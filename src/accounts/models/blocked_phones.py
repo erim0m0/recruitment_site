@@ -9,7 +9,7 @@ class BlockedPhone(models.Model):
         message=_("شماره ی تلفن نامعتبر است.")
     )
     phone = models.CharField(
-        max_length=12,
+        max_length=10,
         validators=[phone_regex],
         unique=True,
         verbose_name=_("phone")

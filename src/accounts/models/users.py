@@ -1,18 +1,12 @@
 from django.db import models
 from django.dispatch import receiver
-from django.contrib.auth.models import (
-    AbstractBaseUser, PermissionsMixin
-)
 from django.db.models.signals import pre_save
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 from accounts.managers import UserManager
-from extensions.utils import (
-    phone_validator,
-    create_random_code,
-    persian_date_convertor
-)
+from extensions.utils import phone_validator, create_random_code, persian_date_convertor
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -28,8 +22,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     phone = models.CharField(
         max_length=10,
-        validators=[phone_validator],
         unique=True,
+        validators=[phone_validator],
         verbose_name=_("phone")
     )
     user_level = models.CharField(
@@ -63,22 +57,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     persian_date_created.short_description = "Date Joined"
 
-    class Meta:
-        ordering = ("-id",)
-        verbose_name = _("User")
-        verbose_name_plural = _("Users")
+    def save(self, *args, **kwargs):
+        self.active_email_code = create_random_code()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.phone
 
-
-############# Signals #############
-
-@receiver(pre_save, sender=User)
-def save_active_email_code(sender, instance, **kwargs):
-    """
-    Create active email code for post creating a user which activates
-    """
-
-    if kwargs.get("signal"):
-        instance.active_email_code = create_random_code()
+    class Meta:
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")

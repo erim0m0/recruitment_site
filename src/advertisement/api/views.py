@@ -1,21 +1,17 @@
+from django.db.models import F
+from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
 
-from rest_framework.generics import (
-    ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
-)
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 
+from advertisement.api import serializers
 from advertisement.models import Advertisement
 from accounts.models.company import CompanyProfile
-from permissions import (
-    IsFounderOrStaff, IsOperatorOrNot, IsCompanyExistOrNot
-)
-from .serializers import (
-    AdvertisementsListSerializer, AdvertisementSerializer, AdvertisementCreateSerializer
-)
+from permissions import IsFounderOrStaff, IsOperatorOrNot, IsCompanyExistOrNot
 
 
 class AdertisementsList(ListAPIView):
-    serializer_class = AdvertisementsListSerializer
+    serializer_class = serializers.AdvertisementsListSerializer
     filterset_fields = [
         "title",
         "city",
@@ -26,16 +22,14 @@ class AdertisementsList(ListAPIView):
 
     def get_queryset(self):
         queryset = Advertisement.objects.values(
-            "id", "title", "city", "company__name"
+            "title", "city", "company__name"
         )
         return queryset
 
 
 class AdvertisementDetail(RetrieveUpdateDestroyAPIView):
-    serializer_class = AdvertisementSerializer
-    permission_classes = [
-        IsFounderOrStaff
-    ]
+    serializer_class = serializers.AdvertisementSerializer
+    permission_classes = [IsFounderOrStaff]
 
     def get_object(self):
         obj = get_object_or_404(
@@ -48,37 +42,30 @@ class AdvertisementDetail(RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         try:
-            wanted_company = CompanyProfile.objects.only(
-                "number_of_ad"
-            ).get(
+            CompanyProfile.objects.filter(
                 operator=self.request.user.pk
-            )
-            wanted_company.number_of_ad -= 1
-            wanted_company.save(
-                update_fields=["number_of_ad"]
-            )
-        except Exception:
+            ).update(number_of_ad=F("number_of_ad") - 1)
+        except IntegrityError:
             pass
         return super().delete(request, *args, **kwargs)
 
 
 class AdvertisementCreateView(CreateAPIView):
-    serializer_class = AdvertisementCreateSerializer
-    permission_classes = [
-        IsOperatorOrNot,
-        IsCompanyExistOrNot
-    ]
+    serializer_class = serializers.AdvertisementCreateSerializer
+    permission_classes = [IsOperatorOrNot, IsCompanyExistOrNot]
 
     def perform_create(self, serializer):
-        wanted_company = CompanyProfile.objects.only(
-            "number_of_ad"
-        ).get(
-            operator=self.request.user.pk
-        )
-        wanted_company.number_of_ad += 1
-        wanted_company.save(
-            update_fields=["number_of_ad"]
-        )
-        return serializer.save(
+        try:
+            wanted_company = CompanyProfile.objects.get(
+                operator=self.request.user.pk
+            )
+            wanted_company.number_of_ad += 1
+            wanted_company.save(
+                update_fields=["number_of_ad"]
+            )
+        except IntegrityError:
+            wanted_company = None
+
+        serializer.save(
             company=wanted_company
         )
