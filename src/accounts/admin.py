@@ -49,6 +49,19 @@ class BlockPhonesAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(company.Industry)
+class IndustryAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+    )
+
+@admin.register(company.IndustryChild)
+class IndustryChildAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+    )
+
+
 admin.site.register(users.User, CustomAdmin)
 admin.site.register(user_profile.Profile)
 admin.site.register(user_profile.WorkExperience)

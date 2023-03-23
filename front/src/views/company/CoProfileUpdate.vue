@@ -8,7 +8,6 @@
                     <div class="row">
                         <!-- section_heading start -->
                         <div class="col-xl-9 col-lg-7 col-md-7 col-12 col-sm-12">
-
                             <h1>ویرایش پروفایل کارفرما</h1>
                         </div>
                         <div class="col-xl-3 col-lg-5 col-md-5 col-12 col-sm-12">
@@ -87,8 +86,8 @@
 
                                                 <div class="delete_jb_form">
 
-                                                    <input type="password" name="password"
-                                                        placeholder="رمز عبور را وارد کنید">
+                                                    <!-- <input type="password" name="password"
+                                                        placeholder="رمز عبور را وارد کنید"> -->
                                                 </div>
                                                 <div class="header_btn search_btn applt_pop_btn">
 
@@ -199,17 +198,18 @@
                                                 <div class="contect_form3">
                                                     <label>نوع صنعت*</label>
                                                     <select v-model="industry">
-                                                        <option value="technology">فناوری</option>
-                                                        <option value="healthcare">مراقبت های بهداشتی</option>
-                                                        <option value="finance">دارایی، مالیه، سرمایه گذاری</option>
-                                                        <option value="retail">خرده فروشی</option>
-                                                        <option value="energy">انرژی</option>
-                                                        <option value="manufacturing">تولید</option>
-                                                        <option value="transportationAndLogistics">حمل و نقل و تدارکات
+                                                        <option value="2">فناوری</option>
+                                                        <option value="3">مراقبت های بهداشتی</option>
+                                                        <option value="دارایی، مالی، سرمایه گذاری">دارایی، مالی، سرمایه
+                                                            گذاری</option>
+                                                        <option value="خرده فروشی">خرده فروشی</option>
+                                                        <option value="انرژی">انرژی</option>
+                                                        <option value="تولید">تولید</option>
+                                                        <option value="حمل و نقل و تدارکات">حمل و نقل و تدارکات
                                                         </option>
-                                                        <option value="mediaAndEntertainment">رسانه و سرگرمی</option>
-                                                        <option value="education">تحصیلات</option>
-                                                        <option value="hospitalityAndTourism">مهمان نوازی و گردشگری</option>
+                                                        <option value="رسانه و سرگرمی">رسانه و سرگرمی</option>
+                                                        <option value="تحصیلات">تحصیلات</option>
+                                                        <option value="مهمان نوازی و گردشگری">مهمان نوازی و گردشگری</option>
                                                     </select>
                                                     <div class="invalid-feedback" :class="{
                                                         'd-block': industryE === true
@@ -287,7 +287,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12 col-12">
@@ -324,13 +323,11 @@
 import axios from 'axios'
 import provinceData from '@/assets/cities_and_provinces/provinces.json'
 import cityData from '@/assets/cities_and_provinces/cities.json'
-import industryTypeDict from '@/store/industryType.json'
 import '@/assets/dashboard/css/font-awesome.css'
 import '@/assets/dashboard/css/nice-select.css'
 import '@/assets/dashboard/css/reset.css'
 import '@/assets/dashboard/css/style.css'
 import '@/assets/dashboard/css/responsive.css'
-
 
 export default {
     name: 'CoProfileUpdate',
@@ -416,13 +413,15 @@ export default {
                         this.logo = response.data.logo
                     })
                     .catch(error => {
-                        console.log(error);
+                        if (error.response.status == 404) {
+                            this.logoE = true
+                            this.logoEM = "ابتدا فرم پایین را تکمیل کنید."
+                        }
                     });
             }
         },
         createCoProfile() {
             let access = true
-            console.log(this.$refs.coViewFile.files[0]);
 
             const isEnglish = /^[a-zA-Z0-9\s]+$/.test(this.englishName);
             if (!isEnglish) {
@@ -495,8 +494,6 @@ export default {
                 this.emailE = false
             }
 
-            console.log(this.industry);
-
             if (!this.industry) {
                 access = false
                 this.industryE = true
@@ -505,11 +502,125 @@ export default {
                 this.industryE = false
             }
 
+            if (access && !this.created) {
+                let companyData = {
+                    "name": this.name,
+                    "english_name": this.englishName,
+                    "email": this.email,
+                    "website_addr": this.websiteAddr,
+                    "telephone": this.telephone,
+                    "industry": this.industry,
+                    "country": this.country,
+                    "province": provinceData.find(province => province.id == this.province).name,
+                    "city": this.city,
+                    "company_description": this.companyDescription,
+                    "established_year": this.establishedYear,
+                    "type_of_ownership": this.typeOfOwnership
+                }
+                const formData = new FormData();
+
+                if (this.$refs.coViewFile.files[0]) {
+                    formData.append('company_view', this.$refs.coViewFile.files[0]);
+                }
+
+                for (let key in companyData) {
+                    formData.append(key, companyData[key]);
+                }
+
+                axios
+                    .post(`/account/api/company/profile/`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(response => {
+                        const getData = response.data
+                        const getProvince = provinceData.find(province => province.name == getData.province);
+
+                        this.created = true
+
+                        this.name = getData.name
+                        this.englishName = getData.english_name
+                        this.email = getData.email
+                        this.websiteAddr = getData.website_addr
+                        this.telephone = getData.telephone
+                        this.industry = getData.industry
+                        this.country = getData.country
+                        this.province = getProvince.id
+                        this.city = getData.city
+                        this.logo = getData.logo
+                        this.companyDescription = getData.company_description
+                        this.companyView = getData.company_view
+                        this.establishedYear = getData.established_year
+                        this.typeOfOwnership = getData.type_of_ownership
+
+                        localStorage.setItem("companyName", getData.english_name);
+                    })
+                    .catch(e => {
+                        console.log(e.response);
+                    })
+
+            } else if (access && this.created) {
+                const companyName = localStorage.getItem("companyName");
+                let companyData = {
+                    "name": this.name,
+                    "english_name": this.englishName,
+                    "email": this.email,
+                    "website_addr": this.websiteAddr,
+                    "telephone": this.telephone,
+                    "industry": this.industry,
+                    "country": this.country,
+                    "province": provinceData.find(province => province.id == this.province).name,
+                    "city": this.city,
+                    "company_description": this.companyDescription,
+                    "established_year": this.establishedYear,
+                    "type_of_ownership": this.typeOfOwnership
+                }
+
+                const formData = new FormData();
+
+                if (this.$refs.coViewFile.files[0]) {
+                    formData.append('company_view', this.$refs.coViewFile.files[0]);
+                }
+
+                for (let key in companyData) {
+                    formData.append(key, companyData[key]);
+                }
+
+                axios
+                    .patch(`/account/api/company/profile/update/${companyName}/`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(response => {
+                        const getData = response.data
+                        const getProvince = provinceData.find(province => province.name == getData.province);
+
+                        this.name = getData.name
+                        this.englishName = getData.english_name
+                        this.email = getData.email
+                        this.websiteAddr = getData.website_addr
+                        this.telephone = getData.telephone
+                        this.industry = getData.industry
+                        this.country = getData.country
+                        this.province = getProvince.id
+                        this.city = getData.city
+                        this.logo = getData.logo
+                        this.companyDescription = getData.company_description
+                        this.companyView = getData.company_view
+                        this.establishedYear = getData.established_year
+                        this.typeOfOwnership = getData.type_of_ownership
+                    })
+                    .catch(e => {
+                        console.log(e.response);
+                    })
+            }
         },
     },
     watch: {
         province() {
-            let provinceValue = document.getElementById("province").value
+            let provinceValue = this.province
             this.cityList = cityData.filter(item => item.province_id == provinceValue)
         },
     },
@@ -517,10 +628,11 @@ export default {
         const companyName = localStorage.getItem("companyName");
 
         axios
-            .get(`/account/api/company/profile/iranable/`)
+            .get(`/account/api/company/profile/${companyName}/`)
             .then(response => {
                 const getData = response.data
                 const getProvince = provinceData.find(province => province.name === getData.province);
+                this.cityList = cityData.filter(item => item.province_id == getProvince.name)
 
                 this.created = true
 
@@ -538,7 +650,6 @@ export default {
                 this.companyView = getData.company_view
                 this.establishedYear = getData.established_year
                 this.typeOfOwnership = getData.type_of_ownership
-
             })
             .catch(e => {
                 console.log(e.response);
@@ -553,5 +664,79 @@ export default {
 .logo-img {
     width: 100%;
 }
+
+.wave-group {
+    position: relative;
+}
+
+.wave-group .input {
+    font-size: 16px;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    width: 200px;
+    border: none;
+    border-bottom: 1px solid #515151;
+    background: transparent;
+}
+
+.wave-group .input:focus {
+    outline: none;
+}
+
+.wave-group .label {
+    color: #999;
+    font-size: 18px;
+    font-weight: normal;
+    position: absolute;
+    pointer-events: none;
+    left: 5px;
+    top: 10px;
+    display: flex;
+}
+
+.wave-group .label-char {
+    transition: 0.2s ease all;
+    transition-delay: calc(var(--index) * .05s);
+}
+
+.wave-group .input:focus~label .label-char,
+.wave-group .input:valid~label .label-char {
+    transform: translateY(-20px);
+    font-size: 14px;
+    color: #5264AE;
+}
+
+.wave-group .bar {
+    position: relative;
+    display: block;
+    width: 200px;
+}
+
+.wave-group .bar:before,
+.wave-group .bar:after {
+    content: '';
+    height: 2px;
+    width: 0;
+    bottom: 1px;
+    position: absolute;
+    background: #5264AE;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+
+.wave-group .bar:before {
+    left: 50%;
+}
+
+.wave-group .bar:after {
+    right: 50%;
+}
+
+.wave-group .input:focus~.bar:before,
+.wave-group .input:focus~.bar:after {
+    width: 50%;
+}
+
 </style>
 

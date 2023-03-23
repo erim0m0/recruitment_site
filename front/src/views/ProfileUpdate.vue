@@ -111,9 +111,6 @@
                                 <div class="job_listing_left_fullwidth jb_cover">
                                     <div class="row">
                                         <div class="input-group avatar-file-upload">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
-                                            </div>
                                             <div>
                                                 <input type="file" ref="file">
                                                 <div class="invalid-feedback" :class="{
@@ -594,7 +591,10 @@ export default {
                         this.avatar = response.data.avatar
                     })
                     .catch(error => {
-                        console.log(error);
+                        if (error.response.status == 404) {
+                            this.avatarE = true
+                            this.avatarEM = "ابتدا فرم پایین را تکمیل کنید."
+                        }
                     });
             }
         },
@@ -868,7 +868,7 @@ export default {
                             "email": this.email,
                             "national_code": this.nationalCode,
                             "passport_number": "",
-                            "country": "string",
+                            "country": this.company,
                             "province": provinceData.find(province => province.id == this.province).name,
                             "city": cityData.find(city => city.name == this.city).name,
                             "address": this.address,
@@ -920,7 +920,7 @@ export default {
     },
     watch: {
         province() {
-            let provinceValue = document.getElementById("province").value
+            let provinceValue = this.province
             this.cityList = cityData.filter(item => item.province_id == provinceValue)
         }
     },
@@ -936,6 +936,7 @@ export default {
                 const date = getData.date_of_birth.split("-")
                 const monthVal = document.getElementById("m" + date[1]).value
                 const getProvince = provinceData.find(province => province.name === getData.province);
+                this.cityList = cityData.filter(item => item.province_id == getProvince.name)
 
                 this.firstName = getData.first_name
                 this.lastName = getData.last_name
@@ -1028,9 +1029,5 @@ td {
 
 .ed-record-list {
     padding: 10px 0;
-}
-
-.avatar-file-upload {
-    flex-direction: row-reverse;
 }
 </style>

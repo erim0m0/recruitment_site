@@ -6,6 +6,7 @@ import Signin from '../views/Sign_in.vue'
 import Verify from '../views/Verify.vue'
 import ProfileUpdate from '../views/ProfileUpdate.vue'
 import CoProfileUpdate from '../views/company/CoProfileUpdate.vue'
+impo
 
 const routes = [
   {
@@ -42,6 +43,12 @@ const routes = [
     component: CoProfileUpdate,
     meta: { loginRequired: true }
   },
+  {
+    path: '/company/advertisement/new/',
+    name: 'AdCreate',
+    component: AdCreate,
+    meta: { loginRequired: true }
+  }
 
 ]
 

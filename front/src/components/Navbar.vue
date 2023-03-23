@@ -127,9 +127,7 @@
         <div class="cp_navi_main_wrapper jb_cover">
             <div class="container-fluid">
                 <div class="cp_logo_wrapper">
-                    <router-link to="/">
-                        <img src="@/assets/images/logo.png" alt="logo">
-                    </router-link>
+                    <h4 class="site-name">Iranable</h4>
                 </div>
                 <!-- mobile menu area start -->
                 <header class="mobail_menu d-block d-sm-block d-md-block d-lg-none d-xl-none">
@@ -505,3 +503,9 @@ export default {
 }
 
 </script>
+
+<style scoped>
+.site-name {
+    font-family: "cursive";
+}
+</style>

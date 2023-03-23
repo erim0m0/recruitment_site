@@ -34,13 +34,15 @@ class CompanyProfile(models.Model):
         max_length=10,
         unique=True
     )
-    industry = models.ManyToManyField(
+    industry = models.ForeignKey(
         to="Industry",
+        on_delete=models.CASCADE,
+        null=True,
         blank=True,
         verbose_name=_("industry")
     )
     country = models.CharField(
-        max_length=10,
+        max_length=20,
         default="ایران",
         verbose_name=_("country")
     )
@@ -114,3 +116,24 @@ class Industry(models.Model):
     class Meta:
         verbose_name = _("Industry")
         verbose_name_plural = _("Industries")
+
+
+class IndustryChild(models.Model):
+    title = models.CharField(
+        max_length=120,
+        verbose_name=_("title")
+    )
+    industry = models.ForeignKey(
+        "Industry",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("childs")
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _("Industry Child")
+        verbose_name_plural = _("Industry Childs")

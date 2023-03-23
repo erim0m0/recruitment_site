@@ -156,7 +156,7 @@
 	.jb_map_banner_form{padding:50px;}
 	.blog_after_img{display:none;}
 	.mainmenu ul li a{
-		padding:40px 16px 30px 16px;
+		padding:30px 16px 30px 16px;
 	}
 }
 @media (max-width: 1220px){
@@ -199,7 +199,7 @@
 		padding-left:0;
 	}
 	.mainmenu ul li a{
-		padding:40px 15px 30px 15px;
+		padding:30px 15px 30px 15px;
 	}
 	.jb_banner_left{
 		width:100%;
