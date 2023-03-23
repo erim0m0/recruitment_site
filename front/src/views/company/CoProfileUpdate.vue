@@ -142,7 +142,6 @@
                                         </div>
                                     </div>
                                     <div class="browse_img_banner jb_cover">
-
                                         <div class="row">
                                             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                                                 <div class="contect_form3">

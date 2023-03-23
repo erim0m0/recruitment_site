@@ -6,7 +6,7 @@ import Signin from '../views/Sign_in.vue'
 import Verify from '../views/Verify.vue'
 import ProfileUpdate from '../views/ProfileUpdate.vue'
 import CoProfileUpdate from '../views/company/CoProfileUpdate.vue'
-impo
+import AdCreate from '../views/company/AdCreate.vue'
 
 const routes = [
   {
