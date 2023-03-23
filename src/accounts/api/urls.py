@@ -26,6 +26,6 @@ urlpatterns = [
     # COMPANY'S PROFILE
     path("companies/", company.CompaniesList.as_view(), name="companies-list"),
     path("company/profile/", company.CompanyProfileCreate.as_view(), name="company-profile-create"),
-    path("company/profile/<int:pk>/", company.CompanyProfileDetailDestroy.as_view(), name="company-profile-detail"),
-    path("company/profile/update/<int:pk>/", company.CompanyProfileUpdate.as_view(), name="company-profile-update"),
+    path("company/profile/<str:pk>/", company.CompanyProfileDetailDestroy.as_view(), name="company-profile-detail"),
+    path("company/profile/update/<str:pk>/", company.CompanyProfileUpdate.as_view(), name="company-profile-update"),
 ]

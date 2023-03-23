@@ -40,8 +40,8 @@ class CompanyProfile(models.Model):
         verbose_name=_("industry")
     )
     country = models.CharField(
-        max_length=2,
-        default="IR",
+        max_length=10,
+        default="ایران",
         verbose_name=_("country")
     )
     province = models.CharField(

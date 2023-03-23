@@ -62,11 +62,11 @@ export default {
             if (access) {
                 axios
                     .post('/account/api/sign-in/', {
-                        phone: this.phone
+                        "phone": this.phone
                     })
                     .then(response => {
+                        localStorage.setItem("userPhone", this.phone)
                         localStorage.setItem("id_code", response.data.id_code)
-                        localStorage.setItem("phone", this.phone)
                         this.$router.push("/verify")
                     })
                     .catch(error => {

@@ -29,7 +29,7 @@
             <div class="row">
                 <div class="col-lg-3 col-md-12 col-sm-12 col-12">
                     <div class="emp_dashboard_sidebar jb_cover">
-                        <img :src="avatar" class="img-responsive" alt="post_img" />
+                        <img :src="avatar" class="img-responsive" alt="avatar-img" />
                         <div class="emp_web_profile candidate_web_profile jb_cover">
 
                             <h4>آرش خادملو</h4>
@@ -98,7 +98,6 @@
                                                 </label>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -111,17 +110,18 @@
                             <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                 <div class="job_listing_left_fullwidth jb_cover">
                                     <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                                            <div class="jp_job_post_side_img">
-                                                <img src="@/assets/images/pf1.jpg" alt="post_img">
+                                        <div class="input-group avatar-file-upload">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
                                             </div>
-                                            <div class="jp_job_post_right_cont edit_profile_wrapper">
-                                                <h4>JPEG یا PNG در اندازه 500x500px تصویر بند انگشتی</h4>
-
-                                                <div class="width_50">
-                                                    <input type="file" id="input-file-now-custom-233" class="dropify"
-                                                        data-height="90" />
+                                            <div>
+                                                <input type="file" ref="file">
+                                                <div class="invalid-feedback" :class="{
+                                                    'd-block': avatarE === true
+                                                }" v-if="avatarE">
+                                                    {{ avatarEM }}
                                                 </div>
+                                                <button @click="uploadAvatarFile" type="button">Upload</button>
                                             </div>
                                         </div>
                                     </div>
@@ -255,12 +255,6 @@
                                                 </div>
                                                 <div class="contect_form3">
                                                     <label>سال</label>
-                                                    <!-- <input v-model="yearOfBirth" type="number">
-                                                    <div class="invalid-feedback" :class="{
-                                                        'd-block': yearOfBirthE === true
-                                                    }" v-if="yearOfBirthE">
-                                                        {{ yearOfBirthEM }}
-                                                    </div> -->
                                                     <select v-model="yearOfBirth">
                                                         <option v-for="i in 40" :value="i + 1359">{{ i + 1359 }}</option>
                                                         <option value="1400">1400</option>
@@ -310,8 +304,7 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- <div class="row">
+                                <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <div class="job_filter_category_sidebar jb_cover">
                                             <div class="job_filter_sidebar_heading jb_cover">
@@ -319,28 +312,29 @@
                                             </div>
                                             <div class="job_overview_header jb_cover">
                                                 <div class="row">
-                                                    <div id="languages" v-for="lng in language">
-                                                        <h5 v-if="lng == 1">انگلیسی</h5>
-                                                        <h5 v-if="lng == 2">فرانسوی</h5>
-                                                        <h5 v-if="lng == 3">آلمانی</h5>
-                                                    </div>
+                                                    <ul id="languages" v-for="lng in languages">
+                                                        <li v-if="lng == 1">انگلیسی</li>
+                                                        <li v-if="lng == 2">فرانسوی</li>
+                                                        <li v-if="lng == 3">آلمانی</li>
+                                                    </ul>
                                                     <div class="select_box">
-                                                        <select :value="language">
-                                                            <option value="1">انگلیسی</option>
-                                                            <option value="2">فرانسوی</option>
-                                                            <option value="3">آلمانی</option>
+                                                        <select v-model="language">
+                                                            <option value=1>انگلیسی</option>
+                                                            <option value=2>فرانسوی</option>
+                                                            <option value=3>آلمانی</option>
                                                         </select>
-                                                    </div>
-                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                                                        <div class="header_btn search_btn jb_cover">
-                                                            <a href="#">افزودن بیشتر</a>
+                                                        <div class="invalid-feedback" :class="{
+                                                            'd-block': languageE === true
+                                                        }" v-if="languageE">
+                                                            {{ languageEM }}
                                                         </div>
                                                     </div>
+                                                    <button type="button" v-on:click="addLanguage">افزودن</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <div id="work-exp" class="job_filter_category_sidebar jb_cover">
@@ -526,10 +520,10 @@ export default {
             address: "",
             addressE: null,
             addressEM: null,
-            isMarried: "",
+            isMarried: false,
             isMarriedE: null,
             isMarriedEM: null,
-            gender: "",
+            gender: "male",
             genderE: null,
             genderEM: null,
             dayOfBirth: "",
@@ -572,10 +566,58 @@ export default {
             scoreE: null,
             scoreEM: null,
             workExperiences: [],
-            educationalRecords: []
+            educationalRecords: [],
+            languages: []
         }
     },
     methods: {
+        uploadAvatarFile() {
+            let access = true
+            const phone = localStorage.getItem("userPhone");
+            const formData = new FormData();
+            formData.append('avatar', this.$refs.file.files[0]);
+            
+            if (!this.$refs.file.files[0]) {
+                this.avatarE = true
+                this.avatarEM = "لطفا عکس مورد نظر را آپلود کنید."
+                access = false
+            }
+
+            if (access) {
+                axios
+                    .patch(`/account/api/profile/${phone}/`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(response => {
+                        this.avatar = response.data.avatar
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
+        },
+
+        addLanguage() {
+
+            if (this.language === "") {
+                this.languageE = true
+                this.languageEM = "الزامی است"
+            } else {
+                this.languageE = false
+            }
+
+            if (this.languages.includes(parseInt(this.language))) {
+                this.languageE = true
+                this.languageEM = "انتخاب کرده اید."
+            } else {
+                this.languageE = false
+                this.languages.push(parseInt(this.language))
+            }
+
+        },
+
         addEducationalRecord() {
             let access = true
 
@@ -583,7 +625,6 @@ export default {
                 this.fieldOfStudyE = true
                 this.fieldOfStudyEM = "الزامی می باشد."
                 access = false
-
             } else {
                 this.fieldOfStudyE = false
             }
@@ -727,14 +768,6 @@ export default {
                 this.militaryServiceStatusE = false
             }
 
-            if (this.language === "") {
-                access = false
-                this.languageE = true
-                this.languageEM = "الزامی است"
-            } else {
-                this.languageE = false
-            }
-
             if (this.dayOfBirth === "") {
                 access = false
                 this.dayOfBirthE = true
@@ -799,7 +832,7 @@ export default {
                     .post('/account/api/profile/work-exp/',
                         newWorkExpDict
                     )
-                    .then(response => {
+                    .then(() => {
                         //console.log(response.data);
                     })
                     .catch(e => {
@@ -818,7 +851,7 @@ export default {
                     .post('/account/api/profile/ed-record/',
                         newEdRecordDict
                     )
-                    .then(response => {
+                    .then(() => {
                         // console.log(response.data);
                     })
                     .catch(e => {
@@ -845,20 +878,19 @@ export default {
                             "military_service_status": this.militaryServiceStatus,
                             "other_exemptions": this.otherExemptions,
                             "about_me": this.aboutMe,
-                            "language": []
-                            // this.language.map(i => i+1)
+                            "language": this.languages
                         }
                     )
-                    .then(response => {
+                    .then(() => {
                     })
                     .catch(error => {
                         console.log(error.response);
                     })
             } else if (access && this.created) {
-                const phone = localStorage.getItem("phone");
+                const phone = localStorage.getItem("user_phone");
 
                 axios
-                    .put(`/account/api/profile/${phone}/`,
+                    .patch(`/account/api/profile/${phone}/`,
                         {
                             "first_name": this.firstName,
                             "last_name": this.lastName,
@@ -875,11 +907,10 @@ export default {
                             "military_service_status": this.militaryServiceStatus,
                             "other_exemptions": this.otherExemptions,
                             "about_me": this.aboutMe,
-                            "language": []
-                            // this.language.map(i => i+1)
+                            "language": this.languages
                         }
                     )
-                    .then(response => {
+                    .then(() => {
                     })
                     .catch(error => {
                         console.log(error.response);
@@ -892,10 +923,9 @@ export default {
             let provinceValue = document.getElementById("province").value
             this.cityList = cityData.filter(item => item.province_id == provinceValue)
         }
-
     },
     mounted() {
-        const phone = localStorage.getItem("phone");
+        const phone = localStorage.getItem("userPhone");
 
         axios
             .get(`/account/api/profile/${phone}/`)
@@ -925,7 +955,7 @@ export default {
                 this.otherExemptions = getData.other_exemptions
                 this.aboutMe = getData.about_me
                 // this.cv_file = getData.cv_file
-                this.language = getData.language
+                this.languages = getData.language
 
             })
             .catch(e => {
@@ -939,7 +969,7 @@ export default {
             .then(response => {
                 this.workExperiences = response.data
             })
-            .catch(e => {
+            .catch(() => {
                 // console.log(e.response);
             })
 
@@ -950,7 +980,7 @@ export default {
             .then(response => {
                 this.educationalRecords = response.data
             })
-            .catch(e => {
+            .catch(() => {
                 // console.log(e.response);
             })
     },
@@ -998,5 +1028,9 @@ td {
 
 .ed-record-list {
     padding: 10px 0;
+}
+
+.avatar-file-upload {
+    flex-direction: row-reverse;
 }
 </style>

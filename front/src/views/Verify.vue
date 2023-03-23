@@ -59,9 +59,9 @@ export default {
             if (access) {
                 axios
                     .post('/account/api/verify/', {
-                        phone: localStorage.getItem("phone"),
-                        id_code: localStorage.getItem("id_code"),
-                        code: this.code
+                        "phone": localStorage.getItem("userPhone"),
+                        "id_code": localStorage.getItem("id_code"),
+                        "code": this.code
                     })
                     .then(response => {
                         localStorage.removeItem("id_code")
@@ -71,10 +71,11 @@ export default {
                         this.$router.push("/")
                     })
                     .catch(error => {
-                        this.phoneE = true
-                        if (error.response.status == 400) {
+                        this.codeE = true
+                        if (error.response.status == 401) {
                             this.codeEM = "کد نامعتبر است."
                         }
+                        console.log(error.response);
                     })
             }
         }

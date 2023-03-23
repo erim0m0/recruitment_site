@@ -22,9 +22,14 @@
                                     <h1>یا</h1>
                                 </div>
                             </div>
-                            
+
                             <div class="login_form_wrapper">
                                 <h2>ثبت نام</h2>
+                                <div class="invalid-feedback" :class="{
+                                    'd-block': userExistE === true
+                                }" v-if="userExistE">
+                                    {{ userExistEM }}
+                                </div>
                                 <form @submit.prevent="doSignup" class="signin-form">
                                     <div class="form-group icon_form comments_form">
                                         <input v-model="phone" type="text" class="form-control" placeholder="شماره همراه"
@@ -32,7 +37,7 @@
                                                 'is-valid': phoneE === false,
                                                 'is-invalid': phoneE === true,
                                             }">
-                                            <i class="fas fa-envelope"></i>
+                                        <i class="fas fa-envelope"></i>
                                         <div class="invalid-feedback" v-if="phoneE">
                                             {{ phoneEM }}
                                         </div>
@@ -43,7 +48,7 @@
                                                 'is-valid': passwordE === false,
                                                 'is-invalid': passwordE === true,
                                             }">
-                                            <i class="fas fa-lock"></i>
+                                        <i class="fas fa-lock"></i>
                                         <div class="invalid-feedback" v-if="passwordE">
                                             {{ passwordEM }}
                                         </div>
@@ -107,7 +112,9 @@ export default {
             phoneEM: null,
             password: "",
             passwordE: null,
-            passwordEM: null
+            passwordEM: null,
+            userExistE: null,
+            userExistEM: ""
         }
     },
     methods: {
@@ -137,40 +144,48 @@ export default {
 
             // Test the pattern against a string
             let resultpatternPassword = patternPassword.test(this.password);
-            
-            if (!resultpatternPassword) {
-                access = false
-                this.passwordE = true
-                this.passwordEM = 'پسورد مورد قبول نیست.'
-            } else {
-                this.passwordE = false
-                this.passwordEM = ''
-            }
+
+            // if (!resultpatternPassword) {
+            //     access = false
+            //     this.passwordE = true
+            //     this.passwordEM = 'پسورد مورد قبول نیست.'
+            // } else {
+            //     this.passwordE = false
+            //     this.passwordEM = ''
+            // }
 
             if (access) {
                 let data = null
                 if (this.password) {
                     data = {
-                        phone:this.phone,
-                        password:this.password
+                        "phone": this.phone,
+                        "password": this.password
                     }
                 } else {
                     data = {
-                        phone:this.phone
+                        "phone": this.phone
                     }
                 }
+
                 axios
-                    .post('/account/api/sign-in/', data)
+                    .post('/account/api/sign-up/', data)
                     .then(response => {
                         localStorage.setItem("id_code", response.data.id_code)
-                        localStorage.setItem("phone", this.phone)
-                        if (!this.password) {
-                            this.$router.push("/verify")
-                        } else {
-                            this.$router.push("/")
+                        localStorage.setItem("userPhone", this.phone)
+                        // if (!this.password) {
+                        //     this.$router.push("/verify")
+                        // } else {
+                        //     this.$router.push("/")
+                        // }
+                        this.$router.push("/verify")
+                    })
+                    .catch(error => {
+                        if (error.response.status == 401) {
+                            this.userExistE = true
+                            this.userExistEM = "کاربر وجود دارد."
+                            this.phoneE = true
                         }
                     })
-                    .catch(error => {})
             }
         },
     },

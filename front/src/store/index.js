@@ -19,6 +19,7 @@ export default createStore({
       state.isAuthenticated = false
       state.user = ''
       localStorage.removeItem("user_auth")
+      // localStorage.removeItem("userPhone")
       axios.defaults.headers.common['Authorization'] = ""
     },
   },

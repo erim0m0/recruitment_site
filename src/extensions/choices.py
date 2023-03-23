@@ -1,6 +1,6 @@
 Type_OF_OWNERSHIP = (
     ("private", "خصوصی"),
-    ("Governmental", "دولتی"),
+    ("governmental", "دولتی"),
     ("other", "غیره ( وقفی و ...)")
 )
 
