@@ -1,0 +1,20 @@
+@font-face {
+    font-family: "IranSans";
+    src: url("../fonts/IRANSansWeb.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Magra";
+    src: url("../fonts/Magra-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Comfortaa';
+    font-style: normal;
+    font-weight: normal;
+    src: url('../fonts/Comfortaa_Bold.woff') format('woff');
+}

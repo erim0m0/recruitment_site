@@ -1,0 +1,218 @@
+@media (max-width: 1200px) {
+    .auth-container {
+        width: 35%;
+    }
+
+    .last-jobs-opportunitie-body>section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .last-jobs-opportunitie-body a {
+        width: 85%;
+    }
+}
+
+@media (max-width: 1160px) {
+    .job-search-section .job-sorting {
+        width: 257px;
+    }
+
+    .job-search-section input {
+        width: 257px;
+    }
+
+    .last-jobs-opportunitie-container {
+        margin-top: 97px;
+    }
+}
+
+@media (max-width: 1050px) {
+    .home-header-container {
+        display: none !important;
+    }
+
+    .mobile-responsive {
+        display: block !important;
+    }
+
+    .home-right-header>span {
+        display: flex;
+    }
+
+    .about-us-summery p {
+        font-size: 1rem;
+    }
+
+    .job-search-section section.flex {
+        flex-direction: column;
+    }
+
+    .job-search-section section.flex>section {
+        width: 100%;
+        flex-direction: row;
+        justify-content: start;
+    }
+
+    .job-search-section .job-sorting {
+        width: 100%;
+        flex-direction: row !important;
+    }
+
+    .job-search-section .exp-work {
+        width: 100%;
+    }
+
+    .job-search-section .exp-work button {
+        width: 100%;
+    }
+
+    .job-search-section section.flex input {
+        width: 100%;
+    }
+
+    .job-groups,
+    .job-title,
+    .exp-work {
+        margin: 5px 0;
+    }
+
+    .job-search-section {
+        padding: 14px 20px;
+    }
+
+    .job-search-section .search-btn {
+        top: 4px;
+        font-size: 11.5px;
+    }
+
+}
+
+@media (max-width: 1000px) {
+    .auth-container {
+        width: 93%;
+    }
+
+    .blog-section {
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .blog-img-section img {
+        max-width: 39%;
+        margin-bottom: 10px;
+    }
+
+    .blog-introduction p {
+        font-size: 14px;
+    }
+
+    .blog-img-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .blog-img-section img {
+        float: none;
+    }
+}
+
+@media (max-width: 748px) {
+    .blog-introduction p {
+        font-size: 11px;
+        line-height: 24px;
+    }
+
+    .blog-img-section img {
+        max-width: 54%;
+    }
+
+    .mobile-responsive {
+        padding-bottom: 0;
+        position: relative;
+        margin-bottom: 125px;
+        background-image: none;
+        background-color: #2F3C7E;
+    }
+
+    .mobile-responsive .about-us-summery {
+        position: absolute;
+        top: 64px;
+        left: 50%;
+        transform: translate(-50%);
+        color: #2F3C7E;
+        padding-bottom: 0;
+    }
+
+    .mobile-responsive .about-us-summery p {
+        color: #2F3C7E;
+    }
+
+    .mobile-responsive .about-us-summery a {
+        color: #2F3C7E;
+    }
+
+    .last-jobs-opportunitie-container .last-jobs-opportunitie-title {
+        font-size: 15px;
+    }
+
+    .last-jobs-opportunitie-container .last-jobs-opportunitie-title::after {
+        width: 138px;
+    }
+
+    .last-jobs-opportunitie-body a {
+        width: 100%;
+    }
+}
+
+@media (max-width: 636px) {
+    .fast-accesses {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .fast-accesses>section {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .employers-footer-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .iranable-footer-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .fast-accesses p {
+        background-color: rgba(235, 235, 235, 0.23);
+        width: 100%;
+        border-radius: 10px;
+        padding: 5px 12px;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .fast-accesses .employers-footer-section>section,
+    .iranable-footer-section>section,
+    .job-seekers-footer-section>section {
+        display: none;
+    }
+
+    .symbols {
+        margin-top: 11px;
+    }
+
+}

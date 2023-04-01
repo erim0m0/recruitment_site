@@ -111,171 +111,167 @@
                     </div>
                     <div class="col-lg-9 col-md-12 col-sm-12 col-12">
                         <div class="row">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                                <div class="job_filter_category_sidebar pd0 jb_cover">
-                                    <div class="job_filter_sidebar_heading jb_cover">
-                                        <h1> ارسال شغل جدید</h1>
-                                    </div>
-                                    <div class="job_overview_header jb_cover">
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="contect_form3">
-                                                    <label>عنوان*</label>
-                                                    <input v-model="title" type="text">
-                                                    <div class="invalid-feedback" :class="{
-                                                        'd-block': titleE === true
-                                                    }" v-if="titleE">
-                                                        {{ titleEM }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="contect_form3">
-                                                    <label>رده سازمانی*</label>
-                                                    <select v-model="organizationalCategory">
-                                                        <option value="کارگر">کارگر</option>
-                                                        <option value="کارمند">کارمند</option>
-                                                        <option value="کارشناس">کارشناس</option>
-                                                        <option value="کارشناس ارشد">کارشناس ارشد</option>
-                                                        <option value="معاونت">معاونت</option>
-                                                        <option value="مدیر">مدیر</option>
-                                                        <option value="مدیر ارشد">مدیر ارشد</option>
-                                                    </select>
-                                                    <div class="invalid-feedback" :class="{
-                                                        'd-block': organizationalCategoryE === true
-                                                    }" v-if="organizationalCategoryE">
-                                                        {{ organizationalCategoryEM }}
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                            <form @submit.prevent="createAdvertisement">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <div class="job_filter_category_sidebar pd0 jb_cover">
+                                        <div class="job_filter_sidebar_heading jb_cover">
+                                            <h1> ارسال شغل جدید</h1>
+                                        </div>
+                                        <div class="job_overview_header jb_cover">
+                                            <div class="row">
+
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                                     <div class="contect_form3">
-                                                        <label>نوع همکاری*</label>
-                                                        <select v-model="typeOfCooperation">
-                                                            <option value="پاره وقت">پاره وقت</option>
-                                                            <option value="تمام وقت">تمام وقت</option>
-                                                            <option value="دورکاری">دورکاری</option>
-                                                        </select>
+                                                        <label>عنوان*</label>
+                                                        <input v-model="title" type="text">
                                                         <div class="invalid-feedback" :class="{
-                                                            'd-block': typeOfCooperationE === true
-                                                        }" v-if="typeOfCooperationE">
-                                                            {{ typeOfCooperationEM }}
+                                                            'd-block': titleE === true
+                                                        }" v-if="titleE">
+                                                            {{ titleEM }}
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                                     <div class="contect_form3">
-                                                        <label>ساعات کاری</label>
-                                                        <input type="text" name="name" placeholder="40/س در هفته">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>حقوق</label>
-                                                        <select>
-                                                            <option>12هزار - 15هزار تومان</option>
-                                                            <option>12هزار - 20هزار تومان</option>
-                                                            <option> 12هزار - 35هزار تومان</option>
-                                                            <option>12هزار - 45هزار تومان</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>کشور</label>
-                                                        <select v-model="country">
-                                                            <option value="ایران">ایران</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>استان*</label>
-                                                        <select id="province" :value="province" v-model="province">
-                                                            <option v-for="province in provinceList" :value="province.id">
-                                                                {{ province.name }}
-                                                            </option>
+                                                        <label>رده سازمانی*</label>
+                                                        <select v-model="organizationalCategory">
+                                                            <option value="کارگر">کارگر</option>
+                                                            <option value="کارمند">کارمند</option>
+                                                            <option value="کارشناس">کارشناس</option>
+                                                            <option value="کارشناس ارشد">کارشناس ارشد</option>
+                                                            <option value="معاونت">معاونت</option>
+                                                            <option value="مدیر">مدیر</option>
+                                                            <option value="مدیر ارشد">مدیر ارشد</option>
                                                         </select>
                                                         <div class="invalid-feedback" :class="{
-                                                            'd-block': provinceE === true
-                                                        }" v-if="provinceE">
-                                                            {{ provinceEM }}
+                                                            'd-block': organizationalCategoryE === true
+                                                        }" v-if="organizationalCategoryE">
+                                                            {{ organizationalCategoryEM }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="contect_form3">
+                                                            <label>نوع همکاری*</label>
+                                                            <select v-model="typeOfCooperation">
+                                                                <option value="per time">پاره وقت</option>
+                                                                <option value="full-time">تمام وقت</option>
+                                                                <option value="remote">دورکاری</option>
+                                                            </select>
+                                                            <div class="invalid-feedback" :class="{
+                                                                'd-block': typeOfCooperationE === true
+                                                            }" v-if="typeOfCooperationE">
+                                                                {{ typeOfCooperationEM }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="contect_form3">
+                                                            <label>حقوق</label>
+                                                            <input v-model="salary" type="text" name="name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="select_box">
+                                                            <label>کشور</label>
+                                                            <select v-model="country">
+                                                                <option value="ایران">ایران</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="select_box">
+                                                            <label>استان*</label>
+                                                            <select id="province" :value="province" v-model="province">
+                                                                <option v-for="province in provinceList"
+                                                                    :value="province.id">
+                                                                    {{ province.name }}
+                                                                </option>
+                                                            </select>
+                                                            <div class="invalid-feedback" :class="{
+                                                                'd-block': provinceE === true
+                                                            }" v-if="provinceE">
+                                                                {{ provinceEM }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="select_box">
+                                                            <label>شهر*</label>
+                                                            <select v-model="city" :value="city">
+                                                                <option v-for="city in cityList" :value="city.name">
+                                                                    {{ city.name }}
+                                                                </option>
+                                                            </select>
+                                                            <div class="invalid-feedback" :class="{
+                                                                'd-block': cityE === true
+                                                            }" v-if="cityE">
+                                                                {{ cityEM }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="select_box">
+                                                            <label>آیا شرکت محل سکونت دارد؟</label>
+                                                            <input v-model="isCompanyHaveLivingPlace" type="checkbox">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="select_box">
+                                                            <label>حداقل سن</label>
+                                                            <select v-model="minimumAge" :value="minimumAge">
+                                                                <option v-for="i in 33" :value="i + 17">{{ i + 17 }}
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="select_box">
+                                                            <label>حداکثر سن</label>
+                                                            <select v-model="maximumAge" :value="maximumAge">
+                                                                <option v-for="i in 33" :value="i + 17">{{ i + 17 }}
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="select_box">
+                                                            <label>جنسیت</label>
+                                                            <select v-model="gender" :value="gender">
+                                                                <option value="male">مرد</option>
+                                                                <option value="female">زن</option>
+                                                                <option value="preferably_male">ترجیحا مرد</option>
+                                                                <option value="preferably_female">ترجیحا زن</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="select_box">
+                                                            <label>وضعیت خدمت سربازی</label>
+                                                            <select v-model="militaryServiceStatus"
+                                                                :value="militaryServiceStatus">
+                                                                <option value="دارای کارت پایان خدمت">دارای کارت پایان خدمت
+                                                                </option>
+                                                                <option value="در حال خدمت">در حال خدمت</option>
+                                                                <option value="معافیت پزشکی">معافیت پزشکی</option>
+                                                                <option value="سایر معافیت ها( معافیت غیر پزشکی )">سایر
+                                                                    معافیت
+                                                                    ها( معافیت غیر پزشکی )</option>
+                                                                <option value="اهمیتی ندارد">اهمیتی ندارد</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="select_box">
+                                                            <label>سابقه کاری*</label>
+                                                            <input v-model="workExperience" type="number">
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>شهر*</label>
-                                                        <select v-model="city" :value="city">
-                                                            <option v-for="city in cityList" :value="city.name">
-                                                                {{ city.name }}
-                                                            </option>
-                                                        </select>
-                                                        <div class="invalid-feedback" :class="{
-                                                            'd-block': cityE === true
-                                                        }" v-if="cityE">
-                                                            {{ cityEM }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>آیا شرکت محل سکونت دارد؟</label>
-                                                        <input v-model="isCompanyHaveLivingPlace" type="checkbox">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>حداقل سن</label>
-                                                        <select v-model="minimumAge" :value="minimumAge">
-                                                            <option v-for="i in 33" :value="i + 17">{{ i + 17 }}</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>حداکثر سن</label>
-                                                        <select v-model="maximumAge" :value="maximumAge">
-                                                            <option v-for="i in 33" :value="i + 17">{{ i + 17 }}</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>جنسیت</label>
-                                                        <select v-model="gender" :value="gender">
-                                                            <option value="male">مرد</option>
-                                                            <option value="female">زن</option>
-                                                            <option value="preferably_male">ترجیحا مرد</option>
-                                                            <option value="preferably_female">ترجیحا زن</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>وضعیت خدمت سربازی</label>
-                                                        <select v-model="militaryServiceStatus"
-                                                            :value="militaryServiceStatus">
-                                                            <option value="دارای کارت پایان خدمت">دارای کارت پایان خدمت
-                                                            </option>
-                                                            <option value="در حال خدمت">در حال خدمت</option>
-                                                            <option value="معافیت پزشکی">معافیت پزشکی</option>
-                                                            <option value="سایر معافیت ها( معافیت غیر پزشکی )">سایر معافیت
-                                                                ها( معافیت غیر پزشکی )</option>
-                                                            <option value="اهمیتی ندارد">اهمیتی ندارد</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>سابقه کاری*</label>
-                                                        <input v-model="workExperience" type="number">
-                                                    </div>
-                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <div class="job_filter_category_sidebar jb_cover">
                                             <div class="job_filter_sidebar_heading jb_cover">
                                                 <h1>زبان مورد نیاز </h1>
@@ -304,97 +300,26 @@
                                             </div>
                                         </div>
                                     </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <div class="job_filter_category_sidebar jb_cover">
-                                        <div class="job_filter_sidebar_heading jb_cover">
-                                            <h1>کلمات کلیدی تکراری</h1>
-                                        </div>
-                                        <div class="job_overview_header jb_cover">
-                                            <div class="contect_form3">
-
-                                                <input type="text" name="name" placeholder="کلمات کلیدی را تایپ کنید">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <div class="job_filter_category_sidebar jb_cover">
+                                            <div class="job_filter_sidebar_heading jb_cover">
+                                                <h1>درباره شغل</h1>
                                             </div>
-                                            <div class="jb_btm_keyword jb_cover">
-                                                <ul>
-                                                    <li><i class="flaticon-tag"></i> کلمات کلیدی مورد علاقه :</li>
-                                                    <li><a href="#">طراح رابط کاربری،</a></li>
-                                                    <li><a href="#">توسعه دهنده،</a></li>
-                                                    <li><a href="#">ارشد</a></li>
-                                                    <li><a href="#">شرکت آی تی،</a></li>
-                                                    <li><a href="#">طراحی،</a></li>
-                                                    <li><a href="#">مرکز تماس</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <div class="job_filter_category_sidebar jb_cover">
-                                        <div class="job_filter_sidebar_heading jb_cover">
-                                            <h1>آدرس / محل </h1>
-                                        </div>
-                                        <div class="job_overview_header jb_cover">
-                                            <div class="row">
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>کشور</label>
-                                                        <select>
-                                                            <option>امریکا</option>
-                                                            <option>فرانسه</option>
-                                                            <option>انگلیس</option>
-                                                            <option>آلمان</option>
-
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                    <div class="select_box">
-                                                        <label>شهر</label>
-                                                        <select>
-                                                            <option>نیویورک</option>
-                                                            <option>کالفرنیا</option>
-                                                            <option> لس آنجلس</option>
-
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                                                    <div class="contect_form3">
-                                                        <label>آدرس کامل</label>
-                                                        <input type="text" name="name" placeholder="تهران ایران">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                                                    <div class="contect_form3">
-                                                        <label>عرض جغرافیایی</label>
-                                                        <input type="text" name="name" placeholder="41.4073509">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                                                    <div class="contect_form3">
-                                                        <label>طول جغرافیایی</label>
-                                                        <input type="text" name="name" placeholder="50.4073509">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                                                    <div class="contect_form3">
-                                                        <label>زوم</label>
-                                                        <input type="text" name="name" placeholder="20">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                                                    <div class="map_wrapper jb_cover">
-                                                        <div id='map'>
+                                            <div class="job_overview_header jb_cover">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                                        <div class="contect_form3">
+                                                            <textarea v-model="jobDescription" rows="3"
+                                                                cols="85"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                <button type="submit">ذخیره تغییرات</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -418,6 +343,8 @@ export default {
     name: 'CoProfileUpdate',
     data() {
         return {
+            provinceList: provinceData,
+            cityList: [],
             title: "",
             titleE: false,
             titleEM: "",
@@ -430,7 +357,7 @@ export default {
             workTime: "",
             workTimeE: false,
             workTimeEM: "",
-            country: "",
+            country: "ایران",
             countryE: false,
             countryEM: "",
             province: "",
@@ -440,16 +367,16 @@ export default {
             cityE: false,
             cityEM: "",
             isCompanyHaveLivingPlace: "",
-            minimumAge: "",
+            minimumAge: 18,
             minimumAgeE: false,
             minimumAgeEM: "",
-            maximumAge: "",
+            maximumAge: 50,
             maximumAgeE: false,
             maximumAgeEM: "",
             gender: "",
             genderE: false,
             genderEM: "",
-            militaryServiceStatus: "",
+            militaryServiceStatus: "اهمیتی ندارد",
             militaryServiceStatusE: false,
             militaryServiceStatusEM: "",
             workExperience: "",
@@ -470,8 +397,119 @@ export default {
             jobDescription: "",
             jobDescriptionE: false,
             jobDescriptionEM: "",
+            languages: []
         }
-    }
+    },
+    watch: {
+        province() {
+            let provinceValue = this.province
+            this.cityList = cityData.filter(item => item.province_id == provinceValue)
+        },
+    },
+    methods: {
+        addLanguage() {
+
+            if (this.language === "") {
+                this.languageE = true
+                this.languageEM = "الزامی است"
+            } else {
+                this.languageE = false
+            }
+
+            if (this.languages.includes(parseInt(this.language))) {
+                this.languageE = true
+                this.languageEM = "انتخاب کرده اید."
+            } else {
+                this.languageE = false
+                this.languages.push(parseInt(this.language))
+            }
+
+        },
+        createAdvertisement() {
+            let access = true
+
+            if (this.title === "") {
+                this.titleE = true
+                this.titleEM = "الزامی است"
+            } else {
+                this.titleE = false
+            }
+
+            if (this.organizationalCategory === "") {
+                this.organizationalCategoryE = true
+                this.organizationalCategoryEM = "الزامی است"
+            } else {
+                this.organizationalCategoryE = false
+            }
+
+            if (this.typeOfCooperation === "") {
+                this.typeOfCooperationE = true
+                this.typeOfCooperationEM = "الزامی است"
+            } else {
+                this.typeOfCooperationE = false
+            }
+
+            if (this.province === "") {
+                access = false
+                this.provinceE = true
+                this.provinceEM = "الزامی است"
+            } else {
+                this.provinceE = false
+            }
+
+            if (this.city === "") {
+                access = false
+                this.cityE = true
+                this.cityEM = "الزامی است"
+            } else {
+                this.cityE = false
+            }
+
+            if (this.gender === "") {
+                access = false
+                this.genderE = true
+                this.genderEM = "الزامی است"
+            } else {
+                this.genderE = false
+            }
+
+            if (access) {
+                axios
+                    .post('/advertisement/api/',
+                        {
+                            "title": this.title,
+                            "organizational_category": this.organizationalCategory,
+                            "type_of_cooperation": this.typeOfCooperation,
+                            // "work_time": "",
+                            "country": this.country,
+                            "province": provinceData.find(province => province.id == this.province).name,
+                            "city": cityData.find(city => city.name == this.city).name,
+                            "is_company_have_living_place": this.isCompanyHaveLivingPlace,
+                            "minimum_age": this.minimumAge,
+                            "maximum_age": this.maximumAge,
+                            "gender": this.gender,
+                            "military_service_status": this.militaryServiceStatus,
+                            "work_experience": this.workExperience,
+                            "language_level": "ضعیف",
+                            "salary": this.salary,
+                            "job_description": this.jobDescription,
+                            "language": this.languages,
+                            "benefits": []
+                        }
+                    )
+                    .then(() => {
+                        // console.log(response.data);
+                        console.log('با موفقیت ثبت شد.');
+                    })
+                    .catch(e => {
+                        console.log(e.response);
+                    })
+            }
+
+        }
+
+
+    },
 }
 
 </script>

@@ -9,7 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+# SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = 'django-insecure-dj0vp+$yda6cxs()&^k!#1hmse0+bpsfi7+!_)t((*7ioqfcc!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -152,8 +153,8 @@ REST_FRAMEWORK = {
 }
 
 # REDIS
-REDIS_HOST_NAME = config("REDIS_HOST_NAME")
-REDIS_PORT = config("REDIS_PORT")
+REDIS_HOST_NAME = 'localhost'
+REDIS_PORT = 6379
 
 # LIARA STORAGE
 # AWS_SERVICE_NAME = "s3"
