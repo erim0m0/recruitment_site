@@ -557,3 +557,62 @@ footer {
     padding: 6px;
     color: #ffffff;
 }
+
+.header-of-user-profile {
+    background-color: #2F3C7E;
+}
+
+.header-of-user-profile .home-left-header button {
+    background-color: #ebebeb48;
+    padding: 5px 10px;
+    font-size: 14px;
+    width: 180px;
+    height: 34px;
+}
+
+.desktop-sub-header {
+    box-shadow: 0 2px 6px #0000004d;
+    width: 273px;
+    max-height: 80vh;
+    border-radius: 4px;
+    top: 41px;
+    right: 0;
+    background-color: #fff;
+    color: #000000;
+    font-size: 14px;
+}
+
+.desktop-sub-header i {
+    font-size: 17px;
+}
+
+.desktop-sub-header p {
+    font-size: 14px !important;
+    font-family: "IranSans" !important;
+}
+
+.desktop-sub-nums {
+    color: #5c6573;
+}
+
+.header-of-user-profile .home-header-section {
+    padding-left: 65px;
+    padding-right: 65px;
+}
+
+.desktop-sub-header a {
+    transition: all 0.1s ease-in-out;
+}
+
+.desktop-sub-header a:hover {
+    background-color: rgba(0,0,0,.04);
+    color: #000000 !important;
+}
+
+.desktop-sub-header > a:last-child {
+    color: #eb4969 !important;
+}
+
+.icon-user-circle {
+    font-size: 24px !important;
+}

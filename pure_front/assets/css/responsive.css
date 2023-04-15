@@ -34,6 +34,10 @@
         display: none !important;
     }
 
+    .desktop-header-profile {
+        display: none !important;
+    }
+
     .mobile-responsive {
         display: block !important;
     }
