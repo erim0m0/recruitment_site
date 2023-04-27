@@ -18,3 +18,13 @@
     font-weight: normal;
     src: url('../fonts/Comfortaa_Bold.woff') format('woff');
 }
+
+@font-face {
+    font-family: 'Tanha';
+    src: url('../fonts/Tanha/Tanha-FD-WOL.eot');
+    src: url('../fonts/Tanha/Tanha-FD-WOL.eot?#iefix') format('Tanha-opentype'),
+        url('../fonts/Tanha/Tanha-FD-WOL.woff') format('woff'),
+        url('../fonts/Tanha/Tanha-FD-WOL.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
