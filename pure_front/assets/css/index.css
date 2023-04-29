@@ -735,7 +735,8 @@ footer {
     width: calc(100% - 350px);
 }
 
-.info-profile-container form label {
+.info-profile-container form label,
+.create-job-container form label {
     color: #5c6573;
     font-size: 14px;
 }
@@ -745,7 +746,8 @@ footer {
     margin-top: 50px;
 }
 
-.info-profile-container .info-profile-submit-btn {
+.info-profile-container .info-profile-submit-btn,
+.create-job-container .create-job-btn {
     padding: 7px 14px;
     background-color: #5b75fb;
     color: #ffffff;
@@ -773,10 +775,12 @@ footer {
 .info-profile-container #militaryServiceStatusIdBtn {
     padding: 0.7rem 0.75rem;
     border: 1px solid #EEF0F4;
-    color: rgba(51, 65, 85, 1);
+    color: #5c6573;
+    font-size: 14px;
 }
 
-.info-profile-container .cities-fa-section {
+.info-profile-container .cities-fa-section,
+.create-job-container .cities-fa-section {
     padding: 0.7rem 0.75rem;
     background-color: #ffffff;
     border-radius: 4px;
@@ -820,20 +824,28 @@ footer {
     color: rgba(51, 65, 85, 1);
 }
 
-.info-profile-container .date-of-user-info-section select {
+.info-profile-container .date-of-user-info-section select,
+.create-job-container .date-of-user-info-section select {
     width: calc(100% / 3.5);
     outline: none;
     background-color: #ffffff;
     color: rgba(51, 65, 85, 1);
 }
 
-.info-profile-container .date-of-user-info-section>section {
+.info-profile-container .date-of-user-info-section>section,
+.create-job-container .date-of-user-info-section>section {
     height: calc(1.5em + 1.4rem + 2px);
     background-clip: padding-box;
     border: 1px solid #EEF0F4;
 }
 
-.info-profile-container .date-of-user-info-section span {
+.create-job-container .date-of-user-info-section select {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.info-profile-container .date-of-user-info-section span,
+.create-job-container .date-of-user-info-section span {
     color: #5c6573;
     margin: 0 4px;
 }
@@ -855,7 +867,6 @@ footer {
     border: 1px solid #c8ccd4;
     background: #eef0f4;
     border-radius: 4px;
-    vertical-align: middle;
     -webkit-transition: background 0.1s ease;
     transition: background 0.1s ease;
     cursor: pointer;
@@ -1121,11 +1132,12 @@ footer {
 }
 
 /* important field */
-.required-field::after {
+.required-field::before {
     content: '*';
     font-weight: bolder;
     color: red;
     font-size: 10px;
+    margin-left: 2px;
 }
 
 /* Company Profile  */
@@ -1209,7 +1221,8 @@ footer {
     margin: 30px auto 30px auto;
 }
 
-.co-info-profile textarea {
+.co-info-profile textarea,
+.create-job-container textarea {
     border-radius: 4px;
     padding: 0.7rem 0.75rem;
     border: 1px solid #EEF0F4;
@@ -1218,4 +1231,99 @@ footer {
 .co-info-profile .info-profile-title h2 {
     font-family: "Tanha";
     font-size: 27px;
+}
+
+/* Job Create */
+.create-job-header-container {
+    background-color: #ffffff;
+    border-bottom: 1px solid #eee;
+}
+
+.create-job-header {
+    position: sticky;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.create-job-title {
+    width: 80%;
+    text-align: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.create-job-title h2 {
+    font-size: 17px;
+}
+
+.create-job-title a {
+    top: 15px;
+    left: 15px;
+    color: #5c6573;
+}
+
+.create-job-title a:hover {
+    color: #5c6573 !important;
+}
+
+.create-job-title a span:first-child {
+    border-radius: 50%;
+    padding: 1px 1px 1px 2px;
+    border: 1px solid #5c6573;
+}
+
+.create-job-roadmap {
+    font-family: "Tanha";
+    font-size: 19px;
+}
+
+.create-job-roadmap h2,
+.info-profile-title h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.create-job-roadmap span,
+.info-profile-title span {
+    background-color: #5b75fb;
+    border-radius: 50%;
+    width: 28px;
+    color: #ffffff;
+    padding-top: 4px;
+    height: 28px;
+}
+
+.create-job-container {
+    margin: 50px auto 50px auto;
+}
+
+.create-job-container .create-job-describ>section,
+.create-job-container .create-job-conditions>section {
+    background-color: #ffffff;
+    box-shadow: -5px 0 5px -5px #00000013, 5px 0 5px -5px #00000013;
+    padding: 19px;
+    border-radius: 10px;
+}
+
+.create-job-container input {
+    border: 1px solid #EEF0F4 !important;
+    border-radius: 4px;
+    color: #000;
+    padding: 0.7rem 0.75rem;
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    background-clip: padding-box;
+    height: calc(1.5em + 1.4rem + 2px);
+}
+
+.create-job-container button {
+    border: 1px solid #EEF0F4 !important;
+    padding: 0.7rem 0.75rem;
+    color: #5c6573;
+    font-size: 14px;
 }

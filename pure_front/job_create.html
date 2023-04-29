@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <header class="create-job-header">
+        <section class="create-job-header-container">
+            <section class="relative py-4 flex flex-col justify-center items-center">
+                <section class="create-job-title">
+                    <h2>درج آگهی شغلی</h2>
+                    <a href="#" class="absolute flex items-center justify-center">
+                        <span class="flex items-center justify-center ml-1"><i class="icon-x"></i></span>
+                        <span class="flex items-center justify-center">انصراف</span>
+                    </a>
+                </section>
+                <section class="flex items-center justify-center create-job-roadmap">
+                    <h2 class="font-semibold mx-4 complete-part-of-the-process"><span
+                            class="flex items-center justify-center ml-3">1</span> اطلاعات آگهی</h2>
+                    <h2 class="font-semibold mx-4 dont-complete-part-of-the-process"><span
+                            class="flex items-center justify-center ml-3 dont-complete-part-of-the-process">2</span> روش
+                        انتشار</h2>
+                </section>
+            </section>
+        </section>
+    </header>
+
+    <section class="create-job-container w-5/6 mx-auto">
+        <form action="">
+            <section class="create-job-describ">
+                <h4 class="mb-2 font-semibold">معرفی شغل</h4>
+                <section class="">
+                    <section class="grid grid-cols-2 gap-4">
+                        <section class="mb-4 flex flex-col justify-center items-start">
+                            <label class="required-field mb-2" for="">عنوان شغلی</label>
+                            <input class="w-full" type="text">
+                        </section>
+                        <section class="mb-4 flex flex-col justify-center items-start">
+                            <label class="required-field mb-2" for="">رده سازمانی</label>
+                            <section class="w-full relative inline-block">
+                                <button type="button" id="militaryServiceStatusIdBtn"
+                                    class="w-full bg-white text-gray-700 py-2 px-4 rounded inline-flex justify-between items-center">
+                                    <span class="mx-1">انتخاب کنید</span>
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path d="M5 8l5 5 5-5z" />
+                                    </svg>
+                                </button>
+                                <ul class="w-full z-50 absolute hidden text-gray-700 pt-1">
+                                    <li class="cursor-pointer">
+                                        <p
+                                            class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            زیر دیپلم</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            دیپلم</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            فوق دیپلم</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            لیسانس</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            فوق لیسانس</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p
+                                            class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            دکترا</p>
+                                    </li>
+                                </ul>
+                            </section>
+                        </section>
+                        <section class="mb-4 flex flex-col justify-center items-start">
+                            <label class="required-field mb-2" for="">نوع همکاری</label>
+                            <section class="w-full relative inline-block">
+                                <button type="button" id="militaryServiceStatusIdBtn"
+                                    class="w-full bg-white text-gray-700 py-2 px-4 rounded inline-flex justify-between items-center">
+                                    <span class="mx-1">انتخاب کنید</span>
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path d="M5 8l5 5 5-5z" />
+                                    </svg>
+                                </button>
+                                <ul class="w-full z-50 absolute hidden text-gray-700 pt-1">
+                                    <li class="cursor-pointer">
+                                        <p
+                                            class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            تمام‌وقت</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            پاره‌وقت</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            دورکاری</p>
+                                    </li>
+                                </ul>
+                            </section>
+                        </section>
+                        <section class="mb-4 relative job-title flex flex-col justify-center items-start">
+                            <label class="required-field mb-2" for="">شهر</label>
+                            <section class="relative w-full cities-fa-section">
+                                <section class="flex justify-between items-center">
+                                    <h2>فردوس</h2>
+                                    <span class="flex justify-center items-center">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20">
+                                            <path d="M5 8l5 5 5-5z" />
+                                        </svg>
+                                    </span>
+                                </section>
+                                <section class="hidden absolute w-full overflow-hidden">
+                                    <input class=" w-full" type="text">
+                                    <span class="flex justify-center items-center"><i class="icon-search"></i></span>
+                                </section>
+                                <section class="hidden overflow-y-scroll absolute">
+                                    <ul>
+                                        <li>سیستان و بلوچستان</li>
+                                        <li>فارس</li>
+                                    </ul>
+                                </section>
+                            </section>
+                        </section>
+                    </section>
+                </section>
+            </section>
+
+            <section class="my-7 create-job-conditions">
+                <h4 class="mb-2 font-semibold">شرایط احراز شغل</h4>
+                <section class="">
+                    <section class="grid grid-cols-2 gap-4">
+                        <section class="mb-4 flex flex-col justify-center items-start">
+                            <label class="required-field mb-2" for="">جنسیت</label>
+                            <section class="w-full relative inline-block">
+                                <button type="button" id="militaryServiceStatusIdBtn"
+                                    class="w-full bg-white text-gray-700 py-2 px-4 rounded inline-flex justify-between items-center">
+                                    <span class="mx-1">انتخاب کنید</span>
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path d="M5 8l5 5 5-5z" />
+                                    </svg>
+                                </button>
+                                <ul class="w-full z-50 absolute hidden text-gray-700 pt-1">
+                                    <li class="cursor-pointer">
+                                        <p
+                                            class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            زن</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            مرد</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            ترجیحا مرد</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            ترجیحا زن</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p
+                                            class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            تفاوتی ندارد</p>
+                                    </li>
+                                </ul>
+                            </section>
+                        </section>
+                        <section class="mb-4 relative job-title flex flex-col justify-center items-start">
+                            <label class="required-field mb-2" for="">وضعیت نظام‌وظیفه</label>
+                            <section class="relative w-full cities-fa-section">
+                                <section class="flex justify-between items-center">
+                                    <h2>انتخاب کنید</h2>
+                                    <span class="flex justify-center items-center">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20">
+                                            <path d="M5 8l5 5 5-5z" />
+                                        </svg>
+                                    </span>
+                                </section>
+                                <section class="hidden absolute w-full overflow-hidden">
+                                    <input class=" w-full" type="text">
+                                    <span class="flex justify-center items-center"><i class="icon-search"></i></span>
+                                </section>
+                                <section class="hidden overflow-y-scroll absolute">
+                                    <ul>
+                                        <li>دارای کارت پایان خدمت</li>
+                                        <li>در حال خدمت</li>
+                                        <li>معافیت پزشکی</li>
+                                        <li>سایر معافیت ها( معافیت غیر پزشکی )</li>
+                                        <li>اهمیتی ندارد</li>
+                                    </ul>
+                                </section>
+                            </section>
+                        </section>
+                        <section class="date-of-user-info-section mb-4 flex flex-col justify-center items-start">
+                            <label class="required-field mb-2" for="">سن</label>
+                            <section class="w-full bg-white rounded flex justify-around items-center">
+                                <span>از</span>
+                                <select name="" id="">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                </select>
+                                <span>تا</span>
+                                <select name="" id="">
+                                    <option value="1">فروردین</option>
+                                    <option value="2">اردیبهشت</option>
+                                    <option value="3">خرداد</option>
+                                    <option value="4">تیر</option>
+                                    <option value="5">مرداد</option>
+                                    <option value="6">شهریور</option>
+                                    <option value="7">مهر</option>
+                                    <option value="8">آبان</option>
+                                    <option value="9">آذر</option>
+                                    <option value="10">دی</option>
+                                    <option value="11">بهمن</option>
+                                    <option value="12">اسفند</option>
+                                </select>
+                            </section>
+                        </section>
+                        <section class="mb-4 flex flex-col justify-center items-start">
+                            <label class="required-field mb-2" for="">سابقه کاری</label>
+                            <section class="w-full relative inline-block">
+                                <button type="button" id="militaryServiceStatusIdBtn"
+                                    class="w-full bg-white text-gray-700 py-2 px-4 rounded inline-flex justify-between items-center">
+                                    <span class="mx-1">دو سال</span>
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path d="M5 8l5 5 5-5z" />
+                                    </svg>
+                                </button>
+                                <ul class="w-full z-50 absolute hidden text-gray-700 pt-1">
+                                    <li class="cursor-pointer">
+                                        <p
+                                            class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            سه سال</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            پنج سال</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            شش سال</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            بیشتر از شش سال</p>
+                                    </li>
+                                </ul>
+                            </section>
+                        </section>
+                    </section>
+                </section>
+            </section>
+
+            <section class="my-7 create-job-conditions">
+                <h4 class="mb-2 font-semibold">شرح شغل و حقوق و مزایای پیشنهادی</h4>
+                <section class="">
+                    <section class="grid grid-cols-2 gap-4">
+                        <section class="mb-4 flex flex-col justify-center items-start">
+                            <label class="required-field mb-2" for="">حقوق</label>
+                            <section class="w-full relative inline-block">
+                                <button type="button" id="militaryServiceStatusIdBtn"
+                                    class="w-full bg-white text-gray-700 py-2 px-4 rounded inline-flex justify-between items-center">
+                                    <span class="mx-1">انتخاب کنید</span>
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path d="M5 8l5 5 5-5z" />
+                                    </svg>
+                                </button>
+                                <ul class="w-full z-50 absolute hidden text-gray-700 pt-1">
+                                    <li class="cursor-pointer">
+                                        <p
+                                            class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            3-4 میلیون تومان</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            4-5 میلیون تومان</p>
+                                    </li>
+                                    <li class="cursor-pointer">
+                                        <p class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap">
+                                            5-6 میلیون تومان</p>
+                                    </li>
+                                </ul>
+                            </section>
+                        </section>
+                        <section class="mb-4 relative job-title flex flex-col justify-center items-start">
+                            <label class="mb-2" for="">مزایا و امکانات</label>
+                            <section class="relative w-full cities-fa-section">
+                                <section class="flex justify-between items-center">
+                                    <h2>انتخاب کنید</h2>
+                                    <span class="flex justify-center items-center">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20">
+                                            <path d="M5 8l5 5 5-5z" />
+                                        </svg>
+                                    </span>
+                                </section>
+                                <section class="hidden absolute w-full overflow-hidden">
+                                    <input class=" w-full" type="text">
+                                    <span class="flex justify-center items-center"><i class="icon-search"></i></span>
+                                </section>
+                                <section class="hidden overflow-y-scroll absolute">
+                                    <ul>
+                                        <li>امریه سربازی</li>
+                                        <li>وام</li>
+                                        <li>پاداش</li>
+                                    </ul>
+                                </section>
+                            </section>
+                        </section>
+                        <section class="mb-4 flex flex-col justify-center items-start">
+                            <label class="required-field mb-2" for="">شرح شغل و حقوق و مزایای پیشنهادی</label>
+                            <textarea class="w-full" rows="8" cols="50"></textarea>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="previous-step flex justify-end items-center">
+                <button class="mr-4 create-job-btn">ورود به مرحله بعد</button>
+            </section>
+        </form>
+    </section>
+    <script>
+        const dropdownBtn = document.querySelector('.inline-block button');
+        const dropdownOptions = document.querySelector('.inline-block ul');
+
+        dropdownBtn.addEventListener('click', function () {
+            dropdownOptions.classList.toggle('hidden');
+        });
+
+
+
+    </script>
+</body>
+
+</html>
